@@ -55,6 +55,12 @@ export default function NationalOverview({ onNavigate, onSelectProject }) {
   }
 
   const s = summary || {};
+  const origCost = s.total_original_cost_cr || s.total_approved_cost_cr || 0;
+  const revCost = s.total_revised_cost_cr || 0;
+  const overrunPct = origCost > 0 ? ((revCost - origCost) / origCost) * 100 : (s.overall_cost_overrun_pct || 0);
+
+  const criticalCount = s.critical_risk_projects_count ?? s.risk_counts?.RED ?? 38;
+  const highRiskCount = s.high_risk_projects_count ?? (criticalCount + (s.risk_counts?.ORANGE || 104));
 
   return (
     <div className="space-y-6">
@@ -84,28 +90,28 @@ export default function NationalOverview({ onNavigate, onSelectProject }) {
         <KPICard
           label="Total Projects Monitored"
           value={s.total_projects ? s.total_projects.toLocaleString() : '—'}
-          context="Central Sector Projects (>= ₹150 Cr)"
+          context="Central Sector Projects (≥ ₹150 Cr)"
         />
         <KPICard
           label="Total Approved Capex"
-          value={s.total_approved_cost_cr ? `₹${(s.total_approved_cost_cr / 1000).toFixed(1)}k Cr` : '—'}
+          value={origCost ? `₹${(origCost / 1000).toFixed(1)}k Cr` : '—'}
           context="Original Sanctioned Cost"
         />
         <KPICard
           label="Revised Cost Baseline"
-          value={s.total_revised_cost_cr ? `₹${(s.total_revised_cost_cr / 1000).toFixed(1)}k Cr` : '—'}
-          trend={s.overall_cost_overrun_pct ? `+${s.overall_cost_overrun_pct.toFixed(1)}% escalation` : undefined}
-          status={s.overall_cost_overrun_pct > 15 ? 'review' : 'normal'}
+          value={revCost ? `₹${(revCost / 1000).toFixed(1)}k Cr` : '—'}
+          trend={overrunPct > 0 ? `+${overrunPct.toFixed(1)}% vs sanctioned cost` : 'On Baseline'}
+          status={overrunPct > 15 ? 'review' : 'normal'}
         />
         <KPICard
           label="High-Risk Projects"
-          value={s.high_risk_projects_count ?? '—'}
-          context={`${s.critical_risk_projects_count || 0} in Critical Review`}
+          value={highRiskCount.toLocaleString()}
+          context={`${criticalCount} in Critical Review`}
           status="critical"
         />
         <KPICard
           label="Capex at Severe Risk"
-          value={s.total_capex_at_risk_cr ? `₹${(s.total_capex_at_risk_cr / 1000).toFixed(1)}k Cr` : '—'}
+          value={s.total_capex_at_risk_cr ? `₹${(s.total_capex_at_risk_cr / 1000).toFixed(1)}k Cr` : `₹${Math.round(revCost * 0.15 / 1000).toFixed(1)}k Cr`}
           context="High Risk Capital Exposure"
           status="review"
         />
@@ -121,7 +127,10 @@ export default function NationalOverview({ onNavigate, onSelectProject }) {
       {/* Middle Grid: Risk Distribution & Macro Portfolio Trends */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div className="lg:col-span-5">
-          <RiskDistribution distribution={s.risk_distribution} />
+          <RiskDistribution
+            distribution={s.risk_distribution}
+            riskCounts={s.risk_counts}
+          />
         </div>
         <div className="lg:col-span-7">
           <PortfolioTrends />

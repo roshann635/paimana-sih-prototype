@@ -1,6 +1,20 @@
 import React from 'react';
 import { Search, Bell, Sparkles, User } from 'lucide-react';
 
+function formatReportMonth(monthStr) {
+  if (!monthStr) return null;
+  const parts = monthStr.split('-');
+  if (parts.length === 2) {
+    const year = parts[0];
+    const monthNum = parseInt(parts[1], 10);
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    if (monthNum >= 1 && monthNum <= 12) {
+      return `${months[monthNum - 1]} ${year}`;
+    }
+  }
+  return monthStr;
+}
+
 export default function Header({
   latestReportMonth,
   activeAlertsCount = 0,
@@ -9,9 +23,10 @@ export default function Header({
   searchTerm = '',
   onSearchChange
 }) {
-  const formattedCycle = latestReportMonth
-    ? `Reporting Cycle: ${latestReportMonth}`
-    : 'Data cycle unavailable';
+  const formattedMonth = formatReportMonth(latestReportMonth);
+  const formattedCycle = formattedMonth
+    ? `Latest reporting cycle: ${formattedMonth}`
+    : 'DEMO DATA · Simulated reporting cycle';
 
   return (
     <header className="h-16 bg-gov-surface border-b border-gov-border sticky top-0 z-30 px-6 flex items-center justify-between shadow-gov select-none">
@@ -32,7 +47,7 @@ export default function Header({
               SIH PROTOTYPE / CONCEPT DEMONSTRATOR
             </span>
             <span className="hidden md:inline text-text-muted">•</span>
-            <span className="hidden md:inline font-mono text-[11px] text-text-secondary">
+            <span className="hidden md:inline font-mono text-[11px] text-text-secondary font-medium">
               {formattedCycle}
             </span>
           </div>
@@ -49,7 +64,7 @@ export default function Header({
             placeholder="Search projects by ID, code, name..."
             value={searchTerm}
             onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
-            className="w-full bg-gov-surface border border-gov-border rounded-gov-sm pl-8 pr-3 py-1.5 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand/20 transition-colors"
+            className="w-full bg-gov-surface border border-gov-border rounded-gov-sm pl-8 pr-3 py-1.5 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand/20 transition-colors shadow-sm"
           />
         </div>
 

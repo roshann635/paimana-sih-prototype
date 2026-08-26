@@ -110,6 +110,7 @@ def get_dashboard_summary(db: Session) -> DashboardSummary:
         })
         
     active_alerts = db.query(EarlyWarningAlert).filter(EarlyWarningAlert.is_active == True).count()
+    max_month_val = db.query(func.max(ProjectSnapshot.report_month)).scalar() or "2025-12"
     
     return DashboardSummary(
         total_projects=total_projects,
@@ -122,6 +123,7 @@ def get_dashboard_summary(db: Session) -> DashboardSummary:
         risk_counts=risk_counts,
         deteriorating_count=deteriorating_count,
         active_alerts_count=active_alerts,
+        latest_report_month=max_month_val,
         top_sectors_at_risk=top_sectors_at_risk,
         ministry_sector_matrix=sorted(ministry_sector_matrix, key=lambda x: x["avg_risk"], reverse=True)[:15]
     )

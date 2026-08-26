@@ -156,5 +156,6 @@ class DashboardSummary(BaseModel):
     risk_counts: Dict[str, int]  # RED, ORANGE, AMBER, GREEN
     deteriorating_count: int
     active_alerts_count: int
+    latest_report_month: Optional[str] = None
     top_sectors_at_risk: List[Dict[str, Any]]
     ministry_sector_matrix: List[Dict[str, Any]]

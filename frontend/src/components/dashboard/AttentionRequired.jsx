@@ -5,6 +5,11 @@ import TrendBadge from '../common/TrendBadge';
 
 export default function AttentionRequired({ projects = [], onSelectProject, onExploreQueue }) {
   const topCritical = projects.slice(0, 6);
+  const count = projects.length;
+
+  const countBadgeText = count === 0
+    ? '0 CRITICAL FLAGS'
+    : `${count} CRITICAL PROJECT${count > 1 ? 'S' : ''} REQUIRE REVIEW`;
 
   return (
     <div className="bg-gov-surface border border-gov-border rounded-gov p-6 shadow-gov border-l-4 border-l-risk-critical">
@@ -14,12 +19,16 @@ export default function AttentionRequired({ projects = [], onSelectProject, onEx
             <AlertOctagon className="w-4 h-4" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider">
                 Attention Required
               </h3>
-              <span className="bg-risk-critical text-white text-[10px] font-bold px-1.5 py-0.2 rounded-sm">
-                {projects.length} Critical Review Flags
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
+                count > 0
+                  ? 'bg-red-50 text-risk-critical border-[#ECC4C1]'
+                  : 'bg-gov-secondary text-text-secondary border-gov-border'
+              }`}>
+                {countBadgeText}
               </span>
             </div>
             <p className="text-xs text-text-secondary mt-0.5">
@@ -54,7 +63,7 @@ export default function AttentionRequired({ projects = [], onSelectProject, onEx
           <tbody className="divide-y divide-gov-border bg-gov-surface">
             {topCritical.length === 0 ? (
               <tr>
-                <td colSpan={7} className="py-6 text-center text-xs text-text-muted">
+                <td colSpan={7} className="py-8 text-center text-xs text-text-muted">
                   No projects currently flagged for critical intervention.
                 </td>
               </tr>
