@@ -3,7 +3,6 @@ import DataTable from '../../components/tables/DataTable';
 import StatusBadge from '../../components/common/StatusBadge';
 import { LoadingSkeleton, ErrorState } from '../../components/common/FeedbackStates';
 import { paimanaApi } from '../../services/api/paimanaApi';
-import { Building2, PieChart, BarChart3 } from 'lucide-react';
 import {
   ResponsiveContainer,
   BarChart,
@@ -21,7 +20,6 @@ export default function MinistryAnalytics({ onNavigate }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Generate ministry statistics from project dataset
     paimanaApi.getProjects({ limit: 1630 })
       .then((res) => {
         const items = res?.items || (Array.isArray(res) ? res : []);
@@ -121,7 +119,7 @@ export default function MinistryAnalytics({ onNavigate }) {
       align: 'right',
       render: (val) => (
         <span className="font-mono font-bold text-risk-review">
-          ₹{Number(val).toLocaleString()} Cr
+          ₹${Number(val).toLocaleString()} Cr
         </span>
       )
     }
@@ -148,22 +146,22 @@ export default function MinistryAnalytics({ onNavigate }) {
       ) : (
         <>
           {/* Top Ministries Capex Comparison Chart */}
-          <div className="bg-gov-surface border border-gov-border rounded-gov p-5 shadow-gov">
+          <div className="bg-gov-surface border border-gov-border rounded-gov p-6 shadow-gov">
             <div className="pb-3 mb-4 border-b border-gov-border flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-bold text-text-primary">Top Capital Deploying Ministries</h3>
-                <p className="text-xs text-text-secondary">Revised baseline capital exposure vs Capex at critical risk.</p>
+                <p className="text-xs text-text-secondary mt-0.5">Revised baseline capital exposure vs Capex at critical risk.</p>
               </div>
             </div>
 
             <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={topMinistriesChart} margin={{ top: 10, right: 10, left: -10, bottom: 20 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#D9D9D6" vertical={false} />
-                  <XAxis dataKey="ministry" tick={{ fontSize: 10, fill: '#5F6368' }} interval={0} angle={-15} textAnchor="end" />
-                  <YAxis tick={{ fontSize: 11, fill: '#5F6368' }} tickLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E5E1" vertical={false} />
+                  <XAxis dataKey="ministry" tick={{ fontSize: 10, fill: '#5F6368' }} interval={0} angle={-15} textAnchor="end" stroke="#D9D9D6" />
+                  <YAxis tick={{ fontSize: 11, fill: '#5F6368' }} tickLine={false} stroke="#D9D9D6" />
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#D9D9D6', fontSize: '12px', borderRadius: '6px' }}
+                    contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#D9D9D6', color: '#252525', fontSize: '12px', borderRadius: '6px', boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }}
                     formatter={(val, name) => [`₹${Number(val).toLocaleString()} Cr`, name]}
                   />
                   <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />

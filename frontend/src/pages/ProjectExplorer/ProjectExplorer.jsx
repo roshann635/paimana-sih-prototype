@@ -3,7 +3,6 @@ import DataTable from '../../components/tables/DataTable';
 import StatusBadge from '../../components/common/StatusBadge';
 import { LoadingSkeleton, ErrorState } from '../../components/common/FeedbackStates';
 import { paimanaApi } from '../../services/api/paimanaApi';
-import { Filter, Layers } from 'lucide-react';
 
 export default function ProjectExplorer({ onSelectProject }) {
   const [projects, setProjects] = useState([]);
@@ -65,7 +64,7 @@ export default function ProjectExplorer({ onSelectProject }) {
       render: (val, row) => (
         <div className="text-xs">
           <div className="text-text-primary truncate max-w-[220px]">{val}</div>
-          <div className="text-[11px] text-text-muted">{row.sector}</div>
+          <div className="text-[11px] text-text-secondary">{row.sector}</div>
         </div>
       )
     },
@@ -104,7 +103,7 @@ export default function ProjectExplorer({ onSelectProject }) {
   ];
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gov-border">
         <div>
@@ -117,8 +116,8 @@ export default function ProjectExplorer({ onSelectProject }) {
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs font-mono text-text-muted">
-            Total Records: <strong className="text-text-primary">{totalCount.toLocaleString()}</strong>
+          <span className="text-xs font-mono text-text-muted bg-gov-surface border border-gov-border px-3 py-1.5 rounded-gov-sm shadow-gov">
+            Total Projects: <strong className="text-text-primary font-mono">{totalCount.toLocaleString()}</strong>
           </span>
         </div>
       </div>

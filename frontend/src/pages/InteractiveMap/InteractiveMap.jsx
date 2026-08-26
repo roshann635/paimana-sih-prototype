@@ -6,7 +6,7 @@ export default function InteractiveMap({ onSelectProject }) {
   const [filterRiskOnly, setFilterRiskOnly] = useState(false);
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gov-border">
         <div>
           <h1 className="text-2xl font-bold text-text-primary tracking-tight">
@@ -18,7 +18,7 @@ export default function InteractiveMap({ onSelectProject }) {
         </div>
 
         <div className="flex items-center gap-2">
-          <label className="inline-flex items-center gap-2 text-xs font-semibold text-text-secondary cursor-pointer bg-gov-surface border border-gov-border px-3 py-1.5 rounded-gov-sm shadow-gov">
+          <label className="inline-flex items-center gap-2 text-xs font-semibold text-text-secondary cursor-pointer bg-gov-surface border border-gov-border px-3.5 py-1.5 rounded-gov-sm shadow-gov">
             <input
               type="checkbox"
               checked={filterRiskOnly}

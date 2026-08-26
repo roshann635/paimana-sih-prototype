@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import {
   ResponsiveContainer,
-  AreaChart,
-  Area,
   LineChart,
   Line,
   XAxis,
@@ -12,7 +10,6 @@ import {
   Legend
 } from 'recharts';
 
-// Representative monthly historical aggregation across the 9-month MoSPI portfolio
 const MACRO_MONTHLY_TRENDS = [
   { month: '2025-04', avg_progress: 38.2, expenditure_cr: 112000, avg_delay_days: 118, high_risk_count: 98 },
   { month: '2025-05', avg_progress: 39.8, expenditure_cr: 116500, avg_delay_days: 122, high_risk_count: 104 },
@@ -29,17 +26,17 @@ export default function PortfolioTrends() {
   const [metricMode, setMetricMode] = useState('progress_exp'); // 'progress_exp' | 'slippage'
 
   return (
-    <div className="bg-gov-surface border border-gov-border rounded-gov p-5 shadow-gov">
+    <div className="bg-gov-surface border border-gov-border rounded-gov p-6 shadow-gov">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 mb-4 border-b border-gov-border">
         <div>
           <h3 className="text-sm font-bold text-text-primary">Portfolio Trajectory & Time-Series Drift</h3>
-          <p className="text-xs text-text-secondary">Historical multi-month progression across central infrastructure portfolio.</p>
+          <p className="text-xs text-text-secondary mt-0.5">Historical multi-month progression across central infrastructure portfolio.</p>
         </div>
 
-        <div className="flex items-center gap-1 bg-gov-secondary p-0.5 rounded-gov-sm border border-gov-border">
+        <div className="flex items-center gap-1 bg-gov-secondary p-1 rounded-gov-sm border border-gov-border">
           <button
             onClick={() => setMetricMode('progress_exp')}
-            className={`px-2.5 py-1 text-xs font-semibold rounded-gov-sm transition-colors ${
+            className={`px-3 py-1 text-xs font-semibold rounded-gov-sm transition-colors ${
               metricMode === 'progress_exp'
                 ? 'bg-white text-text-primary shadow-gov'
                 : 'text-text-secondary hover:text-text-primary'
@@ -49,7 +46,7 @@ export default function PortfolioTrends() {
           </button>
           <button
             onClick={() => setMetricMode('slippage')}
-            className={`px-2.5 py-1 text-xs font-semibold rounded-gov-sm transition-colors ${
+            className={`px-3 py-1 text-xs font-semibold rounded-gov-sm transition-colors ${
               metricMode === 'slippage'
                 ? 'bg-white text-text-primary shadow-gov'
                 : 'text-text-secondary hover:text-text-primary'
@@ -64,38 +61,38 @@ export default function PortfolioTrends() {
       <div className="h-64 w-full">
         <ResponsiveContainer width="100%" height="100%">
           {metricMode === 'progress_exp' ? (
-            <AreaChart data={MACRO_MONTHLY_TRENDS} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#D9D9D6" vertical={false} />
-              <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#5F6368' }} tickLine={false} />
-              <YAxis yAxisId="left" tick={{ fontSize: 11, fill: '#5F6368' }} unit="%" tickLine={false} domain={[0, 100]} />
-              <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11, fill: '#5F6368' }} tickLine={false} />
+            <LineChart data={MACRO_MONTHLY_TRENDS} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#E5E5E1" vertical={false} />
+              <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#5F6368' }} tickLine={false} stroke="#D9D9D6" />
+              <YAxis yAxisId="left" tick={{ fontSize: 11, fill: '#5F6368' }} unit="%" tickLine={false} domain={[0, 100]} stroke="#D9D9D6" />
+              <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11, fill: '#5F6368' }} tickLine={false} stroke="#D9D9D6" />
               <Tooltip
-                contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#D9D9D6', fontSize: '12px', borderRadius: '6px' }}
+                contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#D9D9D6', color: '#252525', fontSize: '12px', borderRadius: '6px', boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }}
                 formatter={(val, name) => [
-                  name === 'avg_progress' ? `${val}%` : `₹${Number(val).toLocaleString()} Cr`,
-                  name === 'avg_progress' ? 'Average Physical Progress' : 'Cumulative Capex Drawdown'
+                  name === 'Physical Progress %' ? `${val}%` : `₹${Number(val).toLocaleString()} Cr`,
+                  name
                 ]}
               />
               <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
-              <Area yAxisId="left" type="monotone" dataKey="avg_progress" name="Physical Progress %" stroke="#347B78" fill="#E7F1F0" strokeWidth={2} />
-              <Line yAxisId="right" type="monotone" dataKey="expenditure_cr" name="Cumulative Capex (₹ Cr)" stroke="#C97919" strokeWidth={2} dot={{ r: 3 }} />
-            </AreaChart>
+              <Line yAxisId="left" type="monotone" dataKey="avg_progress" name="Physical Progress %" stroke="#347B78" strokeWidth={2.5} dot={{ r: 3, fill: '#347B78' }} />
+              <Line yAxisId="right" type="monotone" dataKey="expenditure_cr" name="Cumulative Capex (₹ Cr)" stroke="#C97919" strokeWidth={2} dot={{ r: 3, fill: '#C97919' }} />
+            </LineChart>
           ) : (
             <LineChart data={MACRO_MONTHLY_TRENDS} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#D9D9D6" vertical={false} />
-              <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#5F6368' }} tickLine={false} />
-              <YAxis yAxisId="left" tick={{ fontSize: 11, fill: '#5F6368' }} unit=" d" tickLine={false} />
-              <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11, fill: '#5F6368' }} tickLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#E5E5E1" vertical={false} />
+              <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#5F6368' }} tickLine={false} stroke="#D9D9D6" />
+              <YAxis yAxisId="left" tick={{ fontSize: 11, fill: '#5F6368' }} unit=" d" tickLine={false} stroke="#D9D9D6" />
+              <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11, fill: '#5F6368' }} tickLine={false} stroke="#D9D9D6" />
               <Tooltip
-                contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#D9D9D6', fontSize: '12px', borderRadius: '6px' }}
+                contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#D9D9D6', color: '#252525', fontSize: '12px', borderRadius: '6px', boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }}
                 formatter={(val, name) => [
-                  name === 'avg_delay_days' ? `${val} Days` : `${val} Projects`,
-                  name === 'avg_delay_days' ? 'Mean Delay' : 'High-Risk Review Watchlist'
+                  name === 'Mean Schedule Slippage (Days)' ? `${val} Days` : `${val} Projects`,
+                  name
                 ]}
               />
               <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
-              <Line yAxisId="left" type="monotone" dataKey="avg_delay_days" name="Mean Schedule Slippage (Days)" stroke="#B58A27" strokeWidth={2} dot={{ r: 3 }} />
-              <Line yAxisId="right" type="monotone" dataKey="high_risk_count" name="High Risk Projects Count" stroke="#B63A32" strokeWidth={2} dot={{ r: 3 }} />
+              <Line yAxisId="left" type="monotone" dataKey="avg_delay_days" name="Mean Schedule Slippage (Days)" stroke="#B58A27" strokeWidth={2} dot={{ r: 3, fill: '#B58A27' }} />
+              <Line yAxisId="right" type="monotone" dataKey="high_risk_count" name="High Risk Projects Count" stroke="#B63A32" strokeWidth={2} dot={{ r: 3, fill: '#B63A32' }} />
             </LineChart>
           )}
         </ResponsiveContainer>

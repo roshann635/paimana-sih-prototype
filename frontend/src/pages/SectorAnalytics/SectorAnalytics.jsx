@@ -3,17 +3,6 @@ import DataTable from '../../components/tables/DataTable';
 import StatusBadge from '../../components/common/StatusBadge';
 import { LoadingSkeleton, ErrorState } from '../../components/common/FeedbackStates';
 import { paimanaApi } from '../../services/api/paimanaApi';
-import { Boxes, TrendingDown } from 'lucide-react';
-import {
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend
-} from 'recharts';
 
 export default function SectorAnalytics() {
   const [sectors, setSectors] = useState([]);

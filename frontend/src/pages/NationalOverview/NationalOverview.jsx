@@ -6,17 +6,13 @@ import PortfolioTrends from '../../components/dashboard/PortfolioTrends';
 import IndiaMap from '../../components/maps/IndiaMap';
 import { LoadingSkeleton, ErrorState } from '../../components/common/FeedbackStates';
 import { paimanaApi } from '../../services/api/paimanaApi';
-import { Filter, RefreshCw } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 
 export default function NationalOverview({ onNavigate, onSelectProject }) {
   const [summary, setSummary] = useState(null);
   const [criticalProjects, setCriticalProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Filters
-  const [selectedMinistry, setSelectedMinistry] = useState('ALL');
-  const [selectedSector, setSelectedSector] = useState('ALL');
 
   const loadDashboardData = async () => {
     setLoading(true);
@@ -68,7 +64,7 @@ export default function NationalOverview({ onNavigate, onSelectProject }) {
           <h1 className="text-2xl lg:text-[28px] font-bold text-text-primary tracking-tight">
             National Infrastructure Overview
           </h1>
-          <p className="text-xs sm:text-sm text-text-secondary mt-0.5">
+          <p className="text-xs sm:text-sm text-text-secondary mt-1">
             Portfolio monitoring, risk intelligence and early-warning indicators across central infrastructure.
           </p>
         </div>
@@ -76,15 +72,15 @@ export default function NationalOverview({ onNavigate, onSelectProject }) {
         {/* Refresh Action */}
         <button
           onClick={loadDashboardData}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-gov-surface border border-gov-border rounded-gov-sm text-text-secondary hover:text-text-primary hover:bg-gov-secondary transition-colors shadow-gov"
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold bg-gov-surface border border-gov-border rounded-gov-sm text-text-primary hover:bg-[#F7F7F4] transition-colors shadow-gov"
         >
-          <RefreshCw className="w-3.5 h-3.5" />
+          <RefreshCw className="w-3.5 h-3.5 text-text-secondary" />
           <span>Refresh Data</span>
         </button>
       </div>
 
       {/* 5 Executive KPI Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         <KPICard
           label="Total Projects Monitored"
           value={s.total_projects ? s.total_projects.toLocaleString() : '—'}

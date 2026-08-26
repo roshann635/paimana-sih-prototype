@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from '../../components/tables/DataTable';
-import StatusBadge from '../../components/common/StatusBadge';
 import { LoadingSkeleton, ErrorState } from '../../components/common/FeedbackStates';
 import { paimanaApi } from '../../services/api/paimanaApi';
-import { Scale, Info, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Scale } from 'lucide-react';
 
 export default function Benchmarking() {
   const [benchmarks, setBenchmarks] = useState([]);
@@ -77,30 +76,30 @@ export default function Benchmarking() {
       </div>
 
       {/* Conceptual Peer Comparison Box */}
-      <div className="bg-gov-surface border border-gov-border rounded-gov p-5 shadow-gov">
+      <div className="bg-gov-surface border border-gov-border rounded-gov p-6 shadow-gov">
         <div className="flex items-center gap-2 pb-3 mb-4 border-b border-gov-border">
           <Scale className="w-4 h-4 text-brand" />
           <h3 className="text-sm font-bold text-text-primary">Peer Deviation Evaluation Standard</h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-          <div className="p-3.5 bg-gov-secondary/40 border border-gov-border rounded-gov-sm space-y-1">
+          <div className="p-4 bg-[#F7F7F4] border border-gov-border rounded-gov-sm space-y-1">
             <div className="font-semibold text-text-primary">Progress Velocity Deviation</div>
-            <p className="text-text-secondary text-[11px]">
+            <p className="text-text-secondary text-[11px] leading-relaxed">
               Compares a project's 3-month physical progress velocity against the sector median baseline. Negative deviations identify stagnation.
             </p>
           </div>
 
-          <div className="p-3.5 bg-gov-secondary/40 border border-gov-border rounded-gov-sm space-y-1">
+          <div className="p-4 bg-[#F7F7F4] border border-gov-border rounded-gov-sm space-y-1">
             <div className="font-semibold text-text-primary">Capex Drawdown Disparity</div>
-            <p className="text-text-secondary text-[11px]">
+            <p className="text-text-secondary text-[11px] leading-relaxed">
               Evaluates cumulative financial utilization against actual physical milestone completion relative to peer medians.
             </p>
           </div>
 
-          <div className="p-3.5 bg-gov-secondary/40 border border-gov-border rounded-gov-sm space-y-1">
+          <div className="p-4 bg-[#F7F7F4] border border-gov-border rounded-gov-sm space-y-1">
             <div className="font-semibold text-text-primary">Schedule Expansion Velocity</div>
-            <p className="text-text-secondary text-[11px]">
+            <p className="text-text-secondary text-[11px] leading-relaxed">
               Flags projects whose completion targets move further out faster than the historical sector median pace.
             </p>
           </div>

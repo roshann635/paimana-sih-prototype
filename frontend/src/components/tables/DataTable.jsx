@@ -97,10 +97,10 @@ export default function DataTable({
     <div className="bg-gov-surface border border-gov-border rounded-gov shadow-gov overflow-hidden">
       {/* Table Header & Controls */}
       {(title || enableExport) && (
-        <div className="p-4 border-b border-gov-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gov-surface">
+        <div className="p-5 border-b border-gov-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gov-surface">
           <div>
             {title && <h3 className="text-sm font-bold text-text-primary">{title}</h3>}
-            {subtitle && <p className="text-xs text-text-secondary">{subtitle}</p>}
+            {subtitle && <p className="text-xs text-text-secondary mt-0.5">{subtitle}</p>}
           </div>
           <div className="flex items-center gap-2.5">
             <input
@@ -111,15 +111,15 @@ export default function DataTable({
                 setFilterQuery(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-2.5 py-1.5 text-xs bg-gov-secondary/70 border border-gov-border rounded-gov-sm focus:outline-none focus:border-brand text-text-primary placeholder:text-text-muted"
+              className="px-3 py-1.5 text-xs bg-gov-surface border border-gov-border rounded-gov-sm focus:outline-none focus:border-brand text-text-primary placeholder:text-text-muted shadow-sm"
             />
             {enableExport && (
               <button
                 onClick={handleExportCSV}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-text-primary bg-gov-secondary hover:bg-gov-border rounded-gov-sm border border-gov-border transition-colors shadow-gov"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-text-primary bg-gov-surface hover:bg-[#F7F7F4] rounded-gov-sm border border-gov-border transition-colors shadow-gov"
                 title="Download table data as CSV"
               >
-                <Download className="w-3.5 h-3.5" />
+                <Download className="w-3.5 h-3.5 text-text-secondary" />
                 <span>Export CSV</span>
               </button>
             )}
@@ -140,7 +140,7 @@ export default function DataTable({
                   <th
                     key={col.key}
                     onClick={() => col.sortable !== false && handleSort(col.key)}
-                    className={`py-2.5 px-3.5 font-semibold text-[11px] uppercase tracking-wider ${
+                    className={`py-3 px-3.5 font-semibold text-[11px] uppercase tracking-wider ${
                       isNumeric ? 'text-right' : 'text-left'
                     } ${col.sortable !== false ? 'cursor-pointer hover:text-text-primary' : ''}`}
                   >
@@ -153,13 +153,13 @@ export default function DataTable({
                   </th>
                 );
               })}
-              <th className="py-2.5 px-3 text-right text-[11px] uppercase font-semibold">Action</th>
+              <th className="py-3 px-3.5 text-right text-[11px] uppercase font-semibold">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gov-border bg-gov-surface">
             {paginatedData.length === 0 ? (
               <tr>
-                <td colSpan={columns.length + 1} className="py-8 text-center text-xs text-text-muted">
+                <td colSpan={columns.length + 1} className="py-10 text-center text-xs text-text-muted">
                   No records match your query.
                 </td>
               </tr>
@@ -168,7 +168,7 @@ export default function DataTable({
                 <tr
                   key={row.project_id || idx}
                   onClick={() => onRowClick && onRowClick(row)}
-                  className="hover:bg-gov-secondary/50 transition-colors cursor-pointer group"
+                  className="hover:bg-[#F7F7F4] transition-colors cursor-pointer group"
                 >
                   {columns.map((col) => {
                     const isNumeric = col.align === 'right';
@@ -177,14 +177,14 @@ export default function DataTable({
                     return (
                       <td
                         key={col.key}
-                        className={`py-2.5 px-3.5 text-text-primary ${isNumeric ? 'text-right font-mono' : 'text-left'}`}
+                        className={`py-3 px-3.5 text-text-primary ${isNumeric ? 'text-right font-mono' : 'text-left'}`}
                       >
                         {col.render ? col.render(val, row) : (val ?? '—')}
                       </td>
                     );
                   })}
-                  <td className="py-2.5 px-3 text-right">
-                    <span className="inline-flex items-center text-xs text-brand font-medium group-hover:translate-x-0.5 transition-transform">
+                  <td className="py-3 px-3.5 text-right">
+                    <span className="inline-flex items-center text-xs text-brand-dark font-medium group-hover:translate-x-0.5 transition-transform">
                       <span>View</span>
                       <ArrowRight className="w-3.5 h-3.5 ml-1" />
                     </span>
@@ -197,7 +197,7 @@ export default function DataTable({
       </div>
 
       {/* Pagination Footer */}
-      <div className="p-3 border-t border-gov-border flex items-center justify-between text-xs text-text-secondary bg-gov-surface">
+      <div className="p-3.5 border-t border-gov-border flex items-center justify-between text-xs text-text-secondary bg-gov-surface">
         <div>
           Showing <span className="font-semibold text-text-primary">{sortedData.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0}</span> to{' '}
           <span className="font-semibold text-text-primary">
@@ -205,21 +205,21 @@ export default function DataTable({
           </span>{' '}
           of <span className="font-semibold text-text-primary">{sortedData.length}</span> records
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
           <button
             disabled={currentPage === 1}
             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-            className="px-2.5 py-1 rounded-gov-sm border border-gov-border bg-gov-secondary text-text-primary disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gov-border transition-colors text-xs"
+            className="px-3 py-1 rounded-gov-sm border border-gov-border bg-gov-surface text-text-primary disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#F7F7F4] transition-colors text-xs"
           >
             Prev
           </button>
-          <span className="px-2 font-mono text-xs">
+          <span className="px-2 font-mono text-xs text-text-secondary">
             {currentPage} / {totalPages}
           </span>
           <button
             disabled={currentPage === totalPages}
             onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-            className="px-2.5 py-1 rounded-gov-sm border border-gov-border bg-gov-secondary text-text-primary disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gov-border transition-colors text-xs"
+            className="px-3 py-1 rounded-gov-sm border border-gov-border bg-gov-surface text-text-primary disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#F7F7F4] transition-colors text-xs"
           >
             Next
           </button>

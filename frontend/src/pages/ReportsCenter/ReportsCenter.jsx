@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileText, Download, Printer, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { FileText, Download, Printer, ShieldAlert } from 'lucide-react';
 import { paimanaApi } from '../../services/api/paimanaApi';
 
 const REPORT_TYPES = [
@@ -92,15 +92,15 @@ export default function ReportsCenter() {
 
         <button
           onClick={handlePrintBriefing}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gov-surface border border-gov-border rounded-gov-sm text-xs font-semibold text-text-primary hover:bg-gov-secondary transition-colors shadow-gov"
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-gov-surface border border-gov-border rounded-gov-sm text-xs font-semibold text-text-primary hover:bg-[#F7F7F4] transition-colors shadow-gov"
         >
-          <Printer className="w-3.5 h-3.5" />
+          <Printer className="w-3.5 h-3.5 text-text-secondary" />
           <span>Print Executive Dossier</span>
         </button>
       </div>
 
       {/* Prototype Reference Banner */}
-      <div className="p-3 bg-amber-50 border border-amber-200 rounded-gov text-amber-900 text-xs flex items-center gap-2">
+      <div className="p-4 bg-amber-50 border border-amber-200 rounded-gov text-amber-900 text-xs flex items-center gap-2.5 font-medium shadow-gov">
         <ShieldAlert className="w-4 h-4 shrink-0 text-amber-700" />
         <span>
           <strong>PAIMANA SIH Prototype:</strong> Exported documents and CSV tables are simulated decision-support dossiers generated for evaluation.
@@ -110,7 +110,7 @@ export default function ReportsCenter() {
       {/* Report Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {REPORT_TYPES.map((rep) => (
-          <div key={rep.id} className="bg-gov-surface border border-gov-border rounded-gov p-5 shadow-gov flex flex-col justify-between space-y-4">
+          <div key={rep.id} className="bg-gov-surface border border-gov-border rounded-gov p-6 shadow-gov flex flex-col justify-between space-y-4">
             <div>
               <div className="flex items-center justify-between gap-2 mb-1.5">
                 <div className="flex items-center gap-2">
@@ -127,13 +127,13 @@ export default function ReportsCenter() {
               </div>
             </div>
 
-            <div className="pt-3 border-t border-gov-border flex items-center justify-end gap-2">
+            <div className="pt-3.5 border-t border-gov-border flex items-center justify-end gap-2">
               <button
                 onClick={() => handleDownloadCSV(rep)}
                 disabled={downloadingId === rep.id}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gov-secondary hover:bg-gov-border text-text-primary text-xs font-semibold rounded-gov-sm border border-gov-border transition-colors shadow-gov"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-gov-surface hover:bg-[#F7F7F4] text-text-primary text-xs font-semibold rounded-gov-sm border border-gov-border transition-colors shadow-gov"
               >
-                <Download className="w-3.5 h-3.5" />
+                <Download className="w-3.5 h-3.5 text-text-secondary" />
                 <span>{downloadingId === rep.id ? 'Generating...' : 'Download CSV'}</span>
               </button>
             </div>

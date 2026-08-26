@@ -71,19 +71,19 @@ export default function Sidebar({
   return (
     <aside
       className={`bg-gov-secondary border-r border-gov-border flex flex-col transition-all duration-200 select-none ${
-        isCollapsed ? 'w-16' : 'w-64'
+        isCollapsed ? 'w-16' : 'w-[250px]'
       } shrink-0 min-h-[calc(100vh-4rem)]`}
     >
       {/* Navigation Groups */}
-      <div className="flex-1 py-4 px-2 overflow-y-auto space-y-5">
+      <div className="flex-1 py-5 px-3 overflow-y-auto space-y-6">
         {NAV_SECTIONS.map((section) => (
           <div key={section.title} className="space-y-1">
             {!isCollapsed && (
-              <div className="px-3 text-[10px] font-bold tracking-wider text-text-muted uppercase mb-1.5">
+              <div className="px-3 text-[10px] font-bold tracking-wider text-[#6B6B67] uppercase mb-2">
                 {section.title}
               </div>
             )}
-            <div className="space-y-0.5">
+            <div className="space-y-1">
               {section.items.map((item) => {
                 const Icon = item.icon;
                 const isActive =
@@ -97,18 +97,18 @@ export default function Sidebar({
                     title={isCollapsed ? item.label : undefined}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-gov-sm text-xs font-medium transition-colors relative ${
                       isActive
-                        ? 'bg-brand-light text-brand-dark font-semibold shadow-gov'
-                        : 'text-text-primary hover:bg-gov-surface/60 hover:text-text-primary'
+                        ? 'bg-brand-light text-brand-dark font-semibold'
+                        : 'text-[#343434] hover:bg-gov-surface/60 hover:text-text-primary'
                     } ${isCollapsed ? 'justify-center px-0' : 'text-left'}`}
                   >
                     {/* Active Left Indicator */}
                     {isActive && (
                       <span
-                        className="absolute left-0 top-1.5 bottom-1.5 w-[3px] bg-brand rounded-r"
+                        className="absolute left-0 top-1 bottom-1 w-[3px] bg-brand rounded-r"
                         aria-hidden="true"
                       />
                     )}
-                    <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-brand' : 'text-text-secondary'}`} />
+                    <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-brand-dark' : 'text-text-secondary'}`} />
                     {!isCollapsed && <span className="truncate">{item.label}</span>}
                   </button>
                 );
@@ -119,7 +119,7 @@ export default function Sidebar({
       </div>
 
       {/* Collapse Toggle */}
-      <div className="p-2 border-t border-gov-border">
+      <div className="p-3 border-t border-gov-border">
         <button
           onClick={onToggleCollapse}
           className="w-full flex items-center justify-center gap-2 py-1.5 text-xs text-text-secondary hover:text-text-primary hover:bg-gov-surface/60 rounded-gov-sm transition-colors"
@@ -130,7 +130,7 @@ export default function Sidebar({
           ) : (
             <>
               <ChevronLeft className="w-4 h-4" />
-              <span className="text-[11px]">Collapse View</span>
+              <span className="text-[11px] text-text-secondary font-medium">Collapse Sidebar</span>
             </>
           )}
         </button>

@@ -3,7 +3,7 @@ import React from 'react';
 /**
  * StatusBadge Component
  * Accessible RAGB status indicator with icon + label + semantic color.
- * Never relies on color alone for meaning.
+ * Follows the light institutional design system.
  */
 export default function StatusBadge({ status, level, size = 'md' }) {
   const rawStatus = (level || status || 'GREEN').toUpperCase();
@@ -12,33 +12,33 @@ export default function StatusBadge({ status, level, size = 'md' }) {
     label: 'NORMAL',
     icon: '✓',
     color: '#3F7D58',
-    bg: '#F1F7F4',
-    border: '#CEE5D8',
+    bg: '#E7F1EA',
+    border: '#C8E2D1',
   };
 
   if (rawStatus === 'CRITICAL' || rawStatus === 'RED') {
     config = {
       label: 'CRITICAL',
       icon: '●',
-      color: '#B63A32',
-      bg: '#FDF2F2',
-      border: '#F8D7D7',
+      color: '#A5322D',
+      bg: '#F7E2E0',
+      border: '#ECC4C1',
     };
   } else if (rawStatus === 'REVIEW' || rawStatus === 'ORANGE') {
     config = {
       label: 'REVIEW',
       icon: '▲',
-      color: '#C66A22',
-      bg: '#FEF6EE',
-      border: '#FBD8BA',
+      color: '#A65318',
+      bg: '#F8E7D8',
+      border: '#EFCDB2',
     };
   } else if (rawStatus === 'WATCH' || rawStatus === 'AMBER' || rawStatus === 'YELLOW') {
     config = {
       label: 'WATCH',
       icon: '■',
-      color: '#B58A27',
-      bg: '#FEF9EE',
-      border: '#F9E9BE',
+      color: '#8E6C16',
+      bg: '#F5EFD9',
+      border: '#E8DCB0',
     };
   }
 

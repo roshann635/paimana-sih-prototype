@@ -6,6 +6,7 @@ import { paimanaApi } from '../../services/api/paimanaApi';
 /**
  * AppShell Component
  * Primary layout shell enclosing Header, Sidebar, and Main Page view.
+ * Uses #F6F6F3 canvas background and 32px padding.
  */
 export default function AppShell({
   currentPath,
@@ -20,7 +21,6 @@ export default function AppShell({
   const [activeAlertsCount, setActiveAlertsCount] = useState(0);
 
   useEffect(() => {
-    // Fetch summary metrics for header indicators
     paimanaApi.getDashboardSummary()
       .then((summary) => {
         if (summary) {
@@ -55,8 +55,8 @@ export default function AppShell({
           onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         />
 
-        {/* Dynamic Page Content */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-gov-bg">
+        {/* Dynamic Page Content with 32px padding */}
+        <main className="flex-1 overflow-y-auto p-6 sm:p-8 bg-gov-bg">
           <div className="max-w-7xl mx-auto space-y-6">
             {children}
           </div>

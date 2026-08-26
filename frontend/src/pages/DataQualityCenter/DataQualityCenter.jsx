@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import StatusBadge from '../../components/common/StatusBadge';
 import { LoadingSkeleton, ErrorState } from '../../components/common/FeedbackStates';
 import { paimanaApi } from '../../services/api/paimanaApi';
-import { Database, CheckCircle2, AlertTriangle, AlertOctagon, ShieldCheck } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 
 export default function DataQualityCenter() {
   const [dqe, setDqe] = useState(null);
@@ -48,14 +47,14 @@ export default function DataQualityCenter() {
       </div>
 
       {/* DQE Score KPI Header */}
-      <div className="bg-gov-surface border border-gov-border rounded-gov p-5 shadow-gov">
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-center">
+      <div className="bg-gov-surface border border-gov-border rounded-gov p-6 shadow-gov">
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 items-center">
           <div className="sm:border-r border-gov-border pr-4">
-            <div className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">Overall Quality Score</div>
+            <div className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider">Overall Quality Score</div>
             <div className="text-3xl font-bold font-mono text-text-primary mt-1">
               {score.toFixed(1)}%
             </div>
-            <div className="mt-1">
+            <div className="mt-1.5">
               <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-risk-normal bg-green-50 px-2 py-0.5 rounded border border-green-200">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>Verified Clean Pipeline</span>
@@ -64,39 +63,39 @@ export default function DataQualityCenter() {
           </div>
 
           <div className="sm:border-r border-gov-border pr-4">
-            <div className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">Total Snapshots Audited</div>
+            <div className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider">Total Snapshots Audited</div>
             <div className="text-2xl font-bold font-mono text-text-primary mt-1">
               {report.total_snapshots ? report.total_snapshots.toLocaleString() : '6,787'}
             </div>
-            <div className="text-[11px] text-text-muted">Across 1,630 central projects</div>
+            <div className="text-[11px] text-text-muted mt-0.5">Across 1,630 central projects</div>
           </div>
 
           <div className="sm:border-r border-gov-border pr-4">
-            <div className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">Valid Verified Records</div>
+            <div className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider">Valid Verified Records</div>
             <div className="text-2xl font-bold font-mono text-risk-normal mt-1">
               {report.valid_snapshots ? report.valid_snapshots.toLocaleString() : '5,383'}
             </div>
-            <div className="text-[11px] text-text-muted">Directly admitted to feature matrix</div>
+            <div className="text-[11px] text-text-muted mt-0.5">Directly admitted to feature matrix</div>
           </div>
 
           <div>
-            <div className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">Anomalies Sanitized</div>
+            <div className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider">Anomalies Sanitized</div>
             <div className="text-2xl font-bold font-mono text-risk-review mt-1">
               {report.critical_errors_count || 707}
             </div>
-            <div className="text-[11px] text-text-muted">Imputed / Normalized by DQE</div>
+            <div className="text-[11px] text-text-muted mt-0.5">Imputed / Normalized by DQE</div>
           </div>
         </div>
       </div>
 
       {/* Validation Rules & Integrity Checklist */}
-      <div className="bg-gov-surface border border-gov-border rounded-gov p-5 shadow-gov">
+      <div className="bg-gov-surface border border-gov-border rounded-gov p-6 shadow-gov">
         <h3 className="text-sm font-bold text-text-primary mb-3">
           Automated Ingestion & Validation Rules
         </h3>
         <div className="divide-y divide-gov-border">
           {checks.map((c, i) => (
-            <div key={i} className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div key={i} className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="space-y-0.5">
                 <div className="text-xs font-semibold text-text-primary">{c.name}</div>
                 <div className="text-[11px] text-text-secondary">{c.desc}</div>

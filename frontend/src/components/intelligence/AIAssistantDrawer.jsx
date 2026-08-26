@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Sparkles, Send, Bot, User, ArrowRight } from 'lucide-react';
+import { X, Sparkles, Send, Bot } from 'lucide-react';
 
 const SUGGESTED_QUERIES = [
   "Which projects have the highest Intervention Priority (IPI)?",
@@ -46,10 +46,10 @@ export default function AIAssistantDrawer({ isOpen, onClose, onSelectProject }) 
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden bg-black/40 flex justify-end transition-opacity">
+    <div className="fixed inset-0 z-50 overflow-hidden bg-black/30 flex justify-end transition-opacity">
       <div className="w-full max-w-md bg-gov-surface border-l border-gov-border shadow-2xl flex flex-col h-full animate-in slide-in-from-right duration-200">
         {/* Header */}
-        <div className="p-4 border-b border-gov-border bg-intel-light flex items-center justify-between">
+        <div className="p-4 border-b border-[#C9DFDD] bg-intel-light flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-gov-sm bg-intel text-white flex items-center justify-center">
               <Sparkles className="w-4 h-4" />
@@ -61,7 +61,7 @@ export default function AIAssistantDrawer({ isOpen, onClose, onSelectProject }) 
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded text-text-secondary hover:text-text-primary hover:bg-gov-secondary transition-colors"
+            className="p-1 rounded text-text-secondary hover:text-text-primary hover:bg-gov-surface transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -77,12 +77,12 @@ export default function AIAssistantDrawer({ isOpen, onClose, onSelectProject }) 
               }`}
             >
               {m.role === 'assistant' && (
-                <div className="w-6 h-6 rounded-full bg-intel-light border border-intel/30 flex items-center justify-center shrink-0 text-intel">
+                <div className="w-6 h-6 rounded-full bg-intel-light border border-[#C9DFDD] flex items-center justify-center shrink-0 text-intel">
                   <Bot className="w-3.5 h-3.5" />
                 </div>
               )}
               <div
-                className={`p-3 rounded-gov max-w-[85%] leading-relaxed ${
+                className={`p-3.5 rounded-gov max-w-[85%] leading-relaxed ${
                   m.role === 'user'
                     ? 'bg-brand text-white font-medium'
                     : 'bg-gov-surface border border-gov-border text-text-primary shadow-gov'
@@ -111,7 +111,7 @@ export default function AIAssistantDrawer({ isOpen, onClose, onSelectProject }) 
               <button
                 key={idx}
                 onClick={() => handleSend(q)}
-                className="text-[11px] text-left px-2 py-1 bg-gov-secondary hover:bg-gov-border rounded-gov-sm text-text-secondary hover:text-text-primary transition-colors border border-gov-border/60"
+                className="text-[11px] text-left px-2.5 py-1 bg-[#F7F7F4] hover:bg-gov-secondary rounded-gov-sm text-text-primary transition-colors border border-gov-border"
               >
                 {q}
               </button>
@@ -127,11 +127,11 @@ export default function AIAssistantDrawer({ isOpen, onClose, onSelectProject }) 
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            className="flex-1 bg-gov-secondary/80 border border-gov-border rounded-gov-sm px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-intel"
+            className="flex-1 bg-gov-surface border border-gov-border rounded-gov-sm px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-intel focus:ring-1 focus:ring-intel/20"
           />
           <button
             onClick={() => handleSend()}
-            className="px-3 py-2 bg-intel hover:bg-intel/90 text-white text-xs font-semibold rounded-gov-sm transition-colors flex items-center gap-1 shadow-gov"
+            className="px-3.5 py-2 bg-intel hover:bg-intel/90 text-white text-xs font-semibold rounded-gov-sm transition-colors flex items-center gap-1 shadow-gov"
           >
             <Send className="w-3.5 h-3.5" />
           </button>

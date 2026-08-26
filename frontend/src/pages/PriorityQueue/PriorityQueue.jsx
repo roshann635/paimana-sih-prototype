@@ -4,7 +4,7 @@ import StatusBadge from '../../components/common/StatusBadge';
 import TrendBadge from '../../components/common/TrendBadge';
 import { LoadingSkeleton, ErrorState } from '../../components/common/FeedbackStates';
 import { paimanaApi } from '../../services/api/paimanaApi';
-import { Filter, Download, AlertTriangle } from 'lucide-react';
+import { Filter } from 'lucide-react';
 
 export default function PriorityQueue({ onSelectProject }) {
   const [projects, setProjects] = useState([]);
@@ -64,7 +64,7 @@ export default function PriorityQueue({ onSelectProject }) {
       render: (val, row) => (
         <div className="max-w-xs">
           <div className="text-text-primary truncate text-xs">{val}</div>
-          <div className="text-[11px] text-text-muted">{row.sector}</div>
+          <div className="text-[11px] text-text-secondary">{row.sector}</div>
         </div>
       )
     },
@@ -100,7 +100,7 @@ export default function PriorityQueue({ onSelectProject }) {
       header: 'IPI Priority',
       align: 'right',
       render: (val) => (
-        <span className="font-mono font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
+        <span className="font-mono font-bold px-2 py-0.5 rounded bg-brand-light text-brand-dark border border-brand/30">
           {val ? Number(val).toFixed(1) : '—'}
         </span>
       )
@@ -118,7 +118,7 @@ export default function PriorityQueue({ onSelectProject }) {
   ];
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gov-border">
         <div>
@@ -132,8 +132,8 @@ export default function PriorityQueue({ onSelectProject }) {
 
         {/* Filter Controls */}
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 bg-gov-surface border border-gov-border rounded-gov-sm px-2.5 py-1 text-xs text-text-secondary">
-            <Filter className="w-3.5 h-3.5 text-text-muted" />
+          <div className="flex items-center gap-1.5 bg-gov-surface border border-gov-border rounded-gov-sm px-3 py-1.5 text-xs text-text-secondary shadow-gov">
+            <Filter className="w-3.5 h-3.5 text-text-secondary" />
             <select
               value={riskFilter}
               onChange={(e) => setRiskFilter(e.target.value)}

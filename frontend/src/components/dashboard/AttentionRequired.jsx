@@ -7,9 +7,9 @@ export default function AttentionRequired({ projects = [], onSelectProject, onEx
   const topCritical = projects.slice(0, 6);
 
   return (
-    <div className="bg-gov-surface border border-gov-border rounded-gov p-5 shadow-gov">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-gov-border">
-        <div className="flex items-center gap-2.5">
+    <div className="bg-gov-surface border border-gov-border rounded-gov p-6 shadow-gov border-l-4 border-l-risk-critical">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-gov-border">
+        <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-gov-sm bg-risk-critical/10 border border-risk-critical/20 flex items-center justify-center text-risk-critical">
             <AlertOctagon className="w-4 h-4" />
           </div>
@@ -19,10 +19,10 @@ export default function AttentionRequired({ projects = [], onSelectProject, onEx
                 Attention Required
               </h3>
               <span className="bg-risk-critical text-white text-[10px] font-bold px-1.5 py-0.2 rounded-sm">
-                {projects.length} High-Risk Flags
+                {projects.length} Critical Review Flags
               </span>
             </div>
-            <p className="text-xs text-text-secondary">
+            <p className="text-xs text-text-secondary mt-0.5">
               Projects exhibiting acute schedule stagnation, persistent bottlenecks, or severe capex exposure.
             </p>
           </div>
@@ -38,20 +38,20 @@ export default function AttentionRequired({ projects = [], onSelectProject, onEx
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto border border-gov-border rounded-gov-sm">
         <table className="w-full text-left text-xs border-collapse">
           <thead>
-            <tr className="bg-gov-secondary/70 text-text-secondary border-b border-gov-border text-[11px] uppercase tracking-wider">
-              <th className="py-2 px-3 font-semibold w-12 text-center">Rank</th>
-              <th className="py-2 px-3 font-semibold">Project</th>
-              <th className="py-2 px-3 font-semibold">Ministry / Sector</th>
-              <th className="py-2 px-3 text-right font-semibold">Risk Score</th>
-              <th className="py-2 px-3 text-right font-semibold">IPI Priority</th>
-              <th className="py-2 px-3 font-semibold">Trajectory</th>
-              <th className="py-2 px-3 text-center font-semibold">Status</th>
+            <tr className="bg-gov-secondary text-text-secondary border-b border-gov-border text-[11px] uppercase tracking-wider">
+              <th className="py-2.5 px-3.5 font-semibold w-12 text-center">Rank</th>
+              <th className="py-2.5 px-3.5 font-semibold">Project Title & ID</th>
+              <th className="py-2.5 px-3.5 font-semibold">Ministry / Sector</th>
+              <th className="py-2.5 px-3.5 text-right font-semibold">Risk Score</th>
+              <th className="py-2.5 px-3.5 text-right font-semibold">IPI Priority</th>
+              <th className="py-2.5 px-3.5 font-semibold">Trajectory</th>
+              <th className="py-2.5 px-3.5 text-center font-semibold">Status</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gov-border">
+          <tbody className="divide-y divide-gov-border bg-gov-surface">
             {topCritical.length === 0 ? (
               <tr>
                 <td colSpan={7} className="py-6 text-center text-xs text-text-muted">
@@ -63,35 +63,35 @@ export default function AttentionRequired({ projects = [], onSelectProject, onEx
                 <tr
                   key={proj.project_id || idx}
                   onClick={() => onSelectProject && onSelectProject(proj.project_id)}
-                  className="hover:bg-gov-secondary/40 transition-colors cursor-pointer group"
+                  className="hover:bg-[#F7F7F4] transition-colors cursor-pointer group"
                 >
-                  <td className="py-2.5 px-3 text-center font-mono font-bold text-text-muted">
+                  <td className="py-2.5 px-3.5 text-center font-mono font-bold text-text-muted">
                     #{idx + 1}
                   </td>
-                  <td className="py-2.5 px-3">
-                    <div className="font-semibold text-text-primary group-hover:text-brand transition-colors">
+                  <td className="py-2.5 px-3.5">
+                    <div className="font-semibold text-text-primary group-hover:text-brand-dark transition-colors">
                       {proj.project_name}
                     </div>
                     <div className="text-[11px] font-mono text-text-muted">
                       {proj.project_code || proj.project_id}
                     </div>
                   </td>
-                  <td className="py-2.5 px-3">
+                  <td className="py-2.5 px-3.5">
                     <div className="text-text-primary truncate max-w-[200px]">{proj.ministry}</div>
-                    <div className="text-[11px] text-text-muted">{proj.sector}</div>
+                    <div className="text-[11px] text-text-secondary">{proj.sector}</div>
                   </td>
-                  <td className="py-2.5 px-3 text-right font-mono font-bold text-risk-critical">
+                  <td className="py-2.5 px-3.5 text-right font-mono font-bold text-risk-critical">
                     {Math.round(proj.composite_risk_score || proj.risk_score || 0)}/100
                   </td>
-                  <td className="py-2.5 px-3 text-right font-mono font-bold text-text-primary">
-                    <span className="bg-amber-100 text-amber-900 px-2 py-0.5 rounded border border-amber-300">
+                  <td className="py-2.5 px-3.5 text-right font-mono font-bold text-text-primary">
+                    <span className="bg-brand-light text-brand-dark px-2 py-0.5 rounded border border-brand/30">
                       {proj.ipi_score ? proj.ipi_score.toFixed(1) : '—'}
                     </span>
                   </td>
-                  <td className="py-2.5 px-3">
+                  <td className="py-2.5 px-3.5">
                     <TrendBadge direction={proj.trend_direction} />
                   </td>
-                  <td className="py-2.5 px-3 text-center">
+                  <td className="py-2.5 px-3.5 text-center">
                     <StatusBadge level={proj.risk_level} size="sm" />
                   </td>
                 </tr>

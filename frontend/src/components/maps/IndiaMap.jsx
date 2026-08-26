@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import StatusBadge from '../common/StatusBadge';
 
-// Key states representation with representative geographic grid positions & project density
 const INDIAN_STATES = [
   { id: 'MH', name: 'Maharashtra', x: 220, y: 310, count: 184, critical: 8, capex: '₹3,42,100 Cr' },
   { id: 'UP', name: 'Uttar Pradesh', x: 260, y: 190, count: 215, critical: 11, capex: '₹4,18,600 Cr' },
@@ -31,13 +30,13 @@ export default function IndiaMap({ onSelectState, selectedStateId, filterRiskOnl
   }, [selectedStateId]);
 
   return (
-    <div className="bg-gov-surface border border-gov-border rounded-gov p-5 shadow-gov">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-gov-border">
+    <div className="bg-gov-surface border border-gov-border rounded-gov p-6 shadow-gov">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-gov-border">
         <div>
-          <h3 className="text-sm font-semibold text-text-primary">
+          <h3 className="text-sm font-bold text-text-primary">
             National Infrastructure Geographic Distribution
           </h3>
-          <p className="text-xs text-text-secondary">
+          <p className="text-xs text-text-secondary mt-0.5">
             Select a state/region to inspect project concentration, capital exposure, and critical watchlist count.
           </p>
         </div>
@@ -59,7 +58,7 @@ export default function IndiaMap({ onSelectState, selectedStateId, filterRiskOnl
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
         {/* SVG Regional Schematic Map */}
-        <div className="lg:col-span-8 flex items-center justify-center p-2 bg-gov-secondary/40 rounded-gov border border-gov-border min-h-[380px] relative overflow-hidden">
+        <div className="lg:col-span-8 flex items-center justify-center p-4 bg-gov-secondary/40 rounded-gov border border-gov-border min-h-[380px] relative overflow-hidden">
           <svg viewBox="0 0 500 520" className="w-full max-w-[460px] h-auto drop-shadow-sm select-none">
             {/* Outline background silhouette */}
             <path
@@ -118,9 +117,9 @@ export default function IndiaMap({ onSelectState, selectedStateId, filterRiskOnl
 
           {/* Hover Tooltip Overlay */}
           {hoveredState && (
-            <div className="absolute top-3 left-3 bg-gov-surface border border-gov-border shadow-gov-md rounded-gov-sm px-3 py-2 text-xs pointer-events-none z-10">
-              <div className="font-semibold text-text-primary">{hoveredState.name}</div>
-              <div className="text-text-secondary text-[11px]">
+            <div className="absolute top-3 left-3 bg-gov-surface border border-gov-border shadow-gov rounded-gov-sm px-3.5 py-2.5 text-xs pointer-events-none z-10">
+              <div className="font-bold text-text-primary">{hoveredState.name}</div>
+              <div className="text-text-secondary text-[11px] mt-0.5">
                 {hoveredState.count} Projects · {hoveredState.critical} Critical · {hoveredState.capex}
               </div>
             </div>
@@ -128,37 +127,37 @@ export default function IndiaMap({ onSelectState, selectedStateId, filterRiskOnl
         </div>
 
         {/* Selected State Summary Dossier */}
-        <div className="lg:col-span-4 bg-gov-surface border border-gov-border rounded-gov p-4 shadow-gov space-y-4">
+        <div className="lg:col-span-4 bg-gov-surface border border-gov-border rounded-gov p-5 shadow-gov space-y-4">
           <div className="pb-3 border-b border-gov-border">
-            <div className="text-[11px] font-semibold tracking-wider text-text-muted uppercase mb-0.5">
+            <div className="text-[11px] font-bold tracking-wider text-text-secondary uppercase mb-1">
               Regional Monitoring Dossier
             </div>
-            <h4 className="text-base font-bold text-text-primary">
+            <h4 className="text-lg font-bold text-text-primary">
               {selectedState.name}
             </h4>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-gov-secondary/60 p-2.5 rounded-gov-sm border border-gov-border/60">
-              <div className="text-[10px] text-text-muted uppercase font-medium">Monitored Projects</div>
-              <div className="text-lg font-bold text-text-primary">{selectedState.count}</div>
+            <div className="bg-[#F7F7F4] p-3 rounded-gov-sm border border-gov-border">
+              <div className="text-[10px] text-text-secondary uppercase font-semibold">Monitored Projects</div>
+              <div className="text-xl font-bold font-mono text-text-primary mt-0.5">{selectedState.count}</div>
             </div>
-            <div className="bg-gov-secondary/60 p-2.5 rounded-gov-sm border border-gov-border/60">
-              <div className="text-[10px] text-text-muted uppercase font-medium">Critical Review</div>
-              <div className="text-lg font-bold text-risk-critical">{selectedState.critical}</div>
+            <div className="bg-[#F7F7F4] p-3 rounded-gov-sm border border-gov-border">
+              <div className="text-[10px] text-risk-critical uppercase font-semibold">Critical Review</div>
+              <div className="text-xl font-bold font-mono text-risk-critical mt-0.5">{selectedState.critical}</div>
             </div>
           </div>
 
-          <div className="space-y-2 text-xs">
-            <div className="flex justify-between py-1 border-b border-gov-border/50">
+          <div className="space-y-2.5 text-xs">
+            <div className="flex justify-between py-1.5 border-b border-gov-border/50">
               <span className="text-text-secondary">Approved Capex:</span>
               <span className="font-semibold text-text-primary">{selectedState.capex}</span>
             </div>
-            <div className="flex justify-between py-1 border-b border-gov-border/50">
+            <div className="flex justify-between py-1.5 border-b border-gov-border/50">
               <span className="text-text-secondary">Primary Sectors:</span>
               <span className="font-medium text-text-primary">Highways, Railways, Power</span>
             </div>
-            <div className="flex justify-between py-1">
+            <div className="flex justify-between py-1.5">
               <span className="text-text-secondary">Regional Risk Status:</span>
               <StatusBadge status={selectedState.critical >= 6 ? 'CRITICAL' : selectedState.critical >= 3 ? 'REVIEW' : 'NORMAL'} size="sm" />
             </div>
@@ -167,7 +166,7 @@ export default function IndiaMap({ onSelectState, selectedStateId, filterRiskOnl
           <div className="pt-2">
             <button
               onClick={() => onSelectState && onSelectState(selectedState)}
-              className="w-full py-1.5 px-3 bg-gov-secondary text-text-primary text-xs font-semibold rounded-gov-sm border border-gov-border hover:bg-gov-border transition-colors text-center"
+              className="w-full py-2 px-3 bg-gov-surface text-text-primary text-xs font-semibold rounded-gov-sm border border-gov-border hover:bg-[#F7F7F4] transition-colors text-center shadow-gov"
             >
               Filter Priority Queue by {selectedState.id}
             </button>
