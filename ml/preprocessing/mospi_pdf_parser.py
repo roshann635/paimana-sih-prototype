@@ -143,3 +143,4 @@ if __name__ == "__main__":
     sample_pdf = r"C:\Users\ROSHAN\Downloads\FlashReport_October_2025.pdf"
     df_test = parse_mospi_pdf(sample_pdf, "2025-10")
     print(df_test.head(10))
+
