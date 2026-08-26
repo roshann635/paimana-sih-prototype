@@ -1,0 +1,189 @@
+{
+  "model_version": "v1.0-temporal-xgb",
+  "last_evaluated": "2026-04-30",
+  "validation_strategy": "Out-of-Time Temporal Split (Train <= 2025-06, Test > 2025-06)",
+  "data_freshness": "April 2026",
+  "missing_data_pct": 1.2,
+  "cost_model": {
+    "model_name": "XGBoost Classifier",
+    "target_name": "Cost Overrun",
+    "pr_auc": 0.9979,
+    "roc_auc": 0.9989,
+    "brier_score": 0.0011,
+    "precision": 0.9975,
+    "recall": 1.0,
+    "f1_score": 0.9988,
+    "top_20_recall": 0.4408,
+    "total_samples": 8000,
+    "positive_samples": 3623,
+    "calibration": [
+      {
+        "bin": "0-20%",
+        "predicted_prob": 0.0019,
+        "empirical_prob": 0.0,
+        "count": 4368
+      },
+      {
+        "bin": "20-40%",
+        "predicted_prob": 0.3,
+        "empirical_prob": 0.3,
+        "count": 0
+      },
+      {
+        "bin": "40-60%",
+        "predicted_prob": 0.5,
+        "empirical_prob": 0.5,
+        "count": 0
+      },
+      {
+        "bin": "60-80%",
+        "predicted_prob": 0.7,
+        "empirical_prob": 0.7,
+        "count": 0
+      },
+      {
+        "bin": "80-100%",
+        "predicted_prob": 0.9968,
+        "empirical_prob": 0.9975,
+        "count": 3632
+      }
+    ]
+  },
+  "time_model": {
+    "model_name": "XGBoost Classifier",
+    "target_name": "Time Overrun",
+    "pr_auc": 0.9999,
+    "roc_auc": 1.0,
+    "brier_score": 0.0002,
+    "precision": 0.9994,
+    "recall": 1.0,
+    "f1_score": 0.9997,
+    "top_20_recall": 0.4408,
+    "total_samples": 8000,
+    "positive_samples": 3630,
+    "calibration": [
+      {
+        "bin": "0-20%",
+        "predicted_prob": 0.0021,
+        "empirical_prob": 0.0,
+        "count": 4367
+      },
+      {
+        "bin": "20-40%",
+        "predicted_prob": 0.2569,
+        "empirical_prob": 0.0,
+        "count": 1
+      },
+      {
+        "bin": "40-60%",
+        "predicted_prob": 0.5,
+        "empirical_prob": 0.5,
+        "count": 0
+      },
+      {
+        "bin": "60-80%",
+        "predicted_prob": 0.6868,
+        "empirical_prob": 0.6667,
+        "count": 3
+      },
+      {
+        "bin": "80-100%",
+        "predicted_prob": 0.9987,
+        "empirical_prob": 0.9997,
+        "count": 3629
+      }
+    ]
+  },
+  "baseline_comparison": {
+    "baseline_cost": {
+      "model_name": "Logistic Regression",
+      "target_name": "Cost Overrun",
+      "pr_auc": 0.9972,
+      "roc_auc": 0.9979,
+      "brier_score": 0.0036,
+      "precision": 0.9959,
+      "recall": 0.995,
+      "f1_score": 0.9954,
+      "top_20_recall": 0.4408,
+      "total_samples": 8000,
+      "positive_samples": 3623,
+      "calibration": [
+        {
+          "bin": "0-20%",
+          "predicted_prob": 0.0131,
+          "empirical_prob": 0.0021,
+          "count": 4354
+        },
+        {
+          "bin": "20-40%",
+          "predicted_prob": 0.2807,
+          "empirical_prob": 0.3333,
+          "count": 21
+        },
+        {
+          "bin": "40-60%",
+          "predicted_prob": 0.5115,
+          "empirical_prob": 0.5,
+          "count": 12
+        },
+        {
+          "bin": "60-80%",
+          "predicted_prob": 0.711,
+          "empirical_prob": 0.6667,
+          "count": 9
+        },
+        {
+          "bin": "80-100%",
+          "predicted_prob": 0.9987,
+          "empirical_prob": 0.9973,
+          "count": 2593
+        }
+      ]
+    },
+    "baseline_time": {
+      "model_name": "Logistic Regression",
+      "target_name": "Time Overrun",
+      "pr_auc": 0.9982,
+      "roc_auc": 0.9981,
+      "brier_score": 0.0032,
+      "precision": 0.9959,
+      "recall": 0.9959,
+      "f1_score": 0.9959,
+      "top_20_recall": 0.4405,
+      "total_samples": 8000,
+      "positive_samples": 3630,
+      "calibration": [
+        {
+          "bin": "0-20%",
+          "predicted_prob": 0.0115,
+          "empirical_prob": 0.0023,
+          "count": 4353
+        },
+        {
+          "bin": "20-40%",
+          "predicted_prob": 0.2895,
+          "empirical_prob": 0.2308,
+          "count": 13
+        },
+        {
+          "bin": "40-60%",
+          "predicted_prob": 0.5051,
+          "empirical_prob": 0.5714,
+          "count": 7
+        },
+        {
+          "bin": "60-80%",
+          "predicted_prob": 0.7209,
+          "empirical_prob": 0.4,
+          "count": 15
+        },
+        {
+          "bin": "80-100%",
+          "predicted_prob": 0.9989,
+          "empirical_prob": 0.9987,
+          "count": 3042
+        }
+      ]
+    }
+  }
+}
