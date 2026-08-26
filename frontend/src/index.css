@@ -3,33 +3,49 @@
 @tailwind utilities;
 
 :root {
-  /* Brand Tokens */
+  /* Brand Tokens - Warm Saffron & Deep Ochre */
   --brand: #C97919;
-  --brand-dark: #A75F12;
-  --brand-light: #F7E8D1;
+  --brand-dark: #964F0A;
+  --brand-light: #FBF2E3;
+  --brand-border: #E8C89C;
 
-  /* Intelligence Tokens */
-  --intel: #347B78;
-  --intel-light: #E7F1F0;
+  /* Intelligence Tokens - Refined Government Forest Teal */
+  --intel: #2D726F;
+  --intel-dark: #1E504E;
+  --intel-light: #EBF5F4;
+  --intel-border: #BCDEDC;
 
-  /* Background & Surface Tokens */
-  --background: #F6F6F3;
+  /* Background & Surface Tokens - Warm Sand & Stone Greys */
+  --background: #F2F3EE;
   --surface: #FFFFFF;
-  --surface-secondary: #ECEDE9;
+  --surface-secondary: #E6E8E1;
+  --surface-subtle: #FAFBF8;
 
-  /* Text Tokens */
-  --text-primary: #252525;
-  --text-secondary: #5F6368;
-  --text-muted: #7A7A76;
+  /* Text Tokens - High Contrast Charcoal & Slate */
+  --text-primary: #1C1F23;
+  --text-secondary: #4A5158;
+  --text-muted: #737A82;
 
-  /* Border Token */
-  --border: #D9D9D6;
+  /* Border Tokens - Defined, Clean Separation */
+  --border: #D3D6CE;
+  --border-strong: #B8BDB0;
 
-  /* Risk Semantic Tokens */
-  --risk-normal: #3F7D58;
-  --risk-watch: #B58A27;
-  --risk-review: #C66A22;
-  --risk-critical: #B63A32;
+  /* Semantic Risk Tokens with Complementary Backgrounds */
+  --risk-normal: #2B6E44;
+  --risk-normal-bg: #EDF7F1;
+  --risk-normal-border: #BDDFCB;
+
+  --risk-watch: #916812;
+  --risk-watch-bg: #FEF9EB;
+  --risk-watch-border: #EBD9A0;
+
+  --risk-review: #B55214;
+  --risk-review-bg: #FEF3EB;
+  --risk-review-border: #F5CDAF;
+
+  --risk-critical: #A82420;
+  --risk-critical-bg: #FDF0EF;
+  --risk-critical-border: #F3BFBC;
 }
 
 @layer base {
@@ -46,7 +62,7 @@
   h1, h2, h3, h4, h5, h6 {
     color: var(--text-primary);
     font-weight: 600;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
   }
 }
 
@@ -61,7 +77,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: var(--border-strong);
   border-radius: 4px;
 }
 

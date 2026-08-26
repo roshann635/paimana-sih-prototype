@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cpu, CheckCircle2, Info } from 'lucide-react';
+import { Cpu, CheckCircle2, Info, Sparkles } from 'lucide-react';
 
 export default function ShapDiagnosisCard({
   attributions = [],
@@ -11,13 +11,13 @@ export default function ShapDiagnosisCard({
   return (
     <div className="bg-gov-surface border border-gov-border rounded-gov p-6 shadow-gov space-y-6">
       {/* Intelligence Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-gov-border">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-gov-sm bg-intel-light border border-[#C9DFDD] flex items-center justify-center text-intel">
-            <Cpu className="w-4 h-4" />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gov-border">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-gov bg-intel-light border border-intel-border flex items-center justify-center text-intel shadow-xs">
+            <Cpu className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-text-primary">
+            <h3 className="text-base font-extrabold text-text-primary">
               TreeSHAP Factor Attribution & Root-Cause Diagnosis
             </h3>
             <p className="text-xs text-text-secondary mt-0.5">
@@ -25,18 +25,19 @@ export default function ShapDiagnosisCard({
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-intel-light rounded-gov-sm text-[11px] font-semibold text-intel border border-[#C9DFDD]">
-          <Info className="w-3.5 h-3.5" />
+        <div className="flex items-center gap-1.5 px-3 py-1 bg-intel-light rounded-gov-sm text-xs font-bold text-intel border border-intel-border shadow-xs">
+          <Sparkles className="w-3.5 h-3.5" />
           <span>Explainable ML Model</span>
         </div>
       </div>
 
       {/* Narrative Synthesis Memo */}
-      <div className="p-4 bg-intel-light border border-[#C9DFDD] rounded-gov">
-        <div className="text-[11px] font-bold uppercase tracking-wider text-intel mb-1.5">
-          Administrative Diagnosis Memorandum
+      <div className="p-4 bg-intel-light border border-intel-border rounded-gov shadow-xs">
+        <div className="text-[11px] font-extrabold uppercase tracking-wider text-intel-dark mb-1.5 flex items-center gap-1.5">
+          <Info className="w-3.5 h-3.5 text-intel" />
+          <span>Administrative Diagnosis Memorandum</span>
         </div>
-        <p className="text-xs leading-relaxed text-text-primary">
+        <p className="text-xs leading-relaxed text-text-primary font-medium">
           {diagnosis || (
             <>
               Schedule deterioration is the dominant contributor to current project risk. Disproportionate expenditure drawdowns relative to physical milestone completion further exacerbate capital exposure.
@@ -65,23 +66,23 @@ export default function ShapDiagnosisCard({
               const barWidth = Math.min(100, Math.max(14, absVal * 280));
 
               return (
-                <div key={idx} className="space-y-1">
+                <div key={idx} className="space-y-1.5">
                   <div className="flex justify-between text-xs">
-                    <span className="font-semibold text-text-primary">
+                    <span className="font-bold text-text-primary">
                       {idx + 1}. {attr.display_name || attr.feature_name}
                     </span>
-                    <span className="font-mono text-[11px] font-semibold text-text-secondary">
+                    <span className="font-mono text-[11px] font-bold text-text-secondary">
                       {isPositive ? `+${absVal.toFixed(3)}` : `-${absVal.toFixed(3)}`} ({attr.impact || (isPositive ? 'Increases Risk' : 'Mitigates Risk')})
                     </span>
                   </div>
 
-                  <div className="w-full bg-gov-secondary h-2.5 rounded overflow-hidden flex border border-gov-border">
+                  <div className="w-full bg-[#E6E8E1] h-3 rounded overflow-hidden flex border border-gov-border">
                     <div
                       style={{
                         width: `${barWidth}%`,
-                        backgroundColor: isPositive ? '#C66A22' : '#3F7D58'
+                        backgroundColor: isPositive ? '#B55214' : '#2B6E44'
                       }}
-                      className="h-full rounded-sm"
+                      className="h-full rounded-sm transition-all"
                     />
                   </div>
                 </div>
@@ -99,9 +100,9 @@ export default function ShapDiagnosisCard({
           </div>
           <div className="space-y-2">
             {recommendations.map((rec, i) => (
-              <div key={i} className="flex items-start gap-2.5 text-xs text-text-secondary bg-[#F7F7F4] p-3 rounded-gov-sm border border-gov-border">
+              <div key={i} className="flex items-start gap-2.5 text-xs text-text-secondary bg-[#FAFBF8] p-3 rounded-gov-sm border border-gov-border shadow-xs">
                 <CheckCircle2 className="w-4 h-4 text-intel shrink-0 mt-0.5" />
-                <span className="text-text-primary">{rec}</span>
+                <span className="text-text-primary font-medium">{rec}</span>
               </div>
             ))}
           </div>
