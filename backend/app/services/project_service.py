@@ -27,8 +27,7 @@ def get_projects(
     limit: int = 50,
     offset: int = 0
 ) -> Dict[str, Any]:
-    # Query project metadata along with latest snapshot and latest prediction
-    # Subquery for latest report_month
+    # Subquery for latest report_month per project
     sub_month = db.query(
         ProjectSnapshot.project_id,
         func.max(ProjectSnapshot.report_month).label("max_month")
@@ -154,8 +153,8 @@ def get_project_by_id(db: Session, project_id: str) -> Optional[ProjectDetail]:
         original_start_date=proj.original_start_date,
         original_end_date=proj.original_end_date,
         archetype=proj.archetype,
-        latest_snapshot=SnapshotSchema.from_orm(latest_snap) if latest_snap else None,
-        latest_prediction=RiskPredictionSchema.from_orm(latest_pred) if latest_pred else None
+        latest_snapshot=SnapshotSchema.model_validate(latest_snap) if latest_snap else None,
+        latest_prediction=RiskPredictionSchema.model_validate(latest_pred) if latest_pred else None
     )
 
 def get_project_trajectory(db: Session, project_id: str) -> List[TrajectoryPoint]:
@@ -187,7 +186,7 @@ def get_project_explanation(db: Session, project_id: str) -> Dict[str, Any]:
     ).order_by(asc(RiskExplanation.rank)).all()
     
     if not exps:
-        return {"attributions": [], "diagnosis": "Standard project parameters."}
+        return {"attributions": [], "diagnosis": "Standard project parameters within baseline limits."}
         
     attributions = [
         {
@@ -261,14 +260,14 @@ def get_alerts(db: Session, severity: Optional[str] = None, limit: int = 50) -> 
     if severity and severity != "ALL":
         q = q.filter(EarlyWarningAlert.severity == severity)
     alerts = q.order_by(desc(EarlyWarningAlert.id)).limit(limit).all()
-    return [AlertSchema.from_orm(a) for a in alerts]
+    return [AlertSchema.model_validate(a) for a in alerts]
 
 def get_benchmarks(db: Session, sector: Optional[str] = None) -> List[BenchmarkItem]:
     q = db.query(Benchmark)
     if sector and sector != "All":
         q = q.filter(Benchmark.sector == sector)
     bms = q.order_by(desc(Benchmark.sample_size)).all()
-    return [BenchmarkItem.from_orm(b) for b in bms]
+    return [BenchmarkItem.model_validate(b) for b in bms]
 
 def create_intervention(db: Session, inv_in: InterventionCreate) -> InterventionResponse:
     inv = Intervention(
@@ -283,11 +282,11 @@ def create_intervention(db: Session, inv_in: InterventionCreate) -> Intervention
     db.add(inv)
     db.commit()
     db.refresh(inv)
-    return InterventionResponse.from_orm(inv)
+    return InterventionResponse.model_validate(inv)
 
 def get_interventions(db: Session, project_id: Optional[str] = None) -> List[InterventionResponse]:
     q = db.query(Intervention)
     if project_id:
         q = q.filter(Intervention.project_id == project_id)
     invs = q.order_by(desc(Intervention.id)).all()
-    return [InterventionResponse.from_orm(i) for i in invs]
+    return [InterventionResponse.model_validate(i) for i in invs]

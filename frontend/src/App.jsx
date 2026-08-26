@@ -55,7 +55,7 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-orange-500 selection:text-slate-950">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
       {/* Top Navbar */}
       <Navbar
         activeTab={activeTab}
@@ -65,8 +65,8 @@ export function App() {
         alertCount={alertCount}
       />
 
-      {/* Main Tab Content */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+      {/* Main Container */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-5">
         {activeTab === 'overview' && (
           <NationalOverview
             onSelectProject={handleSelectProject}
@@ -115,18 +115,22 @@ export function App() {
         onClose={() => setInterventionModalOpen(false)}
       />
 
-      {/* AI Assistant Grounded Modal */}
+      {/* AI Assistant Modal */}
       <AIAssistantModal
         isOpen={isAssistantOpen}
         onClose={() => setIsAssistantOpen(false)}
         onSelectProject={handleSelectProject}
       />
 
-      {/* Government Protocol Footer */}
-      <footer className="bg-slate-950 border-t border-slate-800/80 py-6 mt-12 text-xs text-slate-500 text-center">
+      {/* Government Institutional Footer */}
+      <footer className="bg-slate-950 border-t border-slate-800/80 py-5 mt-10 text-[11px] text-slate-500 text-center">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>PAIMANA AI Infrastructure Decision Support System • Ministry of Statistics & Programme Implementation (MoSPI)</span>
-          <span className="font-mono text-[11px] text-slate-400">XGBoost Temporal v1.0 • TreeSHAP Explainability • SQLite DB</span>
+          <span>
+            Ministry of Statistics and Programme Implementation (MoSPI) • Infrastructure and Project Monitoring Division
+          </span>
+          <span className="font-mono text-[10px] text-slate-400">
+            PAIMANA v1.0 • Temporal XGBoost Engine • TreeSHAP XAI
+          </span>
         </div>
       </footer>
     </div>

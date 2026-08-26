@@ -103,3 +103,4 @@ export async function fetchInterventions(projectId) {
   if (!res.ok) throw new Error('Failed to fetch interventions');
   return res.json();
 }
+

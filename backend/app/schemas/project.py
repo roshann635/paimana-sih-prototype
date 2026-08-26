@@ -1,12 +1,14 @@
 """
-Pydantic API Schemas (backend/app/schemas/project.py)
+Pydantic API Schemas (backend/app/schemas/project.py) - Pydantic v2 Compliant
 """
 
 from typing import List, Optional, Dict, Any
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
 class SnapshotSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: Optional[int] = None
     project_id: str
     report_month: str
@@ -21,10 +23,9 @@ class SnapshotSchema(BaseModel):
     issue_approval: int
     status: str
 
-    class Config:
-        from_attributes = True
-
 class RiskPredictionSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     report_month: str
     cost_risk_probability: float
     time_risk_probability: float
@@ -37,10 +38,9 @@ class RiskPredictionSchema(BaseModel):
     trend_direction: str
     model_version: str
 
-    class Config:
-        from_attributes = True
-
 class RiskExplanationSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     feature_name: str
     feature_display_name: str
     feature_value: float
@@ -49,10 +49,9 @@ class RiskExplanationSchema(BaseModel):
     rank: int
     explanation_text: Optional[str] = None
 
-    class Config:
-        from_attributes = True
-
 class AlertSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     project_id: str
     report_month: str
@@ -62,10 +61,9 @@ class AlertSchema(BaseModel):
     description: str
     is_active: bool
 
-    class Config:
-        from_attributes = True
-
 class ProjectListItem(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     project_id: str
     project_code: str
     project_name: str
@@ -84,6 +82,8 @@ class ProjectListItem(BaseModel):
     trend_direction: str
 
 class ProjectDetail(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     project_id: str
     project_code: str
     project_name: str
@@ -99,6 +99,8 @@ class ProjectDetail(BaseModel):
     latest_prediction: Optional[RiskPredictionSchema] = None
 
 class TrajectoryPoint(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     report_month: str
     physical_progress_pct: float
     revised_cost: float
@@ -116,22 +118,23 @@ class InterventionCreate(BaseModel):
     initial_risk_score: float
 
 class InterventionResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     project_id: str
     intervention_type: str
     recommended_action: str
-    action_taken: Optional[str]
+    action_taken: Optional[str] = None
     assigned_to: str
     status: str
     initial_risk_score: float
-    post_risk_score: Optional[float]
+    post_risk_score: Optional[float] = None
     created_at: datetime
-    completed_at: Optional[datetime]
-
-    class Config:
-        from_attributes = True
+    completed_at: Optional[datetime] = None
 
 class BenchmarkItem(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     sector: str
     cost_band: str
     median_cost_escalation_pct: float
@@ -140,10 +143,9 @@ class BenchmarkItem(BaseModel):
     median_risk_score: float
     sample_size: int
 
-    class Config:
-        from_attributes = True
-
 class DashboardSummary(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     total_projects: int
     total_original_cost_cr: float
     total_revised_cost_cr: float

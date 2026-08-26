@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   BarChart3, AlertTriangle, ListOrdered, FileSearch, 
-  Activity, ShieldCheck, MessageSquare, Building2, Flame
+  Activity, ShieldCheck, MessageSquare, Building, Printer
 } from 'lucide-react';
 
 export const Navbar = ({
@@ -12,28 +12,49 @@ export const Navbar = ({
   alertCount,
 }) => {
   const navItems = [
-    { id: 'overview', label: 'National Portfolio', icon: BarChart3 },
-    { id: 'priority-queue', label: 'Priority Queue (IPI)', icon: ListOrdered, badge: 'Key' },
-    { id: 'deep-dive', label: 'Project Deep Dive', icon: FileSearch },
-    { id: 'why-risk', label: 'Why Risk? (SHAP)', icon: Flame },
-    { id: 'benchmarking', label: 'Benchmarking', icon: Activity },
-    { id: 'model-health', label: 'Model Health & DQE', icon: ShieldCheck },
+    { id: 'overview', label: 'Portfolio Overview', icon: BarChart3 },
+    { id: 'priority-queue', label: 'Priority Review Queue', icon: ListOrdered },
+    { id: 'deep-dive', label: 'Project Appraisal', icon: FileSearch },
+    { id: 'why-risk', label: 'Root Cause (SHAP)', icon: Activity },
+    { id: 'benchmarking', label: 'Sector Benchmarking', icon: Activity },
+    { id: 'model-health', label: 'Model Governance & DQA', icon: ShieldCheck },
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-slate-800 shadow-md">
+    <header className="sticky top-0 z-40 bg-slate-900 border-b border-slate-800 shadow-md">
+      {/* Top Institutional Government Bar */}
+      <div className="bg-slate-950 px-4 sm:px-6 lg:px-8 py-1.5 border-b border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+        <div className="flex items-center space-x-2">
+          <span className="font-semibold text-slate-300">GOVERNMENT OF INDIA</span>
+          <span>•</span>
+          <span>Ministry of Statistics and Programme Implementation (MoSPI)</span>
+        </div>
+        <div className="flex items-center space-x-3">
+          <span className="font-mono text-slate-400">Infrastructure Monitoring Division (OCMS / PAIMANA)</span>
+          <span>•</span>
+          <span className="text-emerald-400 font-semibold flex items-center space-x-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Operational (April 2026 Cycle)</span>
+          </span>
+        </div>
+      </div>
+
+      {/* Main Navigation Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo & Branding */}
-          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('overview')}>
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-tr from-amber-500 via-orange-500 to-rose-600 flex items-center justify-center shadow-lg shadow-orange-500/20">
-              <Building2 className="w-6 h-6 text-white" />
+          {/* Logo & Portal Identity */}
+          <div 
+            className="flex items-center space-x-3 cursor-pointer py-1" 
+            onClick={() => setActiveTab('overview')}
+          >
+            <div className="w-10 h-10 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center shadow-inner">
+              <Building className="w-6 h-6 text-amber-400" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <span className="font-extrabold text-xl tracking-tight text-white">PAIMANA</span>
-                <span className="text-[10px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 border border-orange-500/30">
-                  AI Decision Support
+                <span className="font-black text-lg tracking-tight text-white">PAIMANA</span>
+                <span className="text-[10px] font-bold tracking-widest px-2 py-0.5 rounded bg-blue-900/40 text-blue-300 border border-blue-700/50 uppercase">
+                  Decision Support System
                 </span>
               </div>
               <p className="text-[11px] text-slate-400 font-medium">Early Warning & Intervention Priority Engine</p>
@@ -41,7 +62,7 @@ export const Navbar = ({
           </div>
 
           {/* Center Navigation Tabs */}
-          <nav className="hidden md:flex items-center space-x-1">
+          <nav className="hidden lg:flex items-center space-x-1">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -49,42 +70,47 @@ export const Navbar = ({
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`flex items-center space-x-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all ${
+                  className={`flex items-center space-x-2 px-3.5 py-2 rounded-lg text-xs font-semibold tracking-wide transition-colors ${
                     isActive
-                      ? 'bg-orange-500/15 text-orange-400 border border-orange-500/30 shadow-sm'
-                      : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                      ? 'bg-blue-600/20 text-blue-300 border border-blue-500/40 shadow-sm'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-800/80 border border-transparent'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-orange-400' : 'text-slate-400'}`} />
+                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-blue-400' : 'text-slate-400'}`} />
                   <span>{item.label}</span>
-                  {item.badge && (
-                    <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">
-                      {item.badge}
-                    </span>
-                  )}
                 </button>
               );
             })}
           </nav>
 
           {/* Right Action Controls */}
-          <div className="flex items-center space-x-3">
-            {/* Active Alerts Button */}
+          <div className="flex items-center space-x-2.5">
+            {/* Active Alerts Pill */}
             <button
               onClick={() => setActiveTab('overview')}
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-950/40 border border-rose-800/40 text-rose-400 hover:bg-rose-900/40 transition"
-              title="Critical Active Alerts"
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-red-950/40 border border-red-800/50 text-red-300 hover:bg-red-900/40 transition"
+              title="Active Early Warning Alerts"
             >
-              <AlertTriangle className="w-3.5 h-3.5 text-rose-400 animate-pulse" />
-              <span>{alertCount} Alerts</span>
+              <AlertTriangle className="w-3.5 h-3.5 text-red-400" />
+              <span>{alertCount} Active Alerts</span>
             </button>
 
-            {/* AI Assistant Button */}
+            {/* Print / Report Button */}
+            <button
+              onClick={() => window.print()}
+              className="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition"
+              title="Print Executive Review Summary"
+            >
+              <Printer className="w-3.5 h-3.5" />
+              <span>Print Briefing</span>
+            </button>
+
+            {/* Grounded AI Assistant */}
             <button
               onClick={openAssistant}
-              className="flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-md shadow-blue-500/20 transition"
+              className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold bg-blue-700 hover:bg-blue-600 text-white shadow transition"
             >
-              <MessageSquare className="w-4 h-4" />
+              <MessageSquare className="w-3.5 h-3.5" />
               <span>AI Assistant</span>
             </button>
           </div>

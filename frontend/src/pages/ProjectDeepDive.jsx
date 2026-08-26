@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { 
-  Building2, MapPin, Calendar, IndianRupee, Clock, ShieldAlert,
-  Flame, TrendingUp, AlertTriangle, ChevronRight, Activity
+  Building, MapPin, Calendar, IndianRupee, Clock, ShieldAlert,
+  TrendingUp, AlertTriangle, ChevronRight, Activity, FileText
 } from 'lucide-react';
 import { 
   ResponsiveContainer, LineChart, Line, AreaChart, Area, 
@@ -49,8 +49,8 @@ export const ProjectDeepDive = ({
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center space-y-3 text-slate-400">
-          <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm font-medium">Loading Project Trajectory & Analytics...</p>
+          <div className="w-8 h-8 border-3 border-blue-500 border-t-transparent rounded-full animate-spin" />
+          <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Loading Project Appraisal Dossier...</p>
         </div>
       </div>
     );
@@ -64,31 +64,29 @@ export const ProjectDeepDive = ({
   const budgetRemainingCr = (latestSnap?.revised_cost || project.original_cost) - (latestSnap?.cumulative_expenditure || 0);
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-5 pb-12">
       {/* Project Selector Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-        <div className="flex items-center space-x-2 text-xs text-slate-400">
-          <span className="font-semibold uppercase tracking-wider">Select Project:</span>
-        </div>
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-900 p-3.5 rounded-xl border border-slate-800 text-xs">
+        <span className="text-slate-400 uppercase font-semibold">Select Infrastructure Project to Appraise:</span>
         <select
           value={projectId}
           onChange={(e) => onSelectProject(e.target.value)}
-          className="w-full sm:w-auto px-4 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white focus:outline-none focus:border-orange-500 font-mono"
+          className="w-full sm:w-auto px-3.5 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500 font-mono"
         >
           {allProjects.map((p) => (
             <option key={p.project_id} value={p.project_id}>
-              {p.project_id} • {p.project_name.slice(0, 45)}... (Risk: {p.composite_risk_score.toFixed(0)})
+              {p.project_id} • {p.project_name.slice(0, 48)}... (Risk: {p.composite_risk_score.toFixed(0)})
             </option>
           ))}
         </select>
       </div>
 
-      {/* Main Project Header Card */}
-      <div className="bg-slate-900/90 rounded-2xl border border-slate-800 p-6 shadow-md">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+      {/* Main Dossier Header */}
+      <div className="bg-slate-900 rounded-xl border border-slate-800 p-5 shadow-sm">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
           <div>
-            <div className="flex items-center space-x-3">
-              <span className="font-mono text-sm font-bold px-2.5 py-1 rounded bg-orange-500/20 text-orange-400 border border-orange-500/30">
+            <div className="flex items-center space-x-2.5">
+              <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800">
                 {project.project_id}
               </span>
               <span className="text-xs font-mono text-slate-400">{project.project_code}</span>
@@ -100,100 +98,97 @@ export const ProjectDeepDive = ({
               <TrendIndicator trend={latestPred?.trend_direction || 'stable'} />
             </div>
 
-            <h1 className="text-2xl font-black text-white mt-2 tracking-tight">
+            <h1 className="text-xl font-black text-white mt-2 tracking-tight">
               {project.project_name}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-y-2 gap-x-4 text-xs text-slate-400 mt-3">
-              <span className="flex items-center space-x-1 text-slate-300">
-                <Building2 className="w-3.5 h-3.5 text-blue-400" />
-                <span>{project.ministry}</span>
-              </span>
+            <div className="flex flex-wrap items-center gap-y-1.5 gap-x-3 text-xs text-slate-400 mt-2.5">
+              <span className="text-slate-300">{project.ministry}</span>
               <span>•</span>
-              <span className="text-slate-300 font-semibold">{project.sector}</span>
+              <span className="text-blue-300 font-medium">{project.sector}</span>
               <span>•</span>
               <span className="flex items-center space-x-1 text-slate-300">
                 <MapPin className="w-3.5 h-3.5 text-emerald-400" />
                 <span>{project.state}</span>
               </span>
               <span>•</span>
-              <span className="text-amber-400 font-medium">Agency: {project.implementing_agency}</span>
+              <span className="text-slate-300">Nodal Agency: <strong className="text-white font-mono">{project.implementing_agency}</strong></span>
             </div>
           </div>
 
           {/* Action CTAs */}
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() => onOpenWhyRisk(project.project_id)}
-              className="flex items-center space-x-2 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-bold px-4 py-2.5 rounded-xl shadow-md shadow-red-500/20 text-sm transition"
+              className="flex items-center space-x-1.5 bg-red-900/60 hover:bg-red-800 text-red-100 font-bold px-3.5 py-2 rounded-lg border border-red-700/60 text-xs transition"
             >
-              <Flame className="w-4 h-4 text-white" />
-              <span>Why is this High Risk? (SHAP)</span>
-              <ChevronRight className="w-4 h-4" />
+              <Activity className="w-3.5 h-3.5" />
+              <span>Root Cause Diagnosis (SHAP)</span>
+              <ChevronRight className="w-3.5 h-3.5" />
             </button>
 
             <button
               onClick={() => onOpenIntervention(project)}
-              className="flex items-center space-x-2 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-semibold px-4 py-2.5 rounded-xl border border-slate-700 text-sm transition"
+              className="flex items-center space-x-1.5 bg-blue-700 hover:bg-blue-600 text-white font-bold px-3.5 py-2 rounded-lg text-xs transition"
             >
-              <span>Log Review Action</span>
+              <span>Issue Administrative Directive</span>
             </button>
           </div>
         </div>
 
-        {/* Project KPI Highlight Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mt-6 pt-6 border-t border-slate-800/80">
-          {/* IPI Score */}
-          <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-            <span className="text-[11px] text-slate-400 uppercase font-semibold">Priority Index (IPI)</span>
-            <div className="text-xl font-black text-orange-400 mt-1">
+        {/* Project KPI Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mt-5 pt-5 border-t border-slate-800">
+          {/* IPI */}
+          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
+            <span className="text-[10px] text-slate-400 uppercase font-semibold block">Priority Index (IPI)</span>
+            <div className="text-lg font-black text-amber-400 mt-0.5 font-mono">
               {latestPred?.ipi_score?.toFixed(1) || '0.0'}
             </div>
-            <span className="text-[10px] text-slate-400">Rank #{latestPred?.ipi_rank || 0}</span>
+            <span className="text-[10px] text-slate-400 font-mono">Rank #{latestPred?.ipi_rank || 0}</span>
           </div>
 
-          {/* Cost Risk Probability */}
-          <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-            <span className="text-[11px] text-slate-400 uppercase font-semibold">Cost Escalation Risk</span>
-            <div className="text-xl font-black text-rose-400 mt-1">
+          {/* Cost Risk */}
+          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
+            <span className="text-[10px] text-slate-400 uppercase font-semibold block">Cost Overrun Risk</span>
+            <div className="text-lg font-black text-red-400 mt-0.5 font-mono">
               {((latestPred?.cost_risk_probability || 0) * 100).toFixed(0)}%
             </div>
             <span className="text-[10px] text-slate-400">ML Lookahead Prob</span>
           </div>
 
-          {/* Time Risk Probability */}
-          <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-            <span className="text-[11px] text-slate-400 uppercase font-semibold">Schedule Delay Risk</span>
-            <div className="text-xl font-black text-amber-400 mt-1">
+          {/* Time Risk */}
+          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
+            <span className="text-[10px] text-slate-400 uppercase font-semibold block">Schedule Delay Risk</span>
+            <div className="text-lg font-black text-amber-400 mt-0.5 font-mono">
               {((latestPred?.time_risk_probability || 0) * 100).toFixed(0)}%
             </div>
             <span className="text-[10px] text-slate-400">ML Lookahead Prob</span>
           </div>
 
           {/* Physical Progress */}
-          <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-            <span className="text-[11px] text-slate-400 uppercase font-semibold">Physical Progress</span>
-            <div className="text-xl font-black text-emerald-400 mt-1">
+          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
+            <span className="text-[10px] text-slate-400 uppercase font-semibold block">Physical Progress</span>
+            <div className="text-lg font-black text-emerald-400 mt-0.5 font-mono">
               {latestSnap?.physical_progress_pct || 0}%
             </div>
-            <span className="text-[10px] text-slate-400">Current Cumulative</span>
+            <span className="text-[10px] text-slate-400">Milestone Complete</span>
           </div>
 
-          {/* Schedule Delay */}
-          <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-            <span className="text-[11px] text-slate-400 uppercase font-semibold">Schedule Slippage</span>
-            <div className="text-xl font-black text-rose-400 mt-1">
+          {/* Delay */}
+          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
+            <span className="text-[10px] text-slate-400 uppercase font-semibold block">Accumulated Delay</span>
+            <div className="text-lg font-black text-rose-400 mt-0.5 font-mono">
               {latestSnap?.delay_days || 0} days
             </div>
-            <span className="text-[10px] text-slate-400">
+            <span className="text-[10px] text-slate-400 font-mono">
               ~{((latestSnap?.delay_days || 0) / 30.4).toFixed(1)} months
             </span>
           </div>
 
           {/* Revised Cost */}
-          <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-            <span className="text-[11px] text-slate-400 uppercase font-semibold">Revised Capex</span>
-            <div className="text-xl font-black text-white mt-1">
+          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
+            <span className="text-[10px] text-slate-400 uppercase font-semibold block">Revised Outlay</span>
+            <div className="text-lg font-black text-white mt-0.5 font-mono">
               ₹{latestSnap?.revised_cost?.toLocaleString() || project.original_cost} Cr
             </div>
             <span className="text-[10px] text-amber-400">+{costEscalationPct}% escalation</span>
@@ -201,44 +196,44 @@ export const ProjectDeepDive = ({
         </div>
       </div>
 
-      {/* Trajectory Interactive Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Chart 1: S-Curve Physical Progress vs Timeline */}
-        <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
+      {/* Trajectory Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        {/* S-Curve */}
+        <div className="bg-slate-900 rounded-xl border border-slate-800 p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <h2 className="text-base font-bold text-white flex items-center space-x-2">
-                <Activity className="w-5 h-5 text-emerald-400" />
-                <span>S-Curve Physical Progress Trajectory</span>
+              <h2 className="text-sm font-bold text-white flex items-center space-x-2">
+                <Activity className="w-4 h-4 text-emerald-400" />
+                <span>S-Curve Physical Milestone Execution Profile</span>
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">Physical milestone completion % over reporting months</p>
+              <p className="text-[11px] text-slate-400 mt-0.5">Cumulative completion progress over reporting periods</p>
             </div>
-            <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded border border-emerald-500/20">
+            <span className="text-xs font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/40">
               Current: {latestSnap?.physical_progress_pct}%
             </span>
           </div>
 
-          <div className="h-64 w-full">
+          <div className="h-60 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={trajectory} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorProgress" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
                     <stop offset="95%" stopColor="#10b981" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                <XAxis dataKey="report_month" stroke="#64748b" tick={{ fontSize: 11 }} />
-                <YAxis stroke="#64748b" tick={{ fontSize: 11 }} domain={[0, 100]} />
+                <XAxis dataKey="report_month" stroke="#64748b" tick={{ fontSize: 10 }} />
+                <YAxis stroke="#64748b" tick={{ fontSize: 10 }} domain={[0, 100]} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '8px' }}
+                  contentStyle={{ backgroundColor: '#090d16', borderColor: '#334155', borderRadius: '6px', fontSize: '11px' }}
                   formatter={(val) => [`${val}%`, 'Physical Progress']}
                 />
                 <Area
                   type="monotone"
                   dataKey="physical_progress_pct"
                   stroke="#10b981"
-                  strokeWidth={3}
+                  strokeWidth={2.5}
                   fillOpacity={1}
                   fill="url(#colorProgress)"
                   name="Progress %"
@@ -248,47 +243,47 @@ export const ProjectDeepDive = ({
           </div>
         </div>
 
-        {/* Chart 2: Cost & Expenditure Trajectory */}
-        <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
+        {/* Capex vs Expenditure */}
+        <div className="bg-slate-900 rounded-xl border border-slate-800 p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <h2 className="text-base font-bold text-white flex items-center space-x-2">
-                <IndianRupee className="w-5 h-5 text-amber-400" />
-                <span>Capex & Expenditure Trajectory (₹ Cr)</span>
+              <h2 className="text-sm font-bold text-white flex items-center space-x-2">
+                <IndianRupee className="w-4 h-4 text-amber-400" />
+                <span>Sanctioned Outlay vs Expenditure Accrual (₹ Cr)</span>
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">Original vs Revised Sanctions vs Cumulative Utilization</p>
+              <p className="text-[11px] text-slate-400 mt-0.5">Budget sanction revisions vs cumulative utilization</p>
             </div>
-            <span className="text-xs font-mono text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded border border-amber-500/20">
-              Exp: ₹{latestSnap?.cumulative_expenditure?.toLocaleString()} Cr
+            <span className="text-xs font-mono text-amber-400 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800/40">
+              Drawn: ₹{latestSnap?.cumulative_expenditure?.toLocaleString()} Cr
             </span>
           </div>
 
-          <div className="h-64 w-full">
+          <div className="h-60 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={trajectory} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                <XAxis dataKey="report_month" stroke="#64748b" tick={{ fontSize: 11 }} />
-                <YAxis stroke="#64748b" tick={{ fontSize: 11 }} />
+                <XAxis dataKey="report_month" stroke="#64748b" tick={{ fontSize: 10 }} />
+                <YAxis stroke="#64748b" tick={{ fontSize: 10 }} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '8px' }}
+                  contentStyle={{ backgroundColor: '#090d16', borderColor: '#334155', borderRadius: '6px', fontSize: '11px' }}
                   formatter={(val) => [`₹${Number(val).toLocaleString()} Cr`, '']}
                 />
-                <Legend />
+                <Legend wrapperStyle={{ fontSize: '11px' }} />
                 <Line
                   type="monotone"
                   dataKey="revised_cost"
                   stroke="#f59e0b"
-                  strokeWidth={2.5}
+                  strokeWidth={2}
                   dot={false}
                   name="Revised Cost"
                 />
                 <Line
                   type="monotone"
                   dataKey="cumulative_expenditure"
-                  stroke="#8b5cf6"
-                  strokeWidth={2.5}
+                  stroke="#818cf8"
+                  strokeWidth={2}
                   dot={false}
-                  name="Expenditure"
+                  name="Cumulative Expenditure"
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -296,15 +291,15 @@ export const ProjectDeepDive = ({
         </div>
       </div>
 
-      {/* Chart 3: Composite Risk Trajectory */}
-      <div className="bg-slate-900/80 rounded-2xl border border-slate-800 p-6 shadow-sm">
-        <div className="flex items-center justify-between mb-4">
+      {/* Risk Trajectory Progression */}
+      <div className="bg-slate-900 rounded-xl border border-slate-800 p-5 shadow-sm">
+        <div className="flex items-center justify-between mb-3">
           <div>
-            <h2 className="text-base font-bold text-white flex items-center space-x-2">
-              <ShieldAlert className="w-5 h-5 text-rose-400" />
-              <span>Predictive Risk Score Progression (0–100)</span>
+            <h2 className="text-sm font-bold text-white flex items-center space-x-2">
+              <ShieldAlert className="w-4 h-4 text-red-400" />
+              <span>Predictive Risk Score Progression (0–100 Timeline)</span>
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">Historical evolution of multi-dimensional risk score over time</p>
+            <p className="text-[11px] text-slate-400 mt-0.5">Historical evolution of multi-dimensional risk score across reporting months</p>
           </div>
           <RAGBBadge
             level={latestPred?.risk_level || 'GREEN'}
@@ -313,22 +308,22 @@ export const ProjectDeepDive = ({
           />
         </div>
 
-        <div className="h-56 w-full">
+        <div className="h-52 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={trajectory} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="report_month" stroke="#64748b" tick={{ fontSize: 11 }} />
-              <YAxis stroke="#64748b" tick={{ fontSize: 11 }} domain={[0, 100]} />
+              <XAxis dataKey="report_month" stroke="#64748b" tick={{ fontSize: 10 }} />
+              <YAxis stroke="#64748b" tick={{ fontSize: 10 }} domain={[0, 100]} />
               <Tooltip
-                contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '8px' }}
-                formatter={(val) => [val, 'Risk Score']}
+                contentStyle={{ backgroundColor: '#090d16', borderColor: '#334155', borderRadius: '6px', fontSize: '11px' }}
+                formatter={(val) => [val, 'Composite Risk Score']}
               />
               <Line
                 type="monotone"
                 dataKey="composite_risk_score"
                 stroke="#ef4444"
-                strokeWidth={3}
-                dot={{ r: 3, fill: '#ef4444' }}
+                strokeWidth={2.5}
+                dot={{ r: 2.5, fill: '#ef4444' }}
                 name="Risk Score"
               />
             </LineChart>

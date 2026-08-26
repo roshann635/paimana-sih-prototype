@@ -3,9 +3,12 @@ Application Configuration (backend/app/config.py)
 """
 
 import os
+from pydantic import ConfigDict
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
+    model_config = ConfigDict(case_sensitive=True)
+
     PROJECT_NAME: str = "PAIMANA AI Infrastructure Decision Support System"
     API_V1_STR: str = "/api/v1"
     VERSION: str = "1.0.0"
@@ -21,8 +24,5 @@ class Settings(BaseSettings):
         "http://127.0.0.1:3000",
         "*"
     ]
-
-    class Config:
-        case_sensitive = True
 
 settings = Settings()

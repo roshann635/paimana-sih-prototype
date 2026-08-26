@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, CheckCircle2, AlertTriangle, ShieldCheck, UserCheck, Flame } from 'lucide-react';
+import { X, CheckCircle2, AlertTriangle, ShieldCheck, FileText, Send } from 'lucide-react';
 import { recordIntervention, fetchInterventions } from '../services/api';
 
 export const InterventionModal = ({ project, isOpen, onClose }) => {
@@ -15,7 +15,7 @@ export const InterventionModal = ({ project, isOpen, onClose }) => {
   useEffect(() => {
     if (project && isOpen) {
       setRecommendedAction(
-        `Convene joint administrative review with Project Management Unit to audit milestone slippage and critical-path bottlenecks.`
+        `Issue directive to PMU and EPC Contractor for critical path re-baselining and weekly milestone escalation.`
       );
       loadHistory();
     }
@@ -34,6 +34,7 @@ export const InterventionModal = ({ project, isOpen, onClose }) => {
   if (!isOpen || !project) return null;
 
   const currentRisk = project.latest_prediction?.composite_risk_score || project.composite_risk_score || 80.0;
+  const fileRef = `MoSPI/IPMD/REV-2026/${project.project_id}/01`;
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -43,12 +44,12 @@ export const InterventionModal = ({ project, isOpen, onClose }) => {
         project_id: project.project_id,
         intervention_type: interventionType,
         recommended_action: recommendedAction,
-        action_taken: actionTaken || 'Formal review order issued to implementing agency.',
+        action_taken: actionTaken || 'Formal administrative order issued to implementing agency.',
         assigned_to: assignedTo,
         status: status,
         initial_risk_score: currentRisk,
       });
-      setSuccessMsg('Intervention successfully logged and assigned!');
+      setSuccessMsg('Administrative action memorandum recorded successfully.');
       await loadHistory();
       setTimeout(() => {
         setSuccessMsg('');
@@ -62,46 +63,46 @@ export const InterventionModal = ({ project, isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
+      <div className="bg-slate-900 border border-slate-800 rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
         {/* Header */}
-        <div className="p-5 border-b border-slate-800 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="p-2 rounded-lg bg-orange-500/20 text-orange-400">
-              <Flame className="w-5 h-5 text-orange-400" />
+        <div className="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950">
+          <div className="flex items-center space-x-2.5">
+            <div className="p-1.5 rounded-lg bg-blue-950 text-blue-400 border border-blue-800">
+              <FileText className="w-4 h-4 text-blue-400" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white">Log Decision-Support Intervention</h3>
-              <p className="text-xs text-slate-400 font-mono">
-                Project: {project.project_id} • {project.project_name?.slice(0, 45)}...
+              <h3 className="text-sm font-bold text-white">Administrative Action Memorandum</h3>
+              <p className="text-[11px] text-slate-400 font-mono">
+                Ref: {fileRef} • Project: {project.project_id}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 transition"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Content Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-5 space-y-4 text-xs">
           {successMsg && (
-            <div className="p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-semibold flex items-center space-x-2">
+            <div className="p-3 rounded-lg bg-emerald-950/80 border border-emerald-800 text-emerald-300 font-semibold flex items-center space-x-2">
               <CheckCircle2 className="w-4 h-4" />
               <span>{successMsg}</span>
             </div>
           )}
 
-          {/* Current Risk Level Warning */}
-          <div className="p-3.5 rounded-xl bg-red-950/20 border border-red-900/30 flex items-center justify-between text-xs">
+          {/* Current Risk Appraisal */}
+          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-between">
             <div>
-              <span className="text-slate-400">Current Risk Score:</span>{' '}
-              <strong className="text-red-400 text-sm font-mono">{currentRisk.toFixed(0)} / 100</strong>
+              <span className="text-slate-400">Current Appraised Risk:</span>{' '}
+              <strong className="text-red-400 font-mono text-sm">{currentRisk.toFixed(0)} / 100</strong>
             </div>
             <div className="text-slate-400">
               Expected Post-Review Mitigation:{' '}
-              <strong className="text-emerald-400 text-sm font-mono">
+              <strong className="text-emerald-400 font-mono text-sm">
                 ~{Math.max(20, currentRisk - 18).toFixed(0)}
               </strong>
             </div>
@@ -109,13 +110,13 @@ export const InterventionModal = ({ project, isOpen, onClose }) => {
 
           {/* Intervention Type */}
           <div>
-            <label className="block text-xs font-bold text-slate-300 uppercase mb-1">
-              Intervention Category
+            <label className="block text-[11px] font-bold text-slate-300 uppercase mb-1">
+              Administrative Review Category
             </label>
             <select
               value={interventionType}
               onChange={(e) => setInterventionType(e.target.value)}
-              className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-orange-500"
+              className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
             >
               <option value="Schedule Recovery">Schedule Recovery (Critical Path Re-baselining)</option>
               <option value="Contractor Review">Contractor Capacity & Cash-flow Audit</option>
@@ -128,54 +129,54 @@ export const InterventionModal = ({ project, isOpen, onClose }) => {
 
           {/* Recommended Action */}
           <div>
-            <label className="block text-xs font-bold text-slate-300 uppercase mb-1">
-              Recommended Administrative Review Action
+            <label className="block text-[11px] font-bold text-slate-300 uppercase mb-1">
+              Recommended Administrative Directives
             </label>
             <textarea
               rows={2}
               value={recommendedAction}
               onChange={(e) => setRecommendedAction(e.target.value)}
-              className="w-full px-3.5 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-orange-500"
+              className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500 leading-relaxed"
               required
             />
           </div>
 
           {/* Action Taken */}
           <div>
-            <label className="block text-xs font-bold text-slate-300 uppercase mb-1">
-              Action Taken / Directives Issued
+            <label className="block text-[11px] font-bold text-slate-300 uppercase mb-1">
+              Actions Taken / Orders Issued
             </label>
             <textarea
               rows={2}
-              placeholder="e.g. Formal directive issued to Joint Secretary / Implementing Agency Head for expedited review meeting..."
+              placeholder="e.g. Formal directive issued to Implementing Agency Head for expedited review meeting..."
               value={actionTaken}
               onChange={(e) => setActionTaken(e.target.value)}
-              className="w-full px-3.5 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-orange-500"
+              className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500 leading-relaxed"
             />
           </div>
 
           {/* Assigned Officer & Status */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase mb-1">
-                Assigned Monitoring Officer
+              <label className="block text-[11px] font-bold text-slate-300 uppercase mb-1">
+                Assigned Nodal Officer
               </label>
               <input
                 type="text"
                 value={assignedTo}
                 onChange={(e) => setAssignedTo(e.target.value)}
-                className="w-full px-3.5 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-orange-500"
+                className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase mb-1">
-                Workflow Status
+              <label className="block text-[11px] font-bold text-slate-300 uppercase mb-1">
+                Directives Status
               </label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full px-3.5 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-orange-500"
+                className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500"
               >
                 <option value="RECOMMENDED">RECOMMENDED</option>
                 <option value="UNDER_REVIEW">UNDER REVIEW</option>
@@ -185,49 +186,49 @@ export const InterventionModal = ({ project, isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* Submit Button */}
+          {/* Actions */}
           <div className="pt-3 border-t border-slate-800 flex justify-end space-x-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl text-sm text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 transition"
+              className="px-3.5 py-1.5 rounded-lg text-xs text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 transition"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-5 py-2 rounded-xl text-sm font-bold bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-slate-950 shadow-md shadow-orange-500/20 disabled:opacity-50 transition"
+              className="px-4 py-1.5 rounded-lg text-xs font-bold bg-blue-700 hover:bg-blue-600 text-white disabled:opacity-50 transition"
             >
-              {submitting ? 'Recording...' : 'Commit Intervention'}
+              {submitting ? 'Recording...' : 'Commit Directive'}
             </button>
           </div>
         </form>
 
         {/* Historical Interventions Log */}
         {pastInterventions.length > 0 && (
-          <div className="p-6 border-t border-slate-800 bg-slate-950/40">
-            <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
-              Intervention History & Outcome Feedback
+          <div className="p-4 border-t border-slate-800 bg-slate-950/60">
+            <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5">
+              Recorded Review History & Outcome Feedback
             </h4>
-            <div className="space-y-2 max-h-40 overflow-y-auto">
+            <div className="space-y-2 max-h-36 overflow-y-auto font-mono text-xs">
               {pastInterventions.map((inv) => (
                 <div
                   key={inv.id}
-                  className="p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs flex items-center justify-between"
+                  className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-between"
                 >
                   <div>
-                    <div className="font-bold text-white">{inv.intervention_type}</div>
-                    <div className="text-slate-400 text-[11px] mt-0.5 line-clamp-1">
+                    <div className="font-bold text-white font-sans text-xs">{inv.intervention_type}</div>
+                    <div className="text-slate-400 text-[11px] font-sans mt-0.5 line-clamp-1">
                       {inv.action_taken || inv.recommended_action}
                     </div>
                   </div>
                   <div className="text-right">
-                    <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-orange-500/20 text-orange-400 border border-orange-500/30">
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800">
                       {inv.status}
                     </span>
                     {inv.post_risk_score && (
-                      <div className="text-[10px] text-emerald-400 font-mono mt-1">
+                      <div className="text-[10px] text-emerald-400 mt-1">
                         Risk: {inv.initial_risk_score} → {inv.post_risk_score}
                       </div>
                     )}
