@@ -2,43 +2,50 @@ import React from 'react';
 
 /**
  * StatusBadge Component
- * Accessible RAGB status indicator with icon + label + semantic color.
- * Follows the enhanced light institutional design system.
+ * Premium Calibrated Risk Indicator with Accessible Semantics
  */
 export default function StatusBadge({ status, level, size = 'md' }) {
-  const rawStatus = (level || status || 'GREEN').toUpperCase();
+  const raw = (level || status || 'LOW').toUpperCase();
 
   let config = {
-    label: 'NORMAL',
+    label: 'LOW',
     icon: '✓',
-    color: '#2B6E44',
-    bg: '#EDF7F1',
-    border: '#BDDFCB',
+    color: '#2F7D68',
+    bg: '#EEF7F4',
+    border: '#B7DFD4',
   };
 
-  if (rawStatus === 'CRITICAL' || rawStatus === 'RED') {
+  if (raw === 'CRITICAL' || raw === 'RED') {
     config = {
       label: 'CRITICAL',
       icon: '●',
-      color: '#A82420',
-      bg: '#FDF0EF',
-      border: '#F3BFBC',
+      color: '#A63D40',
+      bg: '#FDF0F0',
+      border: '#F3C5C7',
     };
-  } else if (rawStatus === 'REVIEW' || rawStatus === 'ORANGE') {
+  } else if (raw === 'HIGH' || raw === 'ORANGE' || raw === 'REVIEW') {
     config = {
-      label: 'REVIEW',
+      label: 'HIGH RISK',
       icon: '▲',
-      color: '#B55214',
-      bg: '#FEF3EB',
-      border: '#F5CDAF',
+      color: '#C66A2B',
+      bg: '#FEF4EB',
+      border: '#F9D1B4',
     };
-  } else if (rawStatus === 'WATCH' || rawStatus === 'AMBER' || rawStatus === 'YELLOW') {
+  } else if (raw === 'MODERATE' || raw === 'AMBER' || raw === 'WATCH' || raw === 'YELLOW') {
     config = {
-      label: 'WATCH',
+      label: 'MODERATE',
       icon: '■',
-      color: '#916812',
-      bg: '#FEF9EB',
-      border: '#EBD9A0',
+      color: '#B08A32',
+      bg: '#FDF9EC',
+      border: '#F2DF9E',
+    };
+  } else if (raw === 'STABLE' || raw === 'GREEN' || raw === 'NORMAL') {
+    config = {
+      label: 'STABLE',
+      icon: '✓',
+      color: '#2F7D68',
+      bg: '#EEF7F4',
+      border: '#B7DFD4',
     };
   }
 
@@ -46,16 +53,16 @@ export default function StatusBadge({ status, level, size = 'md' }) {
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 font-bold tracking-wider ${
+      className={`inline-flex items-center gap-1.5 font-mono font-bold tracking-wider ${
         isSm ? 'px-2 py-0.5 text-[10px]' : 'px-2.5 py-1 text-xs'
-      } rounded-[6px] border shadow-xs`}
+      } rounded-[6px] border shadow-xs select-none`}
       style={{
         backgroundColor: config.bg,
         color: config.color,
         borderColor: config.border,
       }}
       role="status"
-      aria-label={`Risk Level: ${config.label}`}
+      aria-label={`Risk Tier: ${config.label}`}
     >
       <span className="text-[10px] leading-none" aria-hidden="true">
         {config.icon}

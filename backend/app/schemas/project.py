@@ -159,3 +159,13 @@ class DashboardSummary(BaseModel):
     latest_report_month: Optional[str] = None
     top_sectors_at_risk: List[Dict[str, Any]]
     ministry_sector_matrix: List[Dict[str, Any]]
+
+class AssistantQuery(BaseModel):
+    query: str
+    project_id: Optional[str] = None
+
+class AssistantResponse(BaseModel):
+    answer: str
+    evidence_sources: List[str] = []
+    confidence: float = 0.95
+    data_freshness: str = "April 2026"

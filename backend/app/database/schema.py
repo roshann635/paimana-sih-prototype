@@ -157,3 +157,48 @@ class Benchmark(Base):
     median_progress_velocity = Column(Float, default=0.0)
     median_risk_score = Column(Float, default=0.0)
     sample_size = Column(Integer, default=0)
+
+
+class InterventionOutcome(Base):
+    __tablename__ = "intervention_outcomes"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    intervention_id = Column(Integer, ForeignKey("interventions.id"), index=True, nullable=False)
+    project_id = Column(String(50), ForeignKey("projects.project_id"), index=True, nullable=False)
+    
+    risk_before = Column(Float, nullable=False)
+    risk_after = Column(Float, nullable=False)
+    cost_risk_before = Column(Float, nullable=True)
+    cost_risk_after = Column(Float, nullable=True)
+    time_risk_before = Column(Float, nullable=True)
+    time_risk_after = Column(Float, nullable=True)
+    
+    outcome_category = Column(String(50), default="RISK_REDUCED")  # RISK_REDUCED, NO_SIGNIFICANT_CHANGE, RISK_INCREASED
+    outcome_notes = Column(Text, nullable=True)
+    recorded_at = Column(DateTime, default=datetime.utcnow)
+
+
+class ModelRegistry(Base):
+    __tablename__ = "model_registry"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    model_name = Column(String(100), index=True, nullable=False)
+    model_type = Column(String(50), nullable=False)  # COST_OVERRUN, SCHEDULE_SLIPPAGE
+    version = Column(String(50), index=True, nullable=False)
+    
+    training_period = Column(String(100), default="2019-2025")
+    test_period = Column(String(100), default="July-Oct 2025 (Out-of-Time)")
+    
+    roc_auc = Column(Float, nullable=False)
+    pr_auc = Column(Float, nullable=False)
+    precision = Column(Float, nullable=False)
+    recall = Column(Float, nullable=False)
+    f1_score = Column(Float, nullable=False)
+    brier_score = Column(Float, nullable=False)
+    ece = Column(Float, default=0.02)
+    false_negative_rate = Column(Float, default=0.04)
+    
+    artifact_path = Column(String(250), nullable=True)
+    status = Column(String(50), default="PRODUCTION")  # PRODUCTION, RETIRED, CANDIDATE
+    deployed_at = Column(DateTime, default=datetime.utcnow)
+

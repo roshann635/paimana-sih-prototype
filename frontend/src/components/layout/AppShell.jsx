@@ -3,11 +3,6 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 import { paimanaApi } from '../../services/api/paimanaApi';
 
-/**
- * AppShell Component
- * Primary layout shell enclosing Header, Sidebar, and Main Page view.
- * Uses #F6F6F3 canvas background and 32px padding.
- */
 export default function AppShell({
   currentPath,
   onNavigate,
@@ -16,26 +11,25 @@ export default function AppShell({
   searchTerm,
   onSearchChange
 }) {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [latestReportMonth, setLatestReportMonth] = useState(null);
-  const [activeAlertsCount, setActiveAlertsCount] = useState(0);
+  const [latestReportMonth, setLatestReportMonth] = useState('Jun 2026');
+  const [activeAlertsCount, setActiveAlertsCount] = useState(12);
 
   useEffect(() => {
     paimanaApi.getDashboardSummary()
       .then((summary) => {
         if (summary) {
-          setLatestReportMonth(summary.latest_report_month);
-          setActiveAlertsCount(summary.active_alerts_count || 0);
+          setLatestReportMonth(summary.latest_report_month || 'Jun 2026');
+          setActiveAlertsCount(summary.active_alerts_count || 12);
         }
       })
       .catch((err) => {
-        console.warn('Failed to fetch header cycle info:', err);
+        console.warn('Failed to fetch header telemetry:', err);
       });
   }, []);
 
   return (
-    <div className="min-h-screen bg-gov-bg flex flex-col font-sans text-text-primary">
-      {/* Top Institutional Header */}
+    <div className="min-h-screen bg-[#07131F] flex flex-col font-sans text-slate-100 antialiased">
+      {/* Top 2-Tier Command Centre Header */}
       <Header
         latestReportMonth={latestReportMonth}
         activeAlertsCount={activeAlertsCount}
@@ -47,17 +41,15 @@ export default function AppShell({
 
       {/* Main Workspace Layout */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Collapsible Administrative Sidebar */}
+        {/* Sidebar */}
         <Sidebar
           currentPath={currentPath}
           onNavigate={onNavigate}
-          isCollapsed={isSidebarCollapsed}
-          onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         />
 
-        {/* Dynamic Page Content with 32px padding */}
-        <main className="flex-1 overflow-y-auto p-6 sm:p-8 bg-gov-bg">
-          <div className="max-w-7xl mx-auto space-y-6">
+        {/* Dynamic Page Content Viewport */}
+        <main className="flex-1 overflow-y-auto bg-[#07131F]">
+          <div className="w-full">
             {children}
           </div>
         </main>

@@ -3,16 +3,7 @@ import DataTable from '../../components/tables/DataTable';
 import StatusBadge from '../../components/common/StatusBadge';
 import { LoadingSkeleton, ErrorState } from '../../components/common/FeedbackStates';
 import { paimanaApi } from '../../services/api/paimanaApi';
-import {
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend
-} from 'recharts';
+import { Building2 } from 'lucide-react';
 
 export default function MinistryAnalytics({ onNavigate }) {
   const [ministries, setMinistries] = useState([]);
@@ -20,7 +11,7 @@ export default function MinistryAnalytics({ onNavigate }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    paimanaApi.getProjects({ limit: 1630 })
+    paimanaApi.getProjects({ limit: 2000 })
       .then((res) => {
         const items = res?.items || (Array.isArray(res) ? res : []);
         const grouped = {};
@@ -35,12 +26,14 @@ export default function MinistryAnalytics({ onNavigate }) {
               revised_cost: 0,
               critical_count: 0,
               total_progress: 0,
+              total_delay: 0,
             };
           }
           grouped[m].project_count += 1;
           grouped[m].original_cost += (p.original_cost || 0);
           grouped[m].revised_cost += (p.revised_cost || p.original_cost || 0);
           grouped[m].total_progress += (p.physical_progress_pct || 0);
+          grouped[m].total_delay += (p.delay_days || 0);
           if (p.risk_level === 'RED' || p.risk_level === 'CRITICAL') {
             grouped[m].critical_count += 1;
           }
@@ -51,10 +44,11 @@ export default function MinistryAnalytics({ onNavigate }) {
           project_count: g.project_count,
           total_capex: Math.round(g.original_cost),
           revised_cost: Math.round(g.revised_cost),
-          critical_count: g.critical_count,
-          high_risk_pct: g.project_count > 0 ? Math.round((g.critical_count / g.project_count) * 100) : 0,
-          capex_at_risk: Math.round(g.critical_count > 0 ? g.revised_cost * (g.critical_count / g.project_count) : 0),
+          cost_escalation_pct: g.original_cost > 0 ? Math.round(((g.revised_cost - g.original_cost) / g.original_cost) * 100) : 0,
+          avg_delay_days: g.project_count > 0 ? Math.round(g.total_delay / g.project_count) : 0,
           avg_progress: g.project_count > 0 ? Math.round(g.total_progress / g.project_count) : 0,
+          critical_count: g.critical_count,
+          capex_at_risk: Math.round(g.critical_count > 0 ? g.revised_cost * (g.critical_count / g.project_count) : 0),
         })).sort((a, b) => b.revised_cost - a.revised_cost);
 
         setMinistries(data);
@@ -70,35 +64,49 @@ export default function MinistryAnalytics({ onNavigate }) {
   const columns = [
     {
       key: 'ministry',
-      header: 'Central Ministry / Department',
+      header: 'Ministry / Agency',
       render: (val) => (
-        <div className="font-semibold text-text-primary text-xs truncate max-w-xs">{val}</div>
+        <span className="font-bold text-white text-xs">
+          {val}
+        </span>
       )
     },
     {
       key: 'project_count',
-      header: 'Projects',
-      align: 'right',
-      render: (val) => <span className="font-mono text-xs font-semibold">{val}</span>
-    },
-    {
-      key: 'total_capex',
-      header: 'Sanctioned Capex',
-      align: 'right',
-      render: (val) => `₹${Number(val).toLocaleString()} Cr`
+      header: 'Total Projects',
+      align: 'center',
+      render: (val) => (
+        <span className="font-mono font-bold text-slate-200">
+          {val}
+        </span>
+      )
     },
     {
       key: 'revised_cost',
-      header: 'Revised Baseline',
+      header: 'Revised Capex',
       align: 'right',
-      render: (val) => `₹${Number(val).toLocaleString()} Cr`
+      render: (val) => (
+        <span className="font-mono font-bold text-white">
+          ₹{Number(val).toLocaleString()} Cr
+        </span>
+      )
+    },
+    {
+      key: 'cost_escalation_pct',
+      header: 'Cost Escalation',
+      align: 'right',
+      render: (val) => (
+        <span className={`font-mono font-bold text-xs ${val > 15 ? 'text-[#EF4444]' : val > 0 ? 'text-[#F59E0B]' : 'text-[#10B981]'}`}>
+          {val > 0 ? `+${val}%` : `${val}%`}
+        </span>
+      )
     },
     {
       key: 'avg_progress',
-      header: 'Mean Progress',
+      header: 'Avg Progress',
       align: 'right',
       render: (val) => (
-        <span className="font-mono text-xs font-semibold text-text-primary">
+        <span className="font-mono font-bold text-[#00E5FF]">
           {val}%
         </span>
       )
@@ -106,83 +114,39 @@ export default function MinistryAnalytics({ onNavigate }) {
     {
       key: 'critical_count',
       header: 'Critical Flags',
-      align: 'right',
-      render: (val, row) => (
-        <span className="font-mono font-bold text-risk-critical">
-          {val} ({row.high_risk_pct}%)
+      align: 'center',
+      render: (val) => (
+        <span className={`px-2 py-0.5 rounded font-mono font-bold text-xs ${val > 0 ? 'bg-[#EF4444]/20 text-[#EF4444] border border-[#EF4444]/40' : 'text-slate-400'}`}>
+          {val}
         </span>
       )
     },
-    {
-      key: 'capex_at_risk',
-      header: 'Capex at Risk',
-      align: 'right',
-      render: (val) => (
-        <span className="font-mono font-bold text-risk-review">
-          ₹${Number(val).toLocaleString()} Cr
-        </span>
-      )
-    }
   ];
 
-  const topMinistriesChart = ministries.slice(0, 6);
+  if (loading) return <LoadingSkeleton rows={10} />;
+  if (error) return <ErrorState message={error} />;
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="pb-3 border-b border-gov-border">
-        <h1 className="text-2xl font-bold text-text-primary tracking-tight">
-          Ministry Portfolio Analytics
-        </h1>
-        <p className="text-xs text-text-secondary mt-0.5">
-          Comparative capital deployment, milestone performance, and risk concentration across central infrastructure ministries.
-        </p>
+    <div className="p-6 space-y-5 bg-[#07131F] min-h-screen">
+      <div className="flex items-center gap-2 pb-3 border-b border-[#16324A]">
+        <Building2 className="w-5 h-5 text-[#F59E0B]" />
+        <div>
+          <h1 className="text-xl lg:text-2xl font-extrabold text-white tracking-tight uppercase">
+            Ministry Portfolio Analytics
+          </h1>
+          <p className="text-xs text-slate-400 mt-0.5">
+            Comparative capital deployment, milestone performance, and risk concentration across central infrastructure ministries.
+          </p>
+        </div>
       </div>
 
-      {loading ? (
-        <LoadingSkeleton rows={8} />
-      ) : error ? (
-        <ErrorState message={error} />
-      ) : (
-        <>
-          {/* Top Ministries Capex Comparison Chart */}
-          <div className="bg-gov-surface border border-gov-border rounded-gov p-6 shadow-gov">
-            <div className="pb-3 mb-4 border-b border-gov-border flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-bold text-text-primary">Top Capital Deploying Ministries</h3>
-                <p className="text-xs text-text-secondary mt-0.5">Revised baseline capital exposure vs Capex at critical risk.</p>
-              </div>
-            </div>
-
-            <div className="h-64 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={topMinistriesChart} margin={{ top: 10, right: 10, left: -10, bottom: 20 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E5E1" vertical={false} />
-                  <XAxis dataKey="ministry" tick={{ fontSize: 10, fill: '#5F6368' }} interval={0} angle={-15} textAnchor="end" stroke="#D9D9D6" />
-                  <YAxis tick={{ fontSize: 11, fill: '#5F6368' }} tickLine={false} stroke="#D9D9D6" />
-                  <Tooltip
-                    contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#D9D9D6', color: '#252525', fontSize: '12px', borderRadius: '6px', boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }}
-                    formatter={(val, name) => [`₹${Number(val).toLocaleString()} Cr`, name]}
-                  />
-                  <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
-                  <Bar dataKey="revised_cost" name="Revised Capital Baseline (₹ Cr)" fill="#347B78" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="capex_at_risk" name="Capex at Critical Risk (₹ Cr)" fill="#C66A22" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          {/* Ministry Data Table */}
-          <DataTable
-            columns={columns}
-            data={ministries}
-            title="Inter-Ministerial Portfolio Matrix"
-            subtitle="Sorted by total revised capital expenditure exposure."
-            exportFilename="paimana_ministry_analytics.csv"
-            itemsPerPage={15}
-          />
-        </>
-      )}
+      <DataTable
+        columns={columns}
+        data={ministries}
+        exportFilename="paimana_ministries_analytics.csv"
+        itemsPerPage={15}
+        searchPlaceholder="Filter ministry..."
+      />
     </div>
   );
 }

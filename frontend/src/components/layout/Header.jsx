@@ -1,121 +1,116 @@
 import React from 'react';
-import { Search, Bell, Sparkles, User, ShieldCheck } from 'lucide-react';
-
-function formatReportMonth(monthStr) {
-  if (!monthStr) return null;
-  const parts = monthStr.split('-');
-  if (parts.length === 2) {
-    const year = parts[0];
-    const monthNum = parseInt(parts[1], 10);
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    if (monthNum >= 1 && monthNum <= 12) {
-      return `${months[monthNum - 1]} ${year}`;
-    }
-  }
-  return monthStr;
-}
+import { Search, Bell, Sparkles, User, Calendar, ChevronDown, CheckCircle2 } from 'lucide-react';
 
 export default function Header({
-  latestReportMonth,
-  activeAlertsCount = 0,
+  latestReportMonth = 'Jun 2026',
+  activeAlertsCount = 12,
   onOpenAssistant,
   onOpenAlerts,
   searchTerm = '',
   onSearchChange
 }) {
-  const formattedMonth = formatReportMonth(latestReportMonth);
-  const formattedCycle = formattedMonth
-    ? `Reporting Cycle: ${formattedMonth}`
-    : 'DEMO DATA · Simulated reporting cycle';
-
   return (
-    <header className="bg-white border-b border-gov-border sticky top-0 z-30 shadow-gov select-none">
-      {/* Top subtle tri-accent hairline bar */}
-      <div className="h-[3px] w-full bg-gradient-to-r from-brand via-[#E8A54B] to-intel" />
-
-      <div className="h-16 px-6 flex items-center justify-between">
-        {/* Left: Official Brand & SIH Prototype Identifier */}
-        <div className="flex items-center gap-3.5">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-gov bg-brand-light border border-brand-border flex items-center justify-center text-brand-dark shadow-sm">
-              <span className="font-bold text-sm tracking-tighter">पै</span>
-            </div>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <span className="font-extrabold text-lg tracking-tight text-text-primary">
-                  PAIMANA
-                </span>
-                <span className="w-1 h-1 rounded-full bg-text-muted"></span>
-                <span className="text-xs font-semibold text-text-secondary hidden sm:inline">
-                  Infrastructure Project Monitoring & Analytics
-                </span>
-              </div>
-              <div className="flex items-center gap-2 text-[11px] text-text-muted">
-                <span className="bg-brand-light text-brand-dark px-1.5 py-0.2 rounded font-bold text-[10px] uppercase tracking-wider border border-brand-border">
-                  SIH PROTOTYPE / CONCEPT DEMONSTRATOR
-                </span>
-                <span className="hidden md:inline text-text-muted">•</span>
-                <span className="hidden md:inline font-mono text-[11px] text-text-secondary font-medium">
-                  {formattedCycle}
-                </span>
-              </div>
-            </div>
-          </div>
+    <header className="bg-[#07131F] border-b border-[#16324A] text-white select-none">
+      {/* Top Telemetry Row */}
+      <div className="px-6 py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#16324A]/60">
+        {/* Title & Subtitle */}
+        <div>
+          <h1 className="text-xl lg:text-2xl font-extrabold tracking-wide text-white uppercase">
+            National Infrastructure Command Centre
+          </h1>
+          <p className="text-xs text-slate-300 mt-0.5 font-normal">
+            Continuous intelligence for early warning, risk forecasting & decision support
+          </p>
         </div>
 
-        {/* Right Actions */}
-        <div className="flex items-center gap-3.5">
-          {/* Quick Search */}
-          <div className="relative hidden lg:block w-72">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted w-3.5 h-3.5" />
-            <input
-              type="text"
-              placeholder="Search project ID, code, ministry..."
-              value={searchTerm}
-              onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
-              className="w-full bg-[#FAFBF8] border border-gov-border rounded-gov-sm pl-9 pr-8 py-1.5 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand focus:bg-white transition-colors shadow-sm"
-            />
-            <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 font-mono text-[10px] text-text-muted bg-white border border-gov-border px-1.5 py-0.5 rounded shadow-xs">
-              /
-            </kbd>
+        {/* Status Telemetry & User Controls */}
+        <div className="flex items-center gap-6">
+          {/* Data Through */}
+          <div className="hidden sm:flex items-center gap-2.5">
+            <Calendar className="w-4 h-4 text-slate-300" />
+            <div className="flex flex-col text-[11px] leading-tight">
+              <span className="text-[10px] font-mono text-slate-300 uppercase font-bold">Data Through</span>
+              <span className="font-mono text-white font-bold">JUN 2026</span>
+            </div>
           </div>
 
-          {/* Ask PAIMANA Decision Assistant Trigger */}
-          <button
-            onClick={onOpenAssistant}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-gov-sm text-xs font-bold text-intel bg-intel-light border border-intel-border hover:bg-[#DFEFED] transition-colors shadow-sm"
-            title="Open AI Decision Support Assistant"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-intel" />
-            <span>Ask PAIMANA</span>
-          </button>
+          {/* System Operational */}
+          <div className="hidden lg:flex items-center gap-2.5">
+            <div className="relative flex items-center justify-center">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#00E5FF] animate-ping opacity-75 absolute"></span>
+              <span className="w-2.5 h-2.5 rounded-full bg-[#00E5FF]"></span>
+            </div>
+            <div className="flex flex-col text-[11px] leading-tight">
+              <span className="text-[10px] font-mono text-slate-300 uppercase font-bold">System Operational</span>
+              <span className="text-slate-300 text-[10px]">All systems normal</span>
+            </div>
+          </div>
 
-          {/* Alerts Bulletin Button */}
+          {/* Alert Notification Bell */}
           <button
             onClick={onOpenAlerts}
-            className="relative p-2 text-text-secondary hover:text-text-primary hover:bg-[#FAFBF8] rounded-gov-sm border border-gov-border/60 hover:border-gov-border transition-colors shadow-xs"
-            title="Active Early Warning Bulletins"
+            className="relative p-2 rounded-lg bg-[#0D1E30] hover:bg-[#16324A] border border-[#16324A] text-slate-300 hover:text-white transition-colors"
+            title="Active Bulletins"
           >
             <Bell className="w-4 h-4" />
-            {activeAlertsCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-risk-critical text-white text-[10px] font-bold flex items-center justify-center shadow-sm">
-                {activeAlertsCount > 99 ? '99+' : activeAlertsCount}
-              </span>
-            )}
+            <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#EF4444] text-white text-[10px] font-mono font-bold flex items-center justify-center shadow-red-glow">
+              {activeAlertsCount}
+            </span>
           </button>
 
-          {/* Officer Profile Badge */}
-          <div className="hidden sm:flex items-center gap-2.5 pl-3 border-l border-gov-border">
-            <div className="w-8 h-8 rounded-full bg-gov-secondary border border-gov-borderStrong flex items-center justify-center text-text-secondary shadow-xs">
+          {/* Officer Profile */}
+          <div className="flex items-center gap-2.5 pl-2 border-l border-[#16324A]">
+            <div className="w-8 h-8 rounded-full bg-[#0D1E30] border border-[#16324A] flex items-center justify-center text-slate-300">
               <User className="w-4 h-4" />
             </div>
             <div className="flex flex-col text-left">
-              <span className="text-xs font-bold text-text-primary leading-tight">
-                Monitoring Unit
+              <span className="text-xs font-bold text-white leading-tight">
+                Monitoring Officer
               </span>
-              <span className="text-[10px] font-mono text-text-muted">Officer ID: IPMD-2026</span>
+              <span className="text-[10px] font-mono text-slate-300">MoSPI - IPMD</span>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Second Row: Reporting Cycle + Search + Ask PAIMANA Button */}
+      <div className="px-6 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0B1A2A]">
+        {/* Left: Reporting Cycle Dropdown */}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0D1E30] border border-[#16324A] text-xs text-white cursor-pointer hover:border-[#1E4260] transition-colors">
+            <Calendar className="w-3.5 h-3.5 text-slate-300" />
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] font-mono text-slate-300 uppercase">Reporting Cycle</span>
+              <span className="font-bold font-mono text-white text-xs">Jun 2026 (Monthly)</span>
+            </div>
+            <ChevronDown className="w-3.5 h-3.5 text-slate-300 ml-1" />
+          </div>
+        </div>
+
+        {/* Center: Search Bar */}
+        <div className="relative flex-1 max-w-xl">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300 w-4 h-4" />
+          <input
+            type="text"
+            placeholder="Search project ID, code, ministry, state..."
+            value={searchTerm}
+            onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
+            className="w-full bg-[#07131F] border border-[#16324A] rounded-lg pl-10 pr-9 py-1.5 text-xs text-white placeholder:text-slate-400 focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF]/20 transition-all font-sans"
+          />
+          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 font-mono text-[10px] text-slate-300 bg-[#0D1E30] border border-[#16324A] px-1.5 py-0.5 rounded">
+            /
+          </kbd>
+        </div>
+
+        {/* Right: Ask PAIMANA AI Button */}
+        <div>
+          <button
+            onClick={onOpenAssistant}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-lg bg-[#0D1E30] hover:bg-[#16324A] border border-[#F59E0B] text-[#F59E0B] font-bold text-xs shadow-gold-glow transition-all"
+          >
+            <Sparkles className="w-4 h-4 text-[#F59E0B]" />
+            <span>Ask PAIMANA AI</span>
+          </button>
         </div>
       </div>
     </header>

@@ -3,84 +3,45 @@
 @tailwind utilities;
 
 :root {
-  /* Brand Tokens - Warm Saffron & Deep Ochre */
-  --brand: #C97919;
-  --brand-dark: #964F0A;
-  --brand-light: #FBF2E3;
-  --brand-border: #E8C89C;
-
-  /* Intelligence Tokens - Refined Government Forest Teal */
-  --intel: #2D726F;
-  --intel-dark: #1E504E;
-  --intel-light: #EBF5F4;
-  --intel-border: #BCDEDC;
-
-  /* Background & Surface Tokens - Warm Sand & Stone Greys */
-  --background: #F2F3EE;
-  --surface: #FFFFFF;
-  --surface-secondary: #E6E8E1;
-  --surface-subtle: #FAFBF8;
-
-  /* Text Tokens - High Contrast Charcoal & Slate */
-  --text-primary: #1C1F23;
-  --text-secondary: #4A5158;
-  --text-muted: #737A82;
-
-  /* Border Tokens - Defined, Clean Separation */
-  --border: #D3D6CE;
-  --border-strong: #B8BDB0;
-
-  /* Semantic Risk Tokens with Complementary Backgrounds */
-  --risk-normal: #2B6E44;
-  --risk-normal-bg: #EDF7F1;
-  --risk-normal-border: #BDDFCB;
-
-  --risk-watch: #916812;
-  --risk-watch-bg: #FEF9EB;
-  --risk-watch-border: #EBD9A0;
-
-  --risk-review: #B55214;
-  --risk-review-bg: #FEF3EB;
-  --risk-review-border: #F5CDAF;
-
-  --risk-critical: #A82420;
-  --risk-critical-bg: #FDF0EF;
-  --risk-critical-border: #F3BFBC;
+  --bg-command: #07131F;
+  --card-command: #0D1E30;
+  --border-command: #16324A;
 }
 
 @layer base {
   body {
-    background-color: var(--background);
-    color: var(--text-primary);
+    background-color: #07131F;
+    color: #F1F5F9;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    color: var(--text-primary);
-    font-weight: 600;
-    letter-spacing: -0.015em;
+    color: #FFFFFF;
+    font-weight: 700;
+    letter-spacing: -0.01em;
   }
 }
 
-/* Institutional custom scrollbars */
+/* Custom scrollbars for dark command center */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--surface-secondary);
+  background: #0B1A2A;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
+  background: #1E4260;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
+  background: #2E5A80;
 }

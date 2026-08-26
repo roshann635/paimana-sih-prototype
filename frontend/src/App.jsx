@@ -12,6 +12,7 @@ import Benchmarking from './pages/Benchmarking/Benchmarking';
 import DataQualityCenter from './pages/DataQualityCenter/DataQualityCenter';
 import ModelHealth from './pages/ModelHealth/ModelHealth';
 import ReportsCenter from './pages/ReportsCenter/ReportsCenter';
+import InterventionsCenter from './pages/InterventionsCenter/InterventionsCenter';
 import AIAssistantDrawer from './components/intelligence/AIAssistantDrawer';
 
 export default function App() {
@@ -41,10 +42,11 @@ export default function App() {
     navigate(`/projects/${projectId}`);
   };
 
-  // Route resolver
+  // Route resolver with full route aliases and parameters
   const renderCurrentView = () => {
+    // 1. Dynamic Project Deep Dive Route: /projects/:id
     if (currentPath.startsWith('/projects/') && currentPath.length > 10) {
-      const pid = currentPath.replace('/projects/', '');
+      const pid = currentPath.replace('/projects/', '').split('?')[0];
       return (
         <ProjectDeepDive
           projectId={pid || selectedProjectId}
@@ -54,68 +56,103 @@ export default function App() {
       );
     }
 
-    switch (currentPath) {
+    // Normalized path without query params
+    const cleanPath = currentPath.split('?')[0].toLowerCase();
+
+    switch (cleanPath) {
       case '/':
       case '/overview':
+      case '/dashboard':
         return (
           <NationalOverview
             onNavigate={navigate}
             onSelectProject={handleSelectProject}
+            onOpenAssistant={() => setIsAssistantOpen(true)}
+          />
+        );
+
+      case '/projects':
+      case '/all-projects':
+      case '/explorer':
+        return (
+          <ProjectExplorer
+            onSelectProject={handleSelectProject}
+            initialSearch={searchTerm}
           />
         );
 
       case '/priority-queue':
+      case '/priority':
+      case '/interventions-queue':
         return (
           <PriorityQueue
             onSelectProject={handleSelectProject}
           />
         );
 
-      case '/projects':
-        return (
-          <ProjectExplorer
-            onSelectProject={handleSelectProject}
-          />
-        );
-
-      case '/early-warnings':
-        return (
-          <EarlyWarningCenter
-            onSelectProject={handleSelectProject}
-          />
-        );
-
       case '/map':
+      case '/state-map':
+      case '/geography':
+      case '/spatial':
         return (
           <InteractiveMap
             onSelectProject={handleSelectProject}
           />
         );
 
+      case '/early-warnings':
+      case '/alerts':
+      case '/surveillance':
+      case '/bulletins':
+        return (
+          <EarlyWarningCenter
+            onSelectProject={handleSelectProject}
+          />
+        );
+
       case '/analytics/portfolio':
       case '/analytics/sectors':
+      case '/sectors':
+      case '/risk-analytics':
+      case '/schedule-risk':
         return <SectorAnalytics />;
 
       case '/analytics/ministries':
+      case '/ministries':
+      case '/cost-risk':
         return <MinistryAnalytics onNavigate={navigate} />;
 
       case '/analytics/benchmarking':
+      case '/benchmarking':
+      case '/baselines':
         return <Benchmarking />;
 
       case '/intelligence/risk-diagnosis':
+      case '/interventions':
+      case '/actions':
+      case '/remediation':
         return (
-          <ProjectExplorer
+          <InterventionsCenter
             onSelectProject={handleSelectProject}
           />
         );
 
       case '/intelligence/model-health':
+      case '/model-health':
+      case '/governance/model-health':
+      case '/ml-governance':
         return <ModelHealth />;
 
       case '/data-quality':
+      case '/dqe':
+      case '/governance/data-quality':
+      case '/ingestion-audit':
         return <DataQualityCenter />;
 
       case '/reports':
+      case '/reports-downloads':
+      case '/downloads':
+      case '/briefings':
         return <ReportsCenter />;
 
       default:
@@ -123,6 +160,7 @@ export default function App() {
           <NationalOverview
             onNavigate={navigate}
             onSelectProject={handleSelectProject}
+            onOpenAssistant={() => setIsAssistantOpen(true)}
           />
         );
     }
@@ -134,7 +172,12 @@ export default function App() {
       onNavigate={navigate}
       onOpenAssistant={() => setIsAssistantOpen(true)}
       searchTerm={searchTerm}
-      onSearchChange={setSearchTerm}
+      onSearchChange={(term) => {
+        setSearchTerm(term);
+        if (term.trim() && currentPath !== '/projects') {
+          navigate('/projects');
+        }
+      }}
     >
       {renderCurrentView()}
 

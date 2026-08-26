@@ -1,53 +1,100 @@
 import React from 'react';
+import { FileText, Coins, Landmark, Bell, ArrowUp } from 'lucide-react';
 
-export default function KPICard({ label, value, context, trend, status, accentColor, loading = false }) {
-  if (loading) {
-    return (
-      <div className="bg-gov-surface border border-gov-border rounded-gov p-5 shadow-gov animate-pulse">
-        <div className="h-3.5 bg-gov-secondary rounded w-28 mb-3"></div>
-        <div className="h-8 bg-gov-secondary rounded w-20 mb-2"></div>
-        <div className="h-3 bg-gov-secondary rounded w-36"></div>
-      </div>
-    );
-  }
+export default function KPICard({
+  type = 'portfolio', // 'portfolio' | 'baseline' | 'exposure' | 'alerts'
+  title,
+  value,
+  subvalue,
+  subvalueText,
+  footerText,
+  badgeColor = 'cyan',
+}) {
+  const getIcon = () => {
+    switch (type) {
+      case 'portfolio':
+        return (
+          <div className="w-12 h-12 rounded-full bg-[#07131F] border border-[#00E5FF]/40 flex items-center justify-center text-[#00E5FF] shadow-cyan-glow shrink-0">
+            <FileText className="w-5 h-5" />
+          </div>
+        );
+      case 'baseline':
+        return (
+          <div className="w-12 h-12 rounded-full bg-[#07131F] border border-[#F59E0B]/40 flex items-center justify-center text-[#F59E0B] shadow-gold-glow shrink-0">
+            <Coins className="w-5 h-5" />
+          </div>
+        );
+      case 'exposure':
+        return (
+          <div className="w-12 h-12 rounded-full bg-[#07131F] border border-[#00E5FF]/40 flex items-center justify-center text-[#00E5FF] shadow-cyan-glow shrink-0">
+            <Landmark className="w-5 h-5" />
+          </div>
+        );
+      case 'alerts':
+        return (
+          <div className="w-12 h-12 rounded-full bg-[#07131F] border border-[#EF4444]/40 flex items-center justify-center text-[#EF4444] shadow-red-glow shrink-0">
+            <Bell className="w-5 h-5" />
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
 
-  let valueColor = 'text-text-primary';
-  let topBarColor = 'border-t-[#D3D6CE]';
-
-  if (status === 'critical') {
-    valueColor = 'text-risk-critical';
-    topBarColor = 'border-t-risk-critical';
-  } else if (status === 'review') {
-    valueColor = 'text-risk-review';
-    topBarColor = 'border-t-risk-review';
-  } else if (status === 'watch') {
-    valueColor = 'text-risk-watch';
-    topBarColor = 'border-t-risk-watch';
-  } else if (status === 'normal' || status === 'brand') {
-    valueColor = 'text-brand-dark';
-    topBarColor = 'border-t-brand';
-  }
+  const getSubvalueBadge = () => {
+    if (type === 'portfolio') {
+      return (
+        <span className="inline-flex items-center gap-1 text-[11px] font-mono text-[#00E5FF]">
+          <ArrowUp className="w-3 h-3" />
+          <span className="font-bold">24</span>
+          <span className="text-slate-400 font-sans">this reporting cycle</span>
+        </span>
+      );
+    }
+    if (type === 'baseline') {
+      return (
+        <span className="inline-flex items-center gap-1 text-[11px] font-mono text-[#F59E0B]">
+          <ArrowUp className="w-3 h-3" />
+          <span className="font-bold">6.4%</span>
+          <span className="text-slate-400 font-sans">vs sanctioned</span>
+        </span>
+      );
+    }
+    if (type === 'exposure') {
+      return (
+        <span className="text-[11px] font-sans text-slate-300">
+          <strong className="text-white font-mono">33</strong> projects at risk
+        </span>
+      );
+    }
+    if (type === 'alerts') {
+      return (
+        <span className="inline-flex items-center px-2 py-0.5 rounded bg-[#EF4444]/20 border border-[#EF4444]/40 text-[#EF4444] text-[10px] font-mono font-bold">
+          38 Critical Bulletins
+        </span>
+      );
+    }
+    return null;
+  };
 
   return (
-    <div className={`bg-gov-surface border border-gov-border border-t-[3px] ${topBarColor} rounded-gov p-5 shadow-gov hover:shadow-gov-md transition-all flex flex-col justify-between`}>
-      <div>
-        <div className="text-[11px] font-bold tracking-wider uppercase text-text-secondary mb-2 truncate">
-          {label}
+    <div className="bg-[#0D1E30] border border-[#16324A] rounded-xl p-5 shadow-command-card flex items-center justify-between hover:border-[#1E4260] transition-all">
+      <div className="space-y-1.5 flex-1 pr-3">
+        <div className="text-[10px] font-mono font-bold tracking-wider uppercase text-slate-400">
+          {title}
         </div>
-        <div className={`text-2xl lg:text-[28px] font-extrabold tracking-tight ${valueColor} mb-1.5 leading-tight font-mono`}>
-          {value ?? '—'}
+        <div className="text-2xl lg:text-3xl font-extrabold font-mono text-white tracking-tight leading-tight">
+          {value}
+        </div>
+        <div className="pt-0.5">
+          {getSubvalueBadge()}
+        </div>
+        <div className="text-[11px] text-slate-400 font-sans">
+          {footerText}
         </div>
       </div>
-      {(context || trend) && (
-        <div className="flex items-center gap-1.5 text-xs text-text-muted pt-2 border-t border-gov-border/60 truncate mt-1">
-          {trend && (
-            <span className="font-semibold text-brand-dark bg-brand-light px-1.5 py-0.2 rounded text-[11px] border border-brand/20">
-              {trend}
-            </span>
-          )}
-          {context && <span className="truncate">{context}</span>}
-        </div>
-      )}
+
+      {getIcon()}
     </div>
   );
 }

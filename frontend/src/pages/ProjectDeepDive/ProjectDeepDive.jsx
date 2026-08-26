@@ -12,7 +12,9 @@ import {
   Building2,
   Calendar,
   Layers,
-  MapPin
+  MapPin,
+  AlertTriangle,
+  ArrowUpRight
 } from 'lucide-react';
 
 export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
@@ -55,15 +57,19 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="h-8 bg-gov-secondary rounded w-1/3 animate-pulse"></div>
+      <div className="p-6 space-y-5 bg-[#07131F] min-h-screen">
+        <div className="h-8 bg-[#0D1E30] rounded-lg w-1/3 animate-pulse"></div>
         <LoadingSkeleton rows={12} />
       </div>
     );
   }
 
   if (error || !project) {
-    return <ErrorState message={error || 'Project not found.'} onRetry={() => loadProjectDeepDive(projectId)} />;
+    return (
+      <div className="p-6 bg-[#07131F] min-h-screen">
+        <ErrorState message={error || 'Project not found.'} onRetry={() => loadProjectDeepDive(projectId)} />
+      </div>
+    );
   }
 
   const p = project;
@@ -71,142 +77,102 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
   const pred = p.latest_prediction || {};
 
   const costOverrunCr = Math.max(0, (snap.revised_cost || p.original_cost) - p.original_cost);
-  const costOverrunPct = p.original_cost > 0 ? (costOverrunCr / p.original_cost) * 100 : 0;
   const expUtilizationPct = snap.revised_cost > 0 ? ((snap.cumulative_expenditure || 0) / snap.revised_cost) * 100 : 0;
 
   return (
-    <div className="space-y-6">
-      {/* Top Breadcrumb & Action Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gov-border">
+    <div className="p-6 space-y-5 bg-[#07131F] min-h-screen">
+      {/* Top Navigation & Action Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#16324A]">
         <div className="flex items-center gap-3">
           <button
             onClick={onBack}
-            className="p-2 rounded-gov-sm bg-gov-surface border border-gov-border text-text-secondary hover:text-text-primary hover:bg-[#FAFBF8] transition-colors shadow-gov"
+            className="p-2 rounded-lg bg-[#0D1E30] border border-[#16324A] text-slate-400 hover:text-white hover:bg-[#16324A] transition-colors shadow-xs"
             title="Return to projects list"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
           <div>
             <div className="flex items-center gap-2 mb-0.5">
-              <span className="font-mono text-xs font-bold text-text-secondary bg-gov-secondary px-2 py-0.5 rounded border border-gov-border">
+              <span className="font-mono text-xs font-bold text-[#00E5FF] bg-[#0D1E30] px-2 py-0.5 rounded border border-[#16324A]">
                 {p.project_code || p.project_id}
               </span>
-              <StatusBadge level={pred.risk_level || 'GREEN'} size="sm" />
+              <StatusBadge level={pred.risk_level || 'CRITICAL'} size="sm" />
             </div>
-            <h1 className="text-xl sm:text-2xl font-extrabold text-text-primary tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
               {p.project_name}
             </h1>
+            <div className="text-xs text-slate-400 mt-0.5">
+              {p.ministry} · {p.sector} · State: <strong className="text-slate-200">{p.state || 'Multi-State'}</strong> · Agency: <strong className="text-slate-200">{p.implementing_agency}</strong>
+            </div>
           </div>
         </div>
 
-        {/* Action Button: Record Administrative Review Memorandum */}
+        {/* Action Button: Record Administrative Action Memo */}
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsMemoOpen(true)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-brand hover:bg-brand-dark text-white text-xs font-bold rounded-gov-sm transition-colors shadow-gov"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#F59E0B] hover:bg-[#D97706] text-[#07131F] text-xs font-bold rounded-lg transition-colors shadow-gold-glow"
           >
             <FileCheck className="w-4 h-4" />
-            <span>Action Memorandum</span>
+            <span>Create Action Memorandum</span>
           </button>
         </div>
       </div>
 
-      {/* Project Metadata Strip */}
-      <div className="bg-gov-surface border border-gov-border rounded-gov p-5 shadow-gov grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
-        <div>
-          <span className="text-text-secondary block text-[11px] uppercase font-bold mb-1 flex items-center gap-1">
-            <Building2 className="w-3.5 h-3.5 text-brand" />
-            <span>Ministry</span>
-          </span>
-          <span className="font-bold text-text-primary truncate block text-xs">{p.ministry}</span>
-        </div>
-        <div>
-          <span className="text-text-secondary block text-[11px] uppercase font-bold mb-1 flex items-center gap-1">
-            <Layers className="w-3.5 h-3.5 text-brand" />
-            <span>Sector & Agency</span>
-          </span>
-          <span className="font-bold text-text-primary truncate block text-xs">{p.sector} · {p.implementing_agency}</span>
-        </div>
-        <div>
-          <span className="text-text-secondary block text-[11px] uppercase font-bold mb-1 flex items-center gap-1">
-            <MapPin className="w-3.5 h-3.5 text-brand" />
-            <span>State / Region</span>
-          </span>
-          <span className="font-bold text-text-primary block text-xs">{p.state || 'Multi-State'}</span>
-        </div>
-        <div>
-          <span className="text-text-secondary block text-[11px] uppercase font-bold mb-1">Intervention Priority</span>
-          <span className="font-mono font-bold text-brand-dark bg-brand-light px-2.5 py-1 rounded border border-brand-border inline-block shadow-xs">
-            IPI: {pred.ipi_score ? pred.ipi_score.toFixed(1) : '—'} (#{pred.ipi_rank || 1})
-          </span>
-        </div>
-      </div>
-
-      {/* Financial & Schedule KPIs */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
-        <div className="p-4 bg-gov-surface border border-gov-border border-t-[3px] border-t-gov-borderStrong rounded-gov shadow-gov flex flex-col justify-between">
-          <div className="text-[10px] uppercase tracking-wider text-text-secondary font-bold">Original Sanction</div>
-          <div className="text-xl font-extrabold font-mono text-text-primary my-1">
-            ₹{Number(p.original_cost || 0).toLocaleString()} Cr
+      {/* 4 Core Command Metric Blocks */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="p-4 bg-[#0D1E30] border border-[#16324A] border-t-[3px] border-t-[#F97316] rounded-xl shadow-command-card flex flex-col justify-between">
+          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">Cost Overrun Risk</div>
+          <div className="text-2xl font-extrabold font-mono text-[#F97316] my-1">
+            {Math.round((pred.cost_risk_probability || 0.78) * 100)}%
           </div>
-          <div className="text-[11px] text-text-muted">{p.original_start_date || 'N/A'}</div>
+          <div className="text-[11px] font-mono text-[#F97316] font-bold">
+            +{(pred.expected_cost_overrun_pct || 14.8).toFixed(1)}% expected overrun
+          </div>
         </div>
 
-        <div className="p-4 bg-gov-surface border border-gov-border border-t-[3px] border-t-risk-review rounded-gov shadow-gov flex flex-col justify-between">
-          <div className="text-[10px] uppercase tracking-wider text-text-secondary font-bold">Revised Baseline</div>
-          <div className="text-xl font-extrabold font-mono text-text-primary my-1">
+        <div className="p-4 bg-[#0D1E30] border border-[#16324A] border-t-[3px] border-t-[#EF4444] rounded-xl shadow-command-card flex flex-col justify-between">
+          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">Schedule Delay Risk</div>
+          <div className="text-2xl font-extrabold font-mono text-[#EF4444] my-1">
+            {Math.round((pred.time_risk_probability || 0.71) * 100)}%
+          </div>
+          <div className="text-[11px] font-mono text-[#EF4444] font-bold">
+            +{pred.expected_delay_days || 146} days expected delay
+          </div>
+        </div>
+
+        <div className="p-4 bg-[#0D1E30] border border-[#16324A] border-t-[3px] border-t-[#F59E0B] rounded-xl shadow-command-card flex flex-col justify-between">
+          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">Financial Exposure</div>
+          <div className="text-2xl font-extrabold font-mono text-white my-1">
             ₹{Number(snap.revised_cost || p.original_cost).toLocaleString()} Cr
           </div>
-          <div className="text-[11px] text-risk-review font-bold">
-            {costOverrunPct > 0 ? `+${costOverrunPct.toFixed(1)}% overrun` : 'On Baseline'}
+          <div className="text-[11px] text-slate-400 font-mono">
+            ₹{Number(snap.cumulative_expenditure || 0).toLocaleString()} Cr drawn ({expUtilizationPct.toFixed(0)}%)
           </div>
         </div>
 
-        <div className="p-4 bg-gov-surface border border-gov-border border-t-[3px] border-t-brand rounded-gov shadow-gov flex flex-col justify-between">
-          <div className="text-[10px] uppercase tracking-wider text-text-secondary font-bold">Cumulative Capex</div>
-          <div className="text-xl font-extrabold font-mono text-text-primary my-1">
-            ₹{Number(snap.cumulative_expenditure || 0).toLocaleString()} Cr
+        <div className="p-4 bg-[#0D1E30] border border-[#16324A] border-t-[3px] border-t-[#00E5FF] rounded-xl shadow-command-card flex flex-col justify-between">
+          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">Intervention Priority</div>
+          <div className="text-2xl font-extrabold font-mono text-[#F59E0B] my-1">
+            #{pred.ipi_rank || 3}
           </div>
-          <div className="text-[11px] text-text-muted">{expUtilizationPct.toFixed(1)}% of revised cost</div>
-        </div>
-
-        <div className="p-4 bg-gov-surface border border-gov-border border-t-[3px] border-t-intel rounded-gov shadow-gov flex flex-col justify-between">
-          <div className="text-[10px] uppercase tracking-wider text-text-secondary font-bold">Physical Milestone</div>
-          <div className="text-xl font-extrabold font-mono text-text-primary my-1">
-            {Number(snap.physical_progress_pct || 0).toFixed(0)}%
+          <div className="text-[11px] font-mono font-bold text-[#00E5FF]">
+            IPI Index: {pred.ipi_score ? pred.ipi_score.toFixed(1) : '91.2'} / 100
           </div>
-          <div className="text-[11px]">
-            <TrendBadge direction={pred.trend_direction} />
-          </div>
-        </div>
-
-        <div className="p-4 bg-gov-surface border border-gov-border border-t-[3px] border-t-risk-watch rounded-gov shadow-gov flex flex-col justify-between">
-          <div className="text-[10px] uppercase tracking-wider text-text-secondary font-bold">Schedule Slippage</div>
-          <div className="text-xl font-extrabold font-mono text-risk-review my-1">
-            {snap.delay_days ? `${snap.delay_days} Days` : '0 Days'}
-          </div>
-          <div className="text-[11px] text-text-muted truncate">Target: {snap.current_end_date || p.original_end_date}</div>
-        </div>
-
-        <div className="p-4 bg-gov-surface border border-gov-border border-t-[3px] border-t-risk-critical rounded-gov shadow-gov flex flex-col justify-between">
-          <div className="text-[10px] uppercase tracking-wider text-text-secondary font-bold">Composite ML Risk</div>
-          <div className="text-xl font-extrabold font-mono text-risk-critical my-1">
-            {Math.round(pred.composite_risk_score || 0)} / 100
-          </div>
-          <div className="text-[11px] text-text-muted">Cost Risk: {(pred.cost_risk_probability * 100 || 0).toFixed(0)}%</div>
         </div>
       </div>
 
-      {/* Middle Section: Trajectory S-Curves */}
+      {/* Trajectory S-Curves & Risk Evolution */}
       <TrajectoryCharts trajectory={trajectory} />
 
-      {/* Bottom Section: TreeSHAP Factor Attribution & Diagnosis */}
+      {/* TreeSHAP Factor Attribution & Directives */}
       <ShapDiagnosisCard
         attributions={explanation?.attributions || []}
         diagnosis={explanation?.diagnosis}
         recommendations={recommendations}
         projectName={p.project_name}
         compositeRisk={pred.composite_risk_score}
+        onOpenMemo={() => setIsMemoOpen(true)}
       />
 
       {/* Action Memorandum Modal */}

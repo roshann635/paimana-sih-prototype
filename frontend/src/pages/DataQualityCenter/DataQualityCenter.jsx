@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { LoadingSkeleton, ErrorState } from '../../components/common/FeedbackStates';
 import { paimanaApi } from '../../services/api/paimanaApi';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, Database, CheckCircle2, AlertTriangle, FileText } from 'lucide-react';
 
 export default function DataQualityCenter() {
   const [dqe, setDqe] = useState(null);
@@ -36,80 +36,87 @@ export default function DataQualityCenter() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="pb-3 border-b border-gov-border">
-        <h1 className="text-2xl font-bold text-text-primary tracking-tight">
-          Data Quality & Ingestion Audit Center
-        </h1>
-        <p className="text-xs text-text-secondary mt-0.5">
-          Validation, integrity checks, and anomaly resolution executed by the automated Data Quality Engine (DQE).
-        </p>
+    <div className="p-6 space-y-5 bg-[#07131F] min-h-screen">
+      {/* Header */}
+      <div className="flex items-center gap-2.5 pb-3 border-b border-[#16324A]">
+        <Database className="w-5 h-5 text-[#00E5FF]" />
+        <div>
+          <h1 className="text-xl lg:text-2xl font-extrabold text-white tracking-tight uppercase">
+            Data Quality & Ingestion Audit Center
+          </h1>
+          <p className="text-xs text-slate-400 mt-0.5">
+            Validation, integrity checks, and anomaly resolution executed by the automated Data Quality Engine (DQE).
+          </p>
+        </div>
       </div>
 
       {/* DQE Score KPI Header */}
-      <div className="bg-gov-surface border border-gov-border rounded-gov p-6 shadow-gov">
+      <div className="bg-[#0D1E30] border border-[#16324A] rounded-xl p-6 shadow-command-card">
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 items-center">
-          <div className="sm:border-r border-gov-border pr-4">
-            <div className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider">Overall Quality Score</div>
-            <div className="text-3xl font-bold font-mono text-text-primary mt-1">
+          <div className="sm:border-r border-[#16324A] pr-4">
+            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">Overall Quality Score</div>
+            <div className="text-3xl font-extrabold font-mono text-[#10B981] mt-1">
               {score.toFixed(1)}%
             </div>
             <div className="mt-1.5">
-              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-risk-normal bg-green-50 px-2 py-0.5 rounded border border-green-200">
+              <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-[#10B981] bg-[#10B981]/15 px-2 py-0.5 rounded border border-[#10B981]/30">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>Verified Clean Pipeline</span>
               </span>
             </div>
           </div>
 
-          <div className="sm:border-r border-gov-border pr-4">
-            <div className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider">Total Snapshots Audited</div>
-            <div className="text-2xl font-bold font-mono text-text-primary mt-1">
+          <div className="sm:border-r border-[#16324A] pr-4">
+            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">Total Snapshots Audited</div>
+            <div className="text-2xl font-extrabold font-mono text-white mt-1">
               {report.total_snapshots ? report.total_snapshots.toLocaleString() : '6,787'}
             </div>
-            <div className="text-[11px] text-text-muted mt-0.5">Across 1,630 central projects</div>
+            <div className="text-[11px] text-slate-400 mt-0.5">Across 1,630 central projects</div>
           </div>
 
-          <div className="sm:border-r border-gov-border pr-4">
-            <div className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider">Valid Verified Records</div>
-            <div className="text-2xl font-bold font-mono text-risk-normal mt-1">
+          <div className="sm:border-r border-[#16324A] pr-4">
+            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">Valid Verified Records</div>
+            <div className="text-2xl font-extrabold font-mono text-[#00E5FF] mt-1">
               {report.valid_snapshots ? report.valid_snapshots.toLocaleString() : '5,383'}
             </div>
-            <div className="text-[11px] text-text-muted mt-0.5">Directly admitted to feature matrix</div>
+            <div className="text-[11px] text-slate-400 mt-0.5">Directly admitted to feature matrix</div>
           </div>
 
           <div>
-            <div className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider">Anomalies Sanitized</div>
-            <div className="text-2xl font-bold font-mono text-risk-review mt-1">
+            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">Anomalies Sanitized</div>
+            <div className="text-2xl font-extrabold font-mono text-[#F59E0B] mt-1">
               {report.critical_errors_count || 707}
             </div>
-            <div className="text-[11px] text-text-muted mt-0.5">Imputed / Normalized by DQE</div>
+            <div className="text-[11px] text-slate-400 mt-0.5">Imputed / Normalized by DQE</div>
           </div>
         </div>
       </div>
 
       {/* Validation Rules & Integrity Checklist */}
-      <div className="bg-gov-surface border border-gov-border rounded-gov p-6 shadow-gov">
-        <h3 className="text-sm font-bold text-text-primary mb-3">
+      <div className="bg-[#0D1E30] border border-[#16324A] rounded-xl p-6 shadow-command-card space-y-4">
+        <h3 className="text-xs font-mono font-bold text-white uppercase tracking-wider pb-2 border-b border-[#16324A]">
           Automated Ingestion & Validation Rules
         </h3>
-        <div className="divide-y divide-gov-border">
+        <div className="divide-y divide-[#16324A]">
           {checks.map((c, i) => (
             <div key={i} className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="space-y-0.5">
-                <div className="text-xs font-semibold text-text-primary">{c.name}</div>
-                <div className="text-[11px] text-text-secondary">{c.desc}</div>
+                <div className="text-xs font-bold text-white">{c.name}</div>
+                <div className="text-[11px] text-slate-400 font-sans">{c.desc}</div>
               </div>
+
               <div className="flex items-center gap-3">
-                <span className="font-mono text-xs text-text-muted">
-                  {c.count} flags
-                </span>
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
-                  c.status === 'PASSED' ? 'bg-green-50 text-green-800 border-green-200' :
-                  c.status === 'RESOLVED' ? 'bg-blue-50 text-blue-800 border-blue-200' :
-                  'bg-amber-50 text-amber-800 border-amber-200'
+                <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold border ${
+                  c.status === 'PASSED'
+                    ? 'bg-[#10B981]/15 text-[#10B981] border-[#10B981]/30'
+                    : c.status === 'RESOLVED'
+                    ? 'bg-[#00E5FF]/15 text-[#00E5FF] border-[#00E5FF]/30'
+                    : 'bg-[#F59E0B]/15 text-[#F59E0B] border-[#F59E0B]/30'
                 }`}>
                   {c.status}
+                </span>
+                <span className="font-mono text-xs text-slate-400">
+                  {c.count} anomalies
                 </span>
               </div>
             </div>

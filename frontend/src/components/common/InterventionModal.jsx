@@ -51,112 +51,104 @@ export default function InterventionModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/30 flex items-center justify-center p-4">
-      <div className="bg-gov-surface border border-gov-border rounded-gov shadow-2xl max-w-lg w-full overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm">
+      <div className="bg-[#0D1E30] border border-[#16324A] rounded-xl shadow-2xl max-w-lg w-full overflow-hidden animate-in fade-in zoom-in-95 duration-150 text-slate-200">
         {/* Header */}
-        <div className="p-4 border-b border-gov-border bg-gov-secondary flex items-center justify-between">
+        <div className="p-4 border-b border-[#16324A] bg-[#0B1A2A] flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-gov-sm bg-brand-light border border-brand/30 flex items-center justify-center text-brand-dark">
+            <div className="w-8 h-8 rounded-lg bg-[#F59E0B]/10 border border-[#F59E0B]/40 flex items-center justify-center text-[#F59E0B] shadow-gold-glow">
               <FileText className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-text-primary">
+              <h3 className="text-sm font-extrabold text-white tracking-wide uppercase font-mono">
                 Administrative Review Action Memorandum
               </h3>
-              <p className="text-[11px] text-text-secondary">
+              <p className="text-[10px] font-mono text-[#00E5FF]">
                 Simulated Administrative Directive
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-gov-sm text-text-secondary hover:text-text-primary hover:bg-gov-surface transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-[#16324A] transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Prototype Reference Notice */}
-        <div className="px-4 py-2.5 bg-amber-50 border-b border-amber-200 text-amber-900 text-xs flex items-center gap-2 font-medium">
-          <ShieldAlert className="w-4 h-4 shrink-0 text-amber-700" />
-          <span>Prototype reference: <span className="font-mono">{demoRef}</span> — not an official government document.</span>
+        <div className="px-4 py-2.5 bg-[#07131F] border-b border-[#16324A] text-slate-400 text-xs flex items-center gap-2 font-mono">
+          <ShieldAlert className="w-4 h-4 shrink-0 text-[#F59E0B]" />
+          <span>Prototype reference: <strong className="text-white">{demoRef}</strong> (Simulated)</span>
         </div>
 
         {/* Form Body */}
         <div className="p-5 space-y-4 text-xs">
           <div>
-            <label className="block text-text-secondary font-semibold mb-1">Target Infrastructure Project</label>
-            <div className="p-3 bg-[#F7F7F4] border border-gov-border rounded-gov-sm">
-              <div className="font-semibold text-text-primary">{project.project_name}</div>
-              <div className="text-[11px] font-mono text-text-muted mt-0.5">
-                {project.project_code || project.project_id} · {project.ministry}
+            <label className="block text-slate-300 font-mono font-bold mb-1">Target Infrastructure Project</label>
+            <div className="p-3 bg-[#07131F] border border-[#16324A] rounded-lg">
+              <div className="font-bold text-white text-xs">{project.project_name}</div>
+              <div className="text-[11px] font-mono text-slate-400 mt-0.5">
+                {project.project_code || project.project_id} · {project.ministry} · State: {project.state || 'Multi-State'}
               </div>
             </div>
           </div>
 
           <div>
-            <label className="block text-text-secondary font-semibold mb-1">Action Category</label>
+            <label className="block text-slate-300 font-mono font-bold mb-1">Action Category</label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full bg-gov-surface border border-gov-border rounded-gov-sm px-3 py-2 text-xs text-text-primary focus:outline-none focus:border-brand shadow-sm"
+              className="w-full bg-[#07131F] border border-[#16324A] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00E5FF] font-sans"
             >
               <option value="INTER_MINISTERIAL_COORDINATION">Inter-Ministerial Project Coordination</option>
-              <option value="CONTRACTOR_PERFORMANCE_AUDIT">Contractor Performance Audit & Dispute Resolution</option>
-              <option value="LAND_ACQUISITION_ACCELERATION">Land Acquisition & Right-of-Way Facilitation</option>
-              <option value="STATUTORY_CLEARANCE_EXPEDITION">Statutory Regulatory Clearance Expedition</option>
-              <option value="BUDGET_RECONCILIATION">Capex Drawdown & Financial Re-estimation</option>
+              <option value="LAND_ACQUISITION_ESCALATION">Land Acquisition / RoW Escalation</option>
+              <option value="CONTRACTOR_CAPACITY_AUDIT">Contractor Capacity & Financial Audit</option>
+              <option value="STATUTORY_CLEARANCE_EXPEDITION">Statutory / Environmental Clearance Expedition</option>
+              <option value="REVISED_COST_SANCTION_REVIEW">Revised Cost Sanction Reconciliation</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-text-secondary font-semibold mb-1">Assignee Officer / Section</label>
+            <label className="block text-slate-300 font-mono font-bold mb-1">Assignee Officer / Section</label>
             <input
               type="text"
               value={assignedOfficer}
               onChange={(e) => setAssignedOfficer(e.target.value)}
-              className="w-full bg-gov-surface border border-gov-border rounded-gov-sm px-3 py-2 text-xs text-text-primary focus:outline-none focus:border-brand shadow-sm"
+              className="w-full bg-[#07131F] border border-[#16324A] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00E5FF] font-sans"
             />
           </div>
 
           <div>
-            <label className="block text-text-secondary font-semibold mb-1">Directives & Action Memorandum</label>
+            <label className="block text-slate-300 font-mono font-bold mb-1">Directives & Action Memorandum</label>
             <textarea
               rows={3}
               value={actionDirectives}
               onChange={(e) => setActionDirectives(e.target.value)}
-              className="w-full bg-gov-surface border border-gov-border rounded-gov-sm p-3 text-xs text-text-primary focus:outline-none focus:border-brand shadow-sm leading-relaxed"
+              className="w-full bg-[#07131F] border border-[#16324A] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00E5FF] font-sans"
             />
           </div>
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-gov-border bg-gov-secondary flex items-center justify-between">
-          <div className="text-[11px] text-text-muted font-medium">
-            Status: <span className="text-text-secondary">Simulated Record</span>
-          </div>
+        <div className="p-4 border-t border-[#16324A] bg-[#0B1A2A] flex items-center justify-between">
+          <span className="text-[10px] font-mono text-slate-400">
+            {success ? '✓ Action Recorded to Feedback Loop' : 'Logged into Audit Trail'}
+          </span>
+
           <div className="flex items-center gap-2">
             <button
               onClick={onClose}
-              className="px-3.5 py-1.5 bg-gov-surface border border-gov-border rounded-gov-sm text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-[#F7F7F4] transition-colors shadow-gov"
+              className="px-3.5 py-1.5 rounded-lg bg-[#07131F] border border-[#16324A] text-xs font-mono font-bold text-slate-300 hover:text-white hover:bg-[#16324A] transition-colors"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
-              disabled={saving || success}
-              className="px-4 py-1.5 bg-brand hover:bg-brand-dark text-white rounded-gov-sm text-xs font-semibold transition-colors shadow-gov flex items-center gap-1.5"
+              disabled={saving}
+              className="px-4 py-1.5 rounded-lg bg-[#F59E0B] hover:bg-[#D97706] text-[#07131F] text-xs font-mono font-bold transition-colors shadow-gold-glow"
             >
-              {success ? (
-                <>
-                  <CheckCircle className="w-3.5 h-3.5 text-white" />
-                  <span>Memorandum Recorded</span>
-                </>
-              ) : saving ? (
-                <span>Recording...</span>
-              ) : (
-                <span>Record Action Memorandum</span>
-              )}
+              {saving ? 'Recording...' : success ? '✓ Saved' : 'Record Action Memorandum'}
             </button>
           </div>
         </div>

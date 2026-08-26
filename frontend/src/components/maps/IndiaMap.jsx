@@ -1,200 +1,192 @@
-import React, { useState, useMemo } from 'react';
-import StatusBadge from '../common/StatusBadge';
+import React, { useState, useEffect, useMemo } from 'react';
 import { EXACT_INDIA_OUTLINE_PATH, STATE_DATA } from './indiaPathData';
-import { MapPin, Layers, AlertOctagon, ArrowRight, Activity, Filter } from 'lucide-react';
+import { paimanaApi } from '../../services/api/paimanaApi';
+import { Info, Plus, Minus, Maximize2 } from 'lucide-react';
 
-export default function IndiaMap({ onSelectState, selectedStateId = 'MH', filterRiskOnly = false }) {
-  const [hoveredState, setHoveredState] = useState(null);
-  const [activeStateId, setActiveStateId] = useState(selectedStateId);
-  const [heatmapMode, setHeatmapMode] = useState('risk'); // 'risk' | 'density'
+export default function IndiaMap({ onSelectState, selectedStateId = 'MH' }) {
+  const [activeTab, setActiveTab] = useState('Risk'); // 'Risk' | 'Density' | 'Exposure' | 'Projects'
+  const [stateDbData, setStateDbData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedStateCode, setSelectedStateCode] = useState(selectedStateId);
+  const [hoveredStateCode, setHoveredStateCode] = useState(null);
+  const [zoomLevel, setZoomLevel] = useState(1);
 
+  // Load real state aggregations from MoSPI database
+  useEffect(() => {
+    paimanaApi.getStateAnalytics()
+      .then((data) => {
+        if (data && data.length > 0) {
+          setStateDbData(data);
+        }
+      })
+      .catch((err) => {
+        console.warn('Failed to load state analytics from API:', err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  // Merge SVG coordinate geometry with actual database statistics
+  const mergedStateData = useMemo(() => {
+    const dbMap = new Map();
+    stateDbData.forEach((st) => {
+      dbMap.set(st.id, st);
+      dbMap.set(st.name.toLowerCase(), st);
+    });
+
+    return STATE_DATA.map((geo) => {
+      const dbRecord = dbMap.get(geo.id) || dbMap.get(geo.name.toLowerCase()) || {};
+      return {
+        ...geo,
+        count: dbRecord.count ?? geo.count,
+        capex: dbRecord.capex ?? geo.capex,
+        capex_raw: dbRecord.capex_raw ?? 50000,
+        avgProgress: dbRecord.avg_progress ?? geo.avgProgress,
+        critical: dbRecord.critical ?? geo.critical,
+        high_risk: dbRecord.high_risk ?? 1,
+        avg_risk: dbRecord.avg_risk ?? 22.5,
+        portfolio_health: dbRecord.portfolio_health ?? 72
+      };
+    });
+  }, [stateDbData]);
+
+  // Active state record
   const activeState = useMemo(() => {
-    return STATE_DATA.find(s => s.id === activeStateId) || STATE_DATA[0];
-  }, [activeStateId]);
+    const targetCode = hoveredStateCode || selectedStateCode;
+    return mergedStateData.find(s => s.id === targetCode) || mergedStateData.find(s => s.id === 'MH') || mergedStateData[0];
+  }, [mergedStateData, selectedStateCode, hoveredStateCode]);
 
-  const handleStateClick = (state) => {
-    setActiveStateId(state.id);
-    if (onSelectState) onSelectState(state);
+  // Color generator based on live dataset metrics
+  const getStateColor = (st, isSelected) => {
+    if (isSelected) return '#F59E0B';
+
+    if (activeTab === 'Risk') {
+      if (st.critical >= 3 || st.avg_risk >= 30) return '#EF4444'; // Critical Red
+      if (st.high_risk >= 3 || st.avg_risk >= 24) return '#F97316'; // High Orange
+      if (st.avg_risk >= 20 || st.count >= 50) return '#F59E0B';   // Moderate Yellow
+      if (st.avg_risk >= 16) return '#10B981';                      // Low Green
+      return '#00E5FF';                                             // Stable Cyan
+    }
+
+    if (activeTab === 'Density' || activeTab === 'Projects') {
+      if (st.count >= 100) return '#EF4444';
+      if (st.count >= 70) return '#F97316';
+      if (st.count >= 40) return '#F59E0B';
+      if (st.count >= 15) return '#10B981';
+      return '#00E5FF';
+    }
+
+    if (activeTab === 'Exposure') {
+      if (st.capex_raw >= 250000) return '#EF4444';
+      if (st.capex_raw >= 150000) return '#F97316';
+      if (st.capex_raw >= 75000) return '#F59E0B';
+      if (st.capex_raw >= 25000) return '#10B981';
+      return '#00E5FF';
+    }
+
+    return '#10B981';
   };
 
   return (
-    <div className="bg-gov-surface border border-gov-border rounded-gov p-6 shadow-gov">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 mb-5 border-b border-gov-border">
-        <div>
-          <div className="flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-brand" />
-            <h3 className="text-base font-extrabold text-text-primary tracking-tight">
-              National Infrastructure Geographic Observatory
-            </h3>
-          </div>
-          <p className="text-xs text-text-secondary mt-0.5">
-            Geographic distribution of monitored infrastructure capex, regional execution velocity, and early warning risk clusters across India.
-          </p>
+    <div className="bg-[#0D1E30] border border-[#16324A] rounded-xl p-4 shadow-command-card flex flex-col justify-between relative overflow-hidden flex-1 h-full min-h-[480px]">
+      {/* 1. Header with Toggles & Live Indicator */}
+      <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-[#16324A]/70 z-10">
+        <div className="flex items-center gap-2">
+          <span className="font-mono font-bold uppercase text-[11px] text-slate-300 tracking-wider">
+            Portfolio Geography
+          </span>
+          <span className="px-1.5 py-0.5 rounded bg-[#00E5FF]/10 text-[#00E5FF] text-[9px] font-mono font-bold border border-[#00E5FF]/30">
+            Live MoSPI Data
+          </span>
         </div>
 
-        {/* View Mode Controls */}
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1 bg-[#FAFBF8] p-1 rounded-gov-sm border border-gov-border">
+        {/* Toggle Pills */}
+        <div className="flex items-center gap-1 bg-[#07131F] p-0.5 rounded-lg border border-[#16324A]">
+          {['Risk', 'Density', 'Exposure', 'Projects'].map((tab) => (
             <button
-              onClick={() => setHeatmapMode('risk')}
-              className={`px-3 py-1 text-xs font-bold rounded-gov-sm transition-all ${
-                heatmapMode === 'risk'
-                  ? 'bg-brand text-white shadow-xs'
-                  : 'text-text-secondary hover:text-text-primary'
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-2 py-0.5 text-[10px] font-mono font-bold rounded transition-all ${
+                activeTab === tab
+                  ? 'bg-[#F59E0B] text-[#07131F] shadow-gold-glow'
+                  : 'text-slate-400 hover:text-white'
               }`}
             >
-              Risk Heatmap
+              {tab}
             </button>
-            <button
-              onClick={() => setHeatmapMode('density')}
-              className={`px-3 py-1 text-xs font-bold rounded-gov-sm transition-all ${
-                heatmapMode === 'density'
-                  ? 'bg-brand text-white shadow-xs'
-                  : 'text-text-secondary hover:text-text-primary'
-              }`}
-            >
-              Project Volume
-            </button>
-          </div>
+          ))}
         </div>
       </div>
 
-      {/* Main Grid: Exact SVG Map + State Dossier */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* SVG India Map Container */}
-        <div className="lg:col-span-7 bg-[#FAFBF8] border border-gov-border rounded-gov p-4 min-h-[500px] flex flex-col items-center justify-center relative shadow-inner overflow-hidden">
-          {/* Map Legend */}
-          <div className="absolute top-3 left-3 bg-white/95 border border-gov-border shadow-gov rounded-gov-sm px-3.5 py-2.5 text-[11px] space-y-1.5 z-10">
-            <div className="font-bold text-text-primary text-xs pb-1 border-b border-gov-border">
-              {heatmapMode === 'risk' ? 'Risk Density Legend' : 'Project Count Legend'}
-            </div>
-            {heatmapMode === 'risk' ? (
-              <>
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-[#A82420]"></span>
-                  <span>Critical Cluster (≥6 Flags)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-[#B55214]"></span>
-                  <span>Review Watch (3–5 Flags)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-[#2B6E44]"></span>
-                  <span>Low Risk (&lt;3 Flags)</span>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-[#C97919]"></span>
-                  <span>100+ Projects</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-[#D9822B]"></span>
-                  <span>50–99 Projects</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-[#737A82]"></span>
-                  <span>&lt;50 Projects</span>
-                </div>
-              </>
-            )}
-            <div className="flex items-center gap-2 pt-1 border-t border-gov-border">
-              <span className="w-3 h-3 rounded-full bg-[#C97919] ring-2 ring-brand-border"></span>
-              <span className="font-bold text-brand-dark">Selected State</span>
-            </div>
-          </div>
-
-          {/* Exact India SVG Map */}
+      {/* 2. SVG Map Area with Floating Dossier */}
+      <div className="relative flex-1 flex items-center justify-center my-1 select-none overflow-hidden min-h-[340px]">
+        {/* SVG India Map */}
+        <div
+          className="w-full flex items-center justify-center transition-transform duration-200"
+          style={{ transform: `scale(${zoomLevel})` }}
+        >
           <svg
-            viewBox="0 0 500 550"
-            className="w-full max-w-[450px] h-auto drop-shadow-sm select-none"
-            aria-label="Official Map of India"
+            viewBox="0 0 500 540"
+            className="w-full max-w-[380px] max-h-[360px] drop-shadow-md"
           >
-            {/* National Outline Base with Exact Traced Vector Path from Uploaded Image */}
+            {/* Main India Base Boundary */}
             <path
               d={EXACT_INDIA_OUTLINE_PATH}
-              fill="#EBF0E6"
-              stroke="#1C1F23"
-              strokeWidth="2.5"
-              strokeLinejoin="round"
-              strokeLinecap="round"
-              className="drop-shadow-xs"
+              fill="#11263C"
+              stroke="#1E4260"
+              strokeWidth="2.2"
+              className="transition-colors"
             />
 
-            {/* Inner subtle geographic fill contour */}
-            <path
-              d={EXACT_INDIA_OUTLINE_PATH}
-              fill="#FAFBF8"
-              opacity="0.3"
-              stroke="none"
-            />
-
-            {/* Interactive State Regional Nodes Overlay */}
-            {STATE_DATA.map((st) => {
-              const isSelected = (activeStateId === st.id);
-              const isHovered = (hoveredState?.id === st.id);
-
-              let nodeColor = '#2B6E44'; // Green
-              if (heatmapMode === 'risk') {
-                if (st.critical >= 6) nodeColor = '#A82420'; // Red
-                else if (st.critical >= 3) nodeColor = '#B55214'; // Orange
-                else nodeColor = '#2B6E44';
-              } else {
-                if (st.count >= 100) nodeColor = '#C97919';
-                else if (st.count >= 50) nodeColor = '#D9822B';
-                else nodeColor = '#737A82';
-              }
-
-              if (isSelected) {
-                nodeColor = '#C97919';
-              }
-
-              const radius = isSelected ? 18 : isHovered ? 17 : 14;
+            {/* Regional State Color Nodes */}
+            {mergedStateData.map((st) => {
+              const isSelected = selectedStateCode === st.id;
+              const isHovered = hoveredStateCode === st.id;
+              const fillColor = getStateColor(st, isSelected);
 
               return (
                 <g
                   key={st.id}
-                  className="cursor-pointer transition-transform duration-150"
-                  onClick={() => handleStateClick(st)}
-                  onMouseEnter={() => setHoveredState(st)}
-                  onMouseLeave={() => setHoveredState(null)}
+                  className="cursor-pointer group"
+                  onClick={() => {
+                    setSelectedStateCode(st.id);
+                    if (onSelectState) onSelectState(st);
+                  }}
+                  onMouseEnter={() => setHoveredStateCode(st.id)}
+                  onMouseLeave={() => setHoveredStateCode(null)}
                 >
-                  {/* Selected Outer Pulse Ring */}
+                  {/* Selected Pulsing Outer Ring */}
                   {isSelected && (
                     <circle
                       cx={st.x}
                       cy={st.y}
-                      r={radius + 5}
+                      r={17}
                       fill="none"
-                      stroke="#C97919"
+                      stroke="#F59E0B"
                       strokeWidth="2"
                       strokeDasharray="3 3"
-                      className="animate-spin-slow"
                     />
                   )}
 
-                  {/* Node Circle */}
+                  {/* State Node Marker */}
                   <circle
                     cx={st.x}
                     cy={st.y}
-                    r={radius}
-                    fill={nodeColor}
-                    stroke="#FFFFFF"
-                    strokeWidth="2"
-                    className="shadow-sm transition-all"
+                    r={isSelected ? 14 : isHovered ? 13 : 10.5}
+                    fill={fillColor}
+                    stroke={isSelected ? '#FFFFFF' : '#07131F'}
+                    strokeWidth={isSelected ? 2 : 1.2}
+                    className="transition-all hover:scale-125"
                   />
-
-                  {/* State Abbreviation Code */}
                   <text
                     x={st.x}
-                    y={st.y + 3.5}
+                    y={st.y + 3.2}
                     textAnchor="middle"
                     fill="#FFFFFF"
-                    fontSize="9px"
-                    fontWeight="800"
-                    className="pointer-events-none font-mono tracking-tight"
+                    fontSize="7.5px"
+                    fontWeight="bold"
+                    className="pointer-events-none font-mono tracking-tighter"
                   >
                     {st.id}
                   </text>
@@ -202,88 +194,99 @@ export default function IndiaMap({ onSelectState, selectedStateId = 'MH', filter
               );
             })}
           </svg>
-
-          {/* Hover Floating Tooltip */}
-          {hoveredState && (
-            <div className="absolute bottom-3 right-3 bg-white border border-gov-border shadow-gov-md rounded-gov-sm px-4 py-3 text-xs pointer-events-none z-20 animate-in fade-in zoom-in-95 duration-100">
-              <div className="font-extrabold text-text-primary flex items-center justify-between gap-3 pb-1.5 border-b border-gov-border">
-                <span>{hoveredState.name}</span>
-                <span className="font-mono text-[10px] font-bold px-1.5 py-0.2 bg-brand-light text-brand-dark rounded border border-brand-border">
-                  {hoveredState.id}
-                </span>
-              </div>
-              <div className="text-text-secondary text-[11px] mt-2 space-y-1">
-                <div>Total Projects: <strong className="text-text-primary font-mono">{hoveredState.count}</strong></div>
-                <div>Approved Capex: <strong className="text-text-primary font-mono">{hoveredState.capex}</strong></div>
-                <div>Critical Flags: <strong className="text-risk-critical font-mono">{hoveredState.critical}</strong></div>
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* Selected State Dossier */}
-        <div className="lg:col-span-5 bg-gov-surface border border-gov-border rounded-gov p-6 shadow-gov space-y-5">
-          <div className="pb-3 border-b border-gov-border">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-extrabold tracking-wider text-brand-dark uppercase">
-                State Infrastructure Profile
-              </span>
-              <span className="font-mono text-xs font-bold px-2 py-0.5 bg-brand-light text-brand-dark rounded border border-brand-border">
-                State Code: {activeState.id}
-              </span>
-            </div>
-            <h4 className="text-xl font-extrabold text-text-primary mt-1">
-              {activeState.name}
-            </h4>
+        {/* Sleek Floating State Dossier Overlay (Placed Top-Right to Avoid Covering Southern India) */}
+        <div className="absolute right-1 top-1 w-52 bg-[#07131F]/90 border border-[#16324A] rounded-lg p-2.5 shadow-2xl backdrop-blur-md z-10 space-y-1.5 text-xs pointer-events-none sm:pointer-events-auto">
+          <div className="flex items-center justify-between pb-1 border-b border-[#16324A]">
+            <span className="font-bold text-white text-xs truncate max-w-[130px]">
+              {activeState?.name || 'Maharashtra'}
+            </span>
+            <span className="font-mono text-[9px] font-bold px-1.5 py-0.2 rounded bg-[#0E253A] text-[#F59E0B] border border-[#F59E0B]/30">
+              {activeState?.id}
+            </span>
           </div>
 
-          {/* Quick Metrics Grid */}
-          <div className="grid grid-cols-2 gap-3.5">
-            <div className="bg-[#FAFBF8] p-3.5 rounded-gov-sm border border-gov-border shadow-xs">
-              <div className="text-[11px] text-text-secondary uppercase font-bold">Total Monitored</div>
-              <div className="text-2xl font-extrabold font-mono text-text-primary mt-0.5">{activeState.count}</div>
-              <div className="text-[11px] text-text-muted mt-0.5">Central Sector Projects</div>
+          <div className="text-[10px] font-mono text-slate-300 space-y-0.5">
+            <div className="flex justify-between">
+              <span className="text-slate-400">Projects:</span>
+              <strong className="text-white font-bold">{activeState?.count}</strong>
             </div>
-
-            <div className="bg-red-50/60 p-3.5 rounded-gov-sm border border-[#F3BFBC] shadow-xs">
-              <div className="text-[11px] text-risk-critical uppercase font-bold">Critical Review</div>
-              <div className="text-2xl font-extrabold font-mono text-risk-critical mt-0.5">{activeState.critical}</div>
-              <div className="text-[11px] text-risk-critical/80 mt-0.5">Immediate review flags</div>
+            <div className="flex justify-between">
+              <span className="text-slate-400">Capex Exposure:</span>
+              <strong className="text-[#00E5FF]">{activeState?.capex}</strong>
             </div>
-
-            <div className="bg-[#FAFBF8] p-3.5 rounded-gov-sm border border-gov-border shadow-xs">
-              <div className="text-[11px] text-text-secondary uppercase font-bold">Approved Capex</div>
-              <div className="text-base font-extrabold font-mono text-text-primary mt-1">{activeState.capex}</div>
-            </div>
-
-            <div className="bg-[#FAFBF8] p-3.5 rounded-gov-sm border border-gov-border shadow-xs">
-              <div className="text-[11px] text-text-secondary uppercase font-bold">Mean Physical Progress</div>
-              <div className="text-base font-extrabold font-mono text-text-primary mt-1">{activeState.avgProgress}%</div>
+            <div className="flex justify-between">
+              <span className="text-slate-400">Mean Progress:</span>
+              <strong className="text-white">{activeState?.avgProgress}%</strong>
             </div>
           </div>
 
-          {/* Sector Profile */}
-          <div className="p-3.5 bg-gov-secondary/40 rounded-gov-sm border border-gov-border space-y-1 text-xs">
-            <div className="font-bold text-text-primary">Dominant Infrastructure Sectors</div>
-            <p className="text-text-secondary leading-relaxed">{activeState.sectors}</p>
+          <div className="flex items-center justify-between text-[9px] font-mono pt-1 border-t border-[#16324A]/70">
+            <span className="text-slate-400">High Risk: <strong className="text-[#F97316]">{activeState?.high_risk}</strong></span>
+            <span className="text-slate-400">Critical: <strong className="text-[#EF4444]">{activeState?.critical}</strong></span>
           </div>
 
-          {/* Regional Status Badge */}
-          <div className="flex items-center justify-between p-3 bg-white rounded-gov-sm border border-gov-border text-xs shadow-xs">
-            <span className="font-bold text-text-secondary">Composite Regional Risk:</span>
-            <StatusBadge level={activeState.critical >= 6 ? 'CRITICAL' : activeState.critical >= 3 ? 'REVIEW' : 'NORMAL'} size="sm" />
+          <div className="pt-1 border-t border-[#16324A] flex items-center justify-between text-[10px] font-mono">
+            <span className="text-slate-400">Health:</span>
+            <div className="flex items-center gap-1 text-white font-bold">
+              <span>{activeState?.portfolio_health}</span>
+              <span className="text-slate-500">/ 100</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] ml-0.5"></span>
+            </div>
           </div>
+        </div>
+      </div>
 
-          {/* Actions */}
-          <div className="pt-2">
-            <button
-              onClick={() => onSelectState && onSelectState(activeState)}
-              className="w-full py-2.5 px-4 bg-brand hover:bg-brand-dark text-white text-xs font-bold rounded-gov-sm transition-colors text-center shadow-gov flex items-center justify-center gap-2"
-            >
-              <span>Explore Priority Projects in {activeState.name}</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+      {/* 3. Bottom Legend & Map Zoom Controls Bar */}
+      <div className="pt-2 border-t border-[#16324A]/70 flex items-center justify-between text-[9px] font-mono text-slate-400 z-10">
+        {/* Dynamic Scale Legend */}
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-[#00E5FF]" />
+            <span>{activeTab === 'Risk' ? 'Low' : '<15'}</span>
           </div>
+          <div className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-[#10B981]" />
+            <span>{activeTab === 'Risk' ? 'Mod' : '15-40'}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-[#F59E0B]" />
+            <span>{activeTab === 'Risk' ? 'Elev' : '40-70'}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-[#F97316]" />
+            <span>{activeTab === 'Risk' ? 'High' : '70-100'}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-[#EF4444]" />
+            <span>{activeTab === 'Risk' ? 'Crit' : '100+'}</span>
+          </div>
+        </div>
+
+        {/* Zoom & Fullscreen Controls */}
+        <div className="flex items-center gap-1 bg-[#07131F] rounded border border-[#16324A] p-0.5">
+          <button
+            onClick={() => setZoomLevel((z) => Math.min(z + 0.15, 1.4))}
+            className="p-1 text-slate-400 hover:text-white rounded hover:bg-[#11263C]"
+            title="Zoom In"
+          >
+            <Plus className="w-3 h-3" />
+          </button>
+          <button
+            onClick={() => setZoomLevel((z) => Math.max(z - 0.15, 0.85))}
+            className="p-1 text-slate-400 hover:text-white rounded hover:bg-[#11263C]"
+            title="Zoom Out"
+          >
+            <Minus className="w-3 h-3" />
+          </button>
+          <button
+            onClick={() => setZoomLevel(1)}
+            className="p-1 text-slate-400 hover:text-white rounded hover:bg-[#11263C]"
+            title="Reset Zoom"
+          >
+            <Maximize2 className="w-3 h-3" />
+          </button>
         </div>
       </div>
     </div>

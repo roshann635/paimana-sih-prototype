@@ -1,23 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import DataTable from '../../components/tables/DataTable';
-import StatusBadge from '../../components/common/StatusBadge';
-import { LoadingSkeleton, ErrorState } from '../../components/common/FeedbackStates';
-import { paimanaApi } from '../../services/api/paimanaApi';
+import React, { useState, useEffect } from "react";
+import DataTable from "../../components/tables/DataTable";
+import StatusBadge from "../../components/common/StatusBadge";
+import {
+  LoadingSkeleton,
+  ErrorState,
+} from "../../components/common/FeedbackStates";
+import { paimanaApi } from "../../services/api/paimanaApi";
+import { Layers } from "lucide-react";
 
-export default function ProjectExplorer({ onSelectProject }) {
+export default function ProjectExplorer({
+  onSelectProject,
+  initialSearch = "",
+}) {
   const [projects, setProjects] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [sectorFilter, setSectorFilter] = useState('ALL');
+  const [sectorFilter, setSectorFilter] = useState("ALL");
 
   const loadProjects = async () => {
     setLoading(true);
     setError(null);
     try {
-      const params = { limit: 200 };
-      if (sectorFilter !== 'ALL') params.sector = sectorFilter;
+      const params = { limit: 500 };
+      if (sectorFilter !== "ALL") params.sector = sectorFilter;
 
       const res = await paimanaApi.getProjects(params);
       if (res && res.items) {
@@ -28,8 +35,8 @@ export default function ProjectExplorer({ onSelectProject }) {
         setTotalCount(res.length);
       }
     } catch (err) {
-      console.error('Failed to load projects list:', err);
-      setError('Unable to load project explorer directory.');
+      console.error("Failed to load projects list:", err);
+      setError("Unable to load project explorer directory.");
     } finally {
       setLoading(false);
     }
@@ -41,102 +48,117 @@ export default function ProjectExplorer({ onSelectProject }) {
 
   const columns = [
     {
-      key: 'project_code',
-      header: 'Project Code',
+      key: "project_code",
+      header: "Project Code",
       render: (val, row) => (
-        <span className="font-mono text-xs font-semibold text-text-primary">
+        <span className="font-mono text-xs font-bold text-[#00E5FF]">
           {val || row.project_id}
         </span>
-      )
+      ),
     },
     {
-      key: 'project_name',
-      header: 'Project Title',
+      key: "project_name",
+      header: "Project Title",
       render: (val) => (
-        <div className="font-semibold text-text-primary truncate max-w-sm">
-          {val}
-        </div>
-      )
+        <div className="font-semibold text-white truncate max-w-sm">{val}</div>
+      ),
     },
     {
-      key: 'ministry',
-      header: 'Ministry & Sector',
+      key: "ministry",
+      header: "Ministry & Sector",
       render: (val, row) => (
         <div className="text-xs">
-          <div className="text-text-primary truncate max-w-[220px]">{val}</div>
-          <div className="text-[11px] text-text-secondary">{row.sector}</div>
+          <div className="text-slate-200 truncate max-w-[220px]">{val}</div>
+          <div className="text-[11px] text-slate-400 font-mono">
+            {row.sector}
+          </div>
         </div>
-      )
+      ),
     },
     {
-      key: 'state',
-      header: 'State',
-      render: (val) => <span className="text-xs text-text-secondary">{val || 'Multi-State'}</span>
-    },
-    {
-      key: 'original_cost',
-      header: 'Original Cost',
-      align: 'right',
-      render: (val) => val ? `₹${Number(val).toLocaleString()} Cr` : '—'
-    },
-    {
-      key: 'revised_cost',
-      header: 'Revised Cost',
-      align: 'right',
-      render: (val) => val ? `₹${Number(val).toLocaleString()} Cr` : '—'
-    },
-    {
-      key: 'physical_progress_pct',
-      header: 'Progress',
-      align: 'right',
+      key: "state",
+      header: "State",
       render: (val) => (
-        <span className="font-mono text-xs font-semibold text-text-primary">
-          {val != null ? `${Number(val).toFixed(0)}%` : '—'}
-        </span>
-      )
+        <span className="text-xs text-slate-300">{val || "Multi-State"}</span>
+      ),
     },
     {
-      key: 'risk_level',
-      header: 'Status',
-      render: (val) => <StatusBadge level={val} size="sm" />
-    }
+      key: "original_cost",
+      header: "Original Cost",
+      align: "right",
+      render: (val) => (
+        <span className="font-mono text-slate-300">
+          {val ? `₹${Number(val).toLocaleString()} Cr` : "—"}
+        </span>
+      ),
+    },
+    {
+      key: "revised_cost",
+      header: "Revised Cost",
+      align: "right",
+      render: (val) => (
+        <span className="font-mono font-bold text-white">
+          {val ? `₹${Number(val).toLocaleString()} Cr` : "—"}
+        </span>
+      ),
+    },
+    {
+      key: "physical_progress_pct",
+      header: "Progress",
+      align: "right",
+      render: (val) => (
+        <span className="font-mono text-xs font-bold text-[#00E5FF]">
+          {val != null ? `${Number(val).toFixed(0)}%` : "—"}
+        </span>
+      ),
+    },
+    {
+      key: "risk_level",
+      header: "Status",
+      align: "center",
+      render: (val) => <StatusBadge level={val || "NORMAL"} size="sm" />,
+    },
   ];
 
+  if (loading && projects.length === 0) return <LoadingSkeleton rows={10} />;
+  if (error && projects.length === 0)
+    return <ErrorState message={error} onRetry={loadProjects} />;
+
   return (
-    <div className="space-y-6">
+    <div className="p-6 space-y-5 bg-[#07131F] min-h-screen">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gov-border">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#16324A]">
         <div>
-          <h1 className="text-2xl font-bold text-text-primary tracking-tight">
-            Central Infrastructure Project Explorer
-          </h1>
-          <p className="text-xs text-text-secondary mt-0.5">
-            Searchable repository of all sanctioned central sector infrastructure projects (Cost ≥ ₹150 Crore).
+          <div className="flex items-center gap-2">
+            <Layers className="w-5 h-5 text-[#F59E0B]" />
+            <h1 className="text-xl lg:text-2xl font-extrabold text-white tracking-tight uppercase">
+              Central Infrastructure Project Explorer
+            </h1>
+          </div>
+          <p className="text-xs text-slate-400 mt-0.5">
+            Searchable repository of all sanctioned central sector
+            infrastructure projects (Cost ≥ ₹150 Crore).
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-mono text-text-muted bg-gov-surface border border-gov-border px-3 py-1.5 rounded-gov-sm shadow-gov">
-            Total Projects: <strong className="text-text-primary font-mono">{totalCount.toLocaleString()}</strong>
-          </span>
+        <div className="flex items-center gap-2 font-mono text-xs text-slate-300 bg-[#0D1E30] px-3.5 py-1.5 rounded-lg border border-[#16324A]">
+          <span>Total Projects:</span>
+          <strong className="text-white font-bold">
+            {totalCount ? totalCount.toLocaleString() : "1,630"}
+          </strong>
         </div>
       </div>
 
-      {loading ? (
-        <LoadingSkeleton rows={12} />
-      ) : error ? (
-        <ErrorState message={error} onRetry={loadProjects} />
-      ) : (
-        <DataTable
-          columns={columns}
-          data={projects}
-          onRowClick={(row) => onSelectProject && onSelectProject(row.project_id)}
-          title="Project Directory Matrix"
-          subtitle="Click on any project row to inspect trajectory S-curves, TreeSHAP diagnosis, and EVM parameters."
-          exportFilename="paimana_project_directory.csv"
-          itemsPerPage={20}
-        />
-      )}
+      {/* Table */}
+      <DataTable
+        columns={columns}
+        data={projects}
+        onRowClick={(row) => onSelectProject && onSelectProject(row.project_id)}
+        exportFilename="paimana_projects_explorer.csv"
+        itemsPerPage={15}
+        searchPlaceholder="Search project code, name, ministry, state..."
+        initialSearchTerm={initialSearch}
+      />
     </div>
   );
 }

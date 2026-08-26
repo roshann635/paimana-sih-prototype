@@ -4,7 +4,7 @@ Dashboard Analytics & Aggregations (backend/app/services/dashboard_service.py)
 
 from typing import Dict, Any, List
 from sqlalchemy.orm import Session
-from sqlalchemy import func, desc
+from sqlalchemy import func, desc, case
 from backend.app.database.schema import Project, ProjectSnapshot, RiskPrediction, EarlyWarningAlert
 from backend.app.schemas.project import DashboardSummary
 
@@ -127,3 +127,62 @@ def get_dashboard_summary(db: Session) -> DashboardSummary:
         top_sectors_at_risk=top_sectors_at_risk,
         ministry_sector_matrix=sorted(ministry_sector_matrix, key=lambda x: x["avg_risk"], reverse=True)[:15]
     )
+
+
+def get_state_analytics(db: Session) -> List[Dict[str, Any]]:
+    """Returns actual state-wise aggregations from the MoSPI dataset in SQLite."""
+    sub_month = db.query(
+        ProjectSnapshot.project_id,
+        func.max(ProjectSnapshot.report_month).label("max_month")
+    ).group_by(ProjectSnapshot.project_id).subquery()
+
+    results = db.query(
+        Project.state,
+        func.count(Project.project_id).label("total_projects"),
+        func.sum(ProjectSnapshot.revised_cost).label("total_revised_cost"),
+        func.avg(ProjectSnapshot.physical_progress_pct).label("avg_progress"),
+        func.sum(case((RiskPrediction.risk_level == "RED", 1), else_=0)).label("critical_count"),
+        func.sum(case((RiskPrediction.risk_level.in_(["RED", "ORANGE"]), 1), else_=0)).label("high_risk_count"),
+        func.avg(RiskPrediction.composite_risk_score).label("avg_risk")
+    ).join(
+        sub_month, Project.project_id == sub_month.c.project_id
+    ).join(
+        ProjectSnapshot,
+        (ProjectSnapshot.project_id == Project.project_id) &
+        (ProjectSnapshot.report_month == sub_month.c.max_month)
+    ).join(
+        RiskPrediction,
+        (RiskPrediction.project_id == Project.project_id) &
+        (RiskPrediction.report_month == sub_month.c.max_month)
+    ).group_by(Project.state).order_by(desc("total_projects")).all()
+
+    STATE_CODES = {
+        "Maharashtra": "MH", "Uttar Pradesh": "UP", "Gujarat": "GJ", "Andhra Pradesh": "AP",
+        "Bihar": "BR", "Odisha": "OD", "Assam": "AS", "Jharkhand": "JH", "Madhya Pradesh": "MP",
+        "Karnataka": "KA", "Rajasthan": "RJ", "West Bengal": "WB", "Chhattisgarh": "CG",
+        "Telangana": "TG", "Punjab": "PB", "Tamil Nadu": "TN", "Manipur": "MN", "Kerala": "KL",
+        "Nagaland": "NL", "Himachal Pradesh": "HP", "Delhi": "DL", "Uttarakhand": "UK",
+        "Haryana": "HR", "Mizoram": "MZ", "Sikkim": "SK", "Arunachal Pradesh": "AR",
+        "Meghalaya": "ML", "Jammu & Kashmir": "JK", "Tripura": "TR", "Ladakh": "LA",
+        "Puducherry": "PY", "Goa": "GA", "Dadra & Nagar Haveli": "DN", "Andaman & Nicobar": "AN",
+        "Multi-State": "MULTI"
+    }
+
+    state_list = []
+    for r in results:
+        st_name = r.state or "Multi-State"
+        st_code = STATE_CODES.get(st_name, "IND")
+        state_list.append({
+            "id": st_code,
+            "name": st_name,
+            "count": int(r.total_projects or 0),
+            "capex": f"₹{round((r.total_revised_cost or 0)):,} Cr",
+            "capex_raw": round(r.total_revised_cost or 0, 1),
+            "avg_progress": round(r.avg_progress or 0, 1),
+            "critical": int(r.critical_count or 0),
+            "high_risk": int(r.high_risk_count or 0),
+            "avg_risk": round(r.avg_risk or 0, 1),
+            "portfolio_health": max(20, min(95, round(100 - (r.avg_risk or 25) * 1.5)))
+        })
+    return state_list
+

@@ -106,7 +106,24 @@ def test_create_intervention():
     }
     res = client.post("/api/v1/interventions", json=payload)
     assert res.status_code == 200
-    inv = res.json()
-    assert inv["project_id"] == "P0001"
-    assert inv["status"] == "UNDER_REVIEW"
+    inv_data = res.json()
+    assert inv_data["project_id"] == "P0001"
+    assert inv_data["status"] == "UNDER_REVIEW"
+
+def test_assistant_query():
+    query_res = client.post("/api/v1/assistant/query", json={"query": "Which projects have highest priority?"})
+    assert query_res.status_code == 200
+    res = query_res.json()
+    assert "answer" in res
+    assert "evidence_sources" in res
+    assert len(res["evidence_sources"]) >= 1
+
+def test_state_analytics():
+    res = client.get("/api/v1/analytics/states")
+    assert res.status_code == 200
+    states = res.json()
+    assert len(states) >= 20
+    assert any(s["id"] == "MH" for s in states)
+    mh = next(s for s in states if s["id"] == "MH")
+    assert mh["count"] >= 100
 

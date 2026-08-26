@@ -27,36 +27,36 @@ export default function PortfolioTrends() {
   const [metricMode, setMetricMode] = useState('progress_exp'); // 'progress_exp' | 'slippage'
 
   return (
-    <div className="bg-gov-surface border border-gov-border rounded-gov p-6 shadow-gov">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 mb-4 border-b border-gov-border">
+    <div className="bg-white border border-[#E1E4E7] rounded-gov-lg p-6 shadow-gov">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 mb-4 border-b border-[#E1E4E7]">
         <div className="flex items-center gap-2">
-          <Activity className="w-4 h-4 text-brand-dark" />
+          <Activity className="w-4 h-4 text-midnight" />
           <div>
-            <h3 className="text-sm font-bold text-text-primary">Portfolio Trajectory & Drift Dynamics</h3>
-            <p className="text-xs text-text-secondary mt-0.5">Historical multi-month progression across central infrastructure portfolio.</p>
+            <h3 className="text-sm font-bold text-ink tracking-tight uppercase">Portfolio Trajectory Dynamics</h3>
+            <p className="text-xs text-ink-secondary mt-0.5">Historical multi-month progression across central infrastructure.</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-1 bg-[#FAFBF8] p-1 rounded-gov-sm border border-gov-border">
+        <div className="flex items-center gap-1 bg-ivory p-1 rounded-gov-sm border border-[#E1E4E7]">
           <button
             onClick={() => setMetricMode('progress_exp')}
-            className={`px-3 py-1 text-xs font-bold rounded-gov-sm transition-all ${
+            className={`px-3 py-1 text-xs font-mono font-bold rounded-gov-sm transition-all ${
               metricMode === 'progress_exp'
-                ? 'bg-brand text-white shadow-xs'
-                : 'text-text-secondary hover:text-text-primary'
+                ? 'bg-midnight text-white shadow-xs'
+                : 'text-ink-secondary hover:text-ink'
             }`}
           >
-            Progress vs Capex
+            PROGRESS VS CAPEX
           </button>
           <button
             onClick={() => setMetricMode('slippage')}
-            className={`px-3 py-1 text-xs font-bold rounded-gov-sm transition-all ${
+            className={`px-3 py-1 text-xs font-mono font-bold rounded-gov-sm transition-all ${
               metricMode === 'slippage'
-                ? 'bg-brand text-white shadow-xs'
-                : 'text-text-secondary hover:text-text-primary'
+                ? 'bg-midnight text-white shadow-xs'
+                : 'text-ink-secondary hover:text-ink'
             }`}
           >
-            Delay & Risk Drift
+            DELAY & DRIFT
           </button>
         </div>
       </div>
@@ -66,37 +66,37 @@ export default function PortfolioTrends() {
         <ResponsiveContainer width="100%" height="100%">
           {metricMode === 'progress_exp' ? (
             <LineChart data={MACRO_MONTHLY_TRENDS} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#D3D6CE" vertical={false} />
-              <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#4A5158', fontWeight: 500 }} tickLine={false} stroke="#B8BDB0" />
-              <YAxis yAxisId="left" tick={{ fontSize: 11, fill: '#4A5158', fontWeight: 500 }} unit="%" tickLine={false} domain={[0, 100]} stroke="#B8BDB0" />
-              <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11, fill: '#4A5158', fontWeight: 500 }} tickLine={false} stroke="#B8BDB0" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#E1E4E7" vertical={false} />
+              <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#526274', fontWeight: 600, fontFamily: 'IBM Plex Mono' }} tickLine={false} stroke="#CDD2D8" />
+              <YAxis yAxisId="left" tick={{ fontSize: 11, fill: '#526274', fontWeight: 600, fontFamily: 'IBM Plex Mono' }} unit="%" tickLine={false} domain={[0, 100]} stroke="#CDD2D8" />
+              <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11, fill: '#526274', fontWeight: 600, fontFamily: 'IBM Plex Mono' }} tickLine={false} stroke="#CDD2D8" />
               <Tooltip
-                contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#D3D6CE', color: '#1C1F23', fontSize: '12px', borderRadius: '6px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
+                contentStyle={{ backgroundColor: '#0B1F33', borderColor: '#163A59', color: '#FFFFFF', fontSize: '12px', borderRadius: '8px', boxShadow: '0 8px 20px rgba(0,0,0,0.2)' }}
                 formatter={(val, name) => [
                   name === 'Physical Progress %' ? `${val}%` : `₹${Number(val).toLocaleString()} Cr`,
                   name
                 ]}
               />
               <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
-              <Line yAxisId="left" type="monotone" dataKey="avg_progress" name="Physical Progress %" stroke="#2D726F" strokeWidth={3} dot={{ r: 4, fill: '#2D726F' }} />
-              <Line yAxisId="right" type="monotone" dataKey="expenditure_cr" name="Cumulative Capex (₹ Cr)" stroke="#C97919" strokeWidth={2.5} dot={{ r: 4, fill: '#C97919' }} />
+              <Line yAxisId="left" type="monotone" dataKey="avg_progress" name="Physical Progress %" stroke="#168A87" strokeWidth={3} dot={{ r: 4, fill: '#168A87' }} />
+              <Line yAxisId="right" type="monotone" dataKey="expenditure_cr" name="Cumulative Capex (₹ Cr)" stroke="#C7A45B" strokeWidth={2.5} dot={{ r: 4, fill: '#C7A45B' }} />
             </LineChart>
           ) : (
             <LineChart data={MACRO_MONTHLY_TRENDS} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#D3D6CE" vertical={false} />
-              <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#4A5158', fontWeight: 500 }} tickLine={false} stroke="#B8BDB0" />
-              <YAxis yAxisId="left" tick={{ fontSize: 11, fill: '#4A5158', fontWeight: 500 }} unit=" d" tickLine={false} stroke="#B8BDB0" />
-              <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11, fill: '#4A5158', fontWeight: 500 }} tickLine={false} stroke="#B8BDB0" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#E1E4E7" vertical={false} />
+              <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#526274', fontWeight: 600, fontFamily: 'IBM Plex Mono' }} tickLine={false} stroke="#CDD2D8" />
+              <YAxis yAxisId="left" tick={{ fontSize: 11, fill: '#526274', fontWeight: 600, fontFamily: 'IBM Plex Mono' }} unit=" d" tickLine={false} stroke="#CDD2D8" />
+              <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11, fill: '#526274', fontWeight: 600, fontFamily: 'IBM Plex Mono' }} tickLine={false} stroke="#CDD2D8" />
               <Tooltip
-                contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#D3D6CE', color: '#1C1F23', fontSize: '12px', borderRadius: '6px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
+                contentStyle={{ backgroundColor: '#0B1F33', borderColor: '#163A59', color: '#FFFFFF', fontSize: '12px', borderRadius: '8px', boxShadow: '0 8px 20px rgba(0,0,0,0.2)' }}
                 formatter={(val, name) => [
                   name === 'Mean Schedule Slippage (Days)' ? `${val} Days` : `${val} Projects`,
                   name
                 ]}
               />
               <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
-              <Line yAxisId="left" type="monotone" dataKey="avg_delay_days" name="Mean Schedule Slippage (Days)" stroke="#916812" strokeWidth={3} dot={{ r: 4, fill: '#916812' }} />
-              <Line yAxisId="right" type="monotone" dataKey="high_risk_count" name="High Risk Projects Count" stroke="#A82420" strokeWidth={2.5} dot={{ r: 4, fill: '#A82420' }} />
+              <Line yAxisId="left" type="monotone" dataKey="avg_delay_days" name="Mean Schedule Slippage (Days)" stroke="#B08A32" strokeWidth={3} dot={{ r: 4, fill: '#B08A32' }} />
+              <Line yAxisId="right" type="monotone" dataKey="high_risk_count" name="High Risk Projects Count" stroke="#A63D40" strokeWidth={2.5} dot={{ r: 4, fill: '#A63D40' }} />
             </LineChart>
           )}
         </ResponsiveContainer>

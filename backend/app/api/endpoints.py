@@ -23,6 +23,11 @@ router = APIRouter()
 def get_dashboard_summary(db: Session = Depends(get_db)):
     return dashboard_service.get_dashboard_summary(db)
 
+@router.get("/analytics/states")
+def get_state_analytics(db: Session = Depends(get_db)):
+    return dashboard_service.get_state_analytics(db)
+
+
 @router.get("/projects")
 def list_projects(
     sector: Optional[str] = Query(None),
@@ -32,7 +37,7 @@ def list_projects(
     search: Optional[str] = Query(None),
     sort_by: str = Query("ipi_rank"),
     order: str = Query("asc"),
-    limit: int = Query(50, ge=1, le=200),
+    limit: int = Query(50, ge=1, le=2500),
     offset: int = Query(0, ge=0),
     db: Session = Depends(get_db)
 ):
@@ -51,7 +56,7 @@ def list_projects(
 
 @router.get("/risk/priority-queue", response_model=List[ProjectListItem])
 def get_priority_queue(
-    limit: int = Query(25, ge=1, le=100),
+    limit: int = Query(25, ge=1, le=2500),
     sector: Optional[str] = Query(None),
     ministry: Optional[str] = Query(None),
     risk_level: Optional[str] = Query(None),
@@ -93,9 +98,10 @@ def get_project_recommendations(project_id: str, db: Session = Depends(get_db)):
 @router.get("/alerts", response_model=List[AlertSchema])
 def list_alerts(
     severity: Optional[str] = Query(None),
-    limit: int = Query(50, ge=1, le=200),
+    limit: int = Query(50, ge=1, le=2500),
     db: Session = Depends(get_db)
 ):
+
     return project_service.get_alerts(db, severity=severity, limit=limit)
 
 @router.get("/benchmarks", response_model=List[BenchmarkItem])
@@ -150,3 +156,15 @@ def list_interventions(
     db: Session = Depends(get_db)
 ):
     return project_service.get_interventions(db, project_id=project_id)
+
+@router.post("/assistant/query")
+def query_assistant(
+    payload: Dict[str, Any],
+    db: Session = Depends(get_db)
+):
+    from backend.app.services import assistant_service
+    q = payload.get("query", "")
+    pid = payload.get("project_id")
+    return assistant_service.answer_query(db, query=q, project_id=pid)
+
+
