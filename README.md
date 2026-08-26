@@ -121,3 +121,4 @@ Frontend will run at `http://localhost:5173`.
 ```bash
 pytest tests/test_api.py -v
 ```
+

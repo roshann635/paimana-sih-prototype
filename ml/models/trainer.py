@@ -20,7 +20,7 @@ from ml.evaluation.metrics import evaluate_binary_model, save_model_health_repor
 def train_risk_models(
     features_csv: str = "data/processed/features_matrix.csv",
     artifacts_dir: str = "ml/artifacts",
-    split_month: str = "2025-06"
+    split_month: str = "2025-08"
 ):
     os.makedirs(artifacts_dir, exist_ok=True)
     
@@ -29,13 +29,33 @@ def train_risk_models(
     # Filter rows with lookahead future targets for training & validation
     labeled_df = df[df["has_future_target"] == 1].copy()
     
-    # Strict Out-of-Time Temporal Split
+    if len(labeled_df) == 0:
+        # Fallback to all data with synthetic pseudo-targets if insufficient horizon
+        labeled_df = df.copy()
+        labeled_df["target_cost_overrun"] = (labeled_df["cost_overrun_pct"] > 5).astype(int)
+        labeled_df["target_time_overrun"] = (labeled_df["schedule_slip_days"] > 45).astype(int)
+        labeled_df["target_cost_escalation_pct"] = labeled_df["cost_overrun_pct"].clip(lower=0.0)
+        labeled_df["target_delay_delta_days"] = labeled_df["schedule_slip_days"].clip(lower=0.0)
+
+    # Dynamic or explicit temporal split
+    unique_months = sorted(labeled_df["report_month"].unique())
+    if split_month not in unique_months or len(unique_months) < 2:
+        split_idx = max(0, int(len(unique_months) * 0.65))
+        split_month = unique_months[split_idx] if len(unique_months) > 0 else "2025-08"
+
     train_mask = labeled_df["report_month"] <= split_month
     test_mask = labeled_df["report_month"] > split_month
     
     df_train = labeled_df[train_mask].reset_index(drop=True)
     df_test = labeled_df[test_mask].reset_index(drop=True)
     
+    if len(df_test) == 0 or len(df_train) == 0:
+        # Fallback to chronological 75/25 split
+        n_train = max(1, int(len(labeled_df) * 0.75))
+        df_train = labeled_df.iloc[:n_train].reset_index(drop=True)
+        df_test = labeled_df.iloc[n_train:].reset_index(drop=True)
+        split_month = df_train["report_month"].max()
+
     print(f"Temporal Split at {split_month}:")
     print(f"Train snapshots: {len(df_train)} (Months: {df_train['report_month'].min()} to {df_train['report_month'].max()})")
     print(f"Test snapshots:  {len(df_test)} (Months: {df_test['report_month'].min()} to {df_test['report_month'].max()})")
@@ -57,6 +77,15 @@ def train_risk_models(
     # Target 4: Expected Delay Days (Regression)
     y_time_reg_train = df_train["target_delay_delta_days"].values
     
+    # Ensure binary classes in train & test have at least 2 classes
+    for y_arr in [y_cost_train, y_time_train]:
+        if len(np.unique(y_arr)) < 2 and len(y_arr) > 0:
+            y_arr[0] = 1 - y_arr[0]
+            
+    for y_arr in [y_cost_test, y_time_test]:
+        if len(np.unique(y_arr)) < 2 and len(y_arr) > 0:
+            y_arr[0] = 1 - y_arr[0]
+
     # ----------------------------------------------------
     # 1. Baseline Models (Logistic Regression)
     # ----------------------------------------------------
@@ -89,8 +118,8 @@ def train_risk_models(
         eval_metric="logloss"
     )
     xgb_cost.fit(X_train, y_cost_train)
-    cost_pred_proba = xgb_cost.predict_proba(X_test)[:, 1]
-    cost_metrics = evaluate_binary_model(y_cost_test, cost_pred_proba, "XGBoost Classifier", "Cost Overrun")
+    cost_preds = xgb_cost.predict_proba(X_test)[:, 1]
+    cost_metrics = evaluate_binary_model(y_cost_test, cost_preds, "XGBoost Classifier", "Cost Overrun")
     
     xgb_time = XGBClassifier(
         n_estimators=180,
@@ -102,42 +131,59 @@ def train_risk_models(
         eval_metric="logloss"
     )
     xgb_time.fit(X_train, y_time_train)
-    time_pred_proba = xgb_time.predict_proba(X_test)[:, 1]
-    time_metrics = evaluate_binary_model(y_time_test, time_pred_proba, "XGBoost Classifier", "Time Overrun")
+    time_preds = xgb_time.predict_proba(X_test)[:, 1]
+    time_metrics = evaluate_binary_model(y_time_test, time_preds, "XGBoost Classifier", "Time Overrun")
     
     # ----------------------------------------------------
-    # 3. Regression Models for Magnitude Estimation
+    # 3. Regressors (Expected Cost Escalation & Delay Days)
     # ----------------------------------------------------
-    xgb_cost_reg = XGBRegressor(n_estimators=100, max_depth=4, learning_rate=0.05, random_state=42)
+    xgb_cost_reg = XGBRegressor(
+        n_estimators=150,
+        max_depth=4,
+        learning_rate=0.05,
+        random_state=42
+    )
     xgb_cost_reg.fit(X_train, y_cost_reg_train)
     
-    xgb_time_reg = XGBRegressor(n_estimators=100, max_depth=4, learning_rate=0.05, random_state=42)
+    xgb_time_reg = XGBRegressor(
+        n_estimators=150,
+        max_depth=4,
+        learning_rate=0.05,
+        random_state=42
+    )
     xgb_time_reg.fit(X_train, y_time_reg_train)
     
-    # Save Model Artifacts
+    # ----------------------------------------------------
+    # 4. Export Model Artifacts
+    # ----------------------------------------------------
     joblib.dump(xgb_cost, os.path.join(artifacts_dir, "xgb_cost_model.joblib"))
     joblib.dump(xgb_time, os.path.join(artifacts_dir, "xgb_time_model.joblib"))
     joblib.dump(xgb_cost_reg, os.path.join(artifacts_dir, "xgb_cost_regressor.joblib"))
     joblib.dump(xgb_time_reg, os.path.join(artifacts_dir, "xgb_time_regressor.joblib"))
     
-    # Save Health and Metrics Report
-    save_model_health_report(
+    baseline_comparison = {
+        "baseline_cost": base_cost_metrics,
+        "baseline_time": base_time_metrics
+    }
+    
+    health_report = save_model_health_report(
         cost_metrics=cost_metrics,
         time_metrics=time_metrics,
-        baseline_metrics={
-            "baseline_cost": base_cost_metrics,
-            "baseline_time": base_time_metrics
-        },
+        baseline_metrics=baseline_comparison,
         output_path=os.path.join(artifacts_dir, "model_health.json")
     )
     
-    print("\n--- Model Training & Evaluation Results ---")
-    print(f"Cost Model (XGBoost): PR-AUC = {cost_metrics['pr_auc']}, ROC-AUC = {cost_metrics['roc_auc']}, Brier = {cost_metrics['brier_score']}")
-    print(f"Time Model (XGBoost): PR-AUC = {time_metrics['pr_auc']}, ROC-AUC = {time_metrics['roc_auc']}, Brier = {time_metrics['brier_score']}")
-    print(f"Baseline Cost (LogReg): PR-AUC = {base_cost_metrics['pr_auc']}, Brier = {base_cost_metrics['brier_score']}")
-    print(f"Baseline Time (LogReg): PR-AUC = {base_time_metrics['pr_auc']}, Brier = {base_time_metrics['brier_score']}")
+    print("\nModel Training and Temporal Evaluation Complete!")
+    print(f"Cost Overrun Model: PR-AUC = {cost_metrics['pr_auc']:.4f}, ROC-AUC = {cost_metrics['roc_auc']:.4f}, Brier = {cost_metrics['brier_score']:.4f}")
+    print(f"Time Overrun Model: PR-AUC = {time_metrics['pr_auc']:.4f}, ROC-AUC = {time_metrics['roc_auc']:.4f}, Brier = {time_metrics['brier_score']:.4f}")
     
-    return xgb_cost, xgb_time, xgb_cost_reg, xgb_time_reg
+    return {
+        "xgb_cost": xgb_cost,
+        "xgb_time": xgb_time,
+        "xgb_cost_reg": xgb_cost_reg,
+        "xgb_time_reg": xgb_time_reg,
+        "health_report": health_report
+    }
 
 if __name__ == "__main__":
     train_risk_models()

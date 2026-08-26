@@ -68,18 +68,23 @@ FEATURE_DISPLAY_NAMES = {
 def compute_features(
     df_projects: pd.DataFrame,
     df_snapshots: pd.DataFrame,
-    lookahead_months: int = 6
+    lookahead_months: int = 2
 ) -> pd.DataFrame:
     """
     Constructs rich trajectory and financial/schedule features from master projects and snapshots.
     """
-    # Merge project static metadata into snapshots
-    merged = df_snapshots.merge(
-        df_projects[[
-            "project_id", "project_code", "project_name", "ministry",
-            "sector", "state", "implementing_agency", "original_cost",
-            "original_start_date", "original_end_date"
-        ]],
+    # Merge project static metadata into snapshots (dropping overlapping columns if present)
+    meta_cols = [
+        "project_id", "project_code", "project_name", "ministry",
+        "sector", "state", "implementing_agency", "original_cost",
+        "original_start_date", "original_end_date"
+    ]
+    overlap = [c for c in meta_cols if c in df_snapshots.columns and c != "project_id"]
+    snap_clean = df_snapshots.drop(columns=overlap, errors="ignore")
+    
+    avail_meta = [c for c in meta_cols if c in df_projects.columns]
+    merged = snap_clean.merge(
+        df_projects[avail_meta],
         on="project_id",
         how="left"
     )

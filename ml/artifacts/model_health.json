@@ -7,90 +7,90 @@
   "cost_model": {
     "model_name": "XGBoost Classifier",
     "target_name": "Cost Overrun",
-    "pr_auc": 0.9979,
-    "roc_auc": 0.9989,
-    "brier_score": 0.0011,
-    "precision": 0.9975,
-    "recall": 1.0,
-    "f1_score": 0.9988,
-    "top_20_recall": 0.4408,
-    "total_samples": 8000,
-    "positive_samples": 3623,
+    "pr_auc": 0.4462,
+    "roc_auc": 0.8656,
+    "brier_score": 0.0334,
+    "precision": 0.6429,
+    "recall": 0.2278,
+    "f1_score": 0.3364,
+    "top_20_recall": 0.7089,
+    "total_samples": 1694,
+    "positive_samples": 79,
     "calibration": [
       {
         "bin": "0-20%",
-        "predicted_prob": 0.0019,
-        "empirical_prob": 0.0,
-        "count": 4368
+        "predicted_prob": 0.0113,
+        "empirical_prob": 0.0264,
+        "count": 1630
       },
       {
         "bin": "20-40%",
-        "predicted_prob": 0.3,
-        "empirical_prob": 0.3,
-        "count": 0
+        "predicted_prob": 0.2921,
+        "empirical_prob": 0.4091,
+        "count": 22
       },
       {
         "bin": "40-60%",
-        "predicted_prob": 0.5,
-        "empirical_prob": 0.5,
-        "count": 0
+        "predicted_prob": 0.4978,
+        "empirical_prob": 0.6538,
+        "count": 26
       },
       {
         "bin": "60-80%",
-        "predicted_prob": 0.7,
-        "empirical_prob": 0.7,
-        "count": 0
+        "predicted_prob": 0.688,
+        "empirical_prob": 0.3333,
+        "count": 6
       },
       {
         "bin": "80-100%",
-        "predicted_prob": 0.9968,
-        "empirical_prob": 0.9975,
-        "count": 3632
+        "predicted_prob": 0.8939,
+        "empirical_prob": 0.8,
+        "count": 10
       }
     ]
   },
   "time_model": {
     "model_name": "XGBoost Classifier",
     "target_name": "Time Overrun",
-    "pr_auc": 0.9999,
-    "roc_auc": 1.0,
-    "brier_score": 0.0002,
-    "precision": 0.9994,
-    "recall": 1.0,
-    "f1_score": 0.9997,
-    "top_20_recall": 0.4408,
-    "total_samples": 8000,
-    "positive_samples": 3630,
+    "pr_auc": 0.3689,
+    "roc_auc": 0.847,
+    "brier_score": 0.0838,
+    "precision": 0.439,
+    "recall": 0.3017,
+    "f1_score": 0.3576,
+    "top_20_recall": 0.676,
+    "total_samples": 1694,
+    "positive_samples": 179,
     "calibration": [
       {
         "bin": "0-20%",
-        "predicted_prob": 0.0021,
-        "empirical_prob": 0.0,
-        "count": 4367
+        "predicted_prob": 0.034,
+        "empirical_prob": 0.0486,
+        "count": 1399
       },
       {
         "bin": "20-40%",
-        "predicted_prob": 0.2569,
-        "empirical_prob": 0.0,
-        "count": 1
+        "predicted_prob": 0.2833,
+        "empirical_prob": 0.2908,
+        "count": 141
       },
       {
         "bin": "40-60%",
-        "predicted_prob": 0.5,
-        "empirical_prob": 0.5,
-        "count": 0
+        "predicted_prob": 0.4823,
+        "empirical_prob": 0.4423,
+        "count": 52
       },
       {
         "bin": "60-80%",
-        "predicted_prob": 0.6868,
-        "empirical_prob": 0.6667,
-        "count": 3
+        "predicted_prob": 0.6926,
+        "empirical_prob": 0.4762,
+        "count": 63
       },
       {
         "bin": "80-100%",
-        "predicted_prob": 0.9987,
-        "empirical_prob": 0.9997,
-        "count": 3629
+        "predicted_prob": 0.881,
+        "empirical_prob": 0.4359,
+        "count": 39
       }
     ]
   },
@@ -98,90 +98,90 @@
     "baseline_cost": {
       "model_name": "Logistic Regression",
       "target_name": "Cost Overrun",
-      "pr_auc": 0.9972,
-      "roc_auc": 0.9979,
-      "brier_score": 0.0036,
-      "precision": 0.9959,
-      "recall": 0.995,
-      "f1_score": 0.9954,
-      "top_20_recall": 0.4408,
-      "total_samples": 8000,
-      "positive_samples": 3623,
+      "pr_auc": 0.1892,
+      "roc_auc": 0.7835,
+      "brier_score": 0.0767,
+      "precision": 0.2514,
+      "recall": 0.557,
+      "f1_score": 0.3465,
+      "top_20_recall": 0.6709,
+      "total_samples": 1694,
+      "positive_samples": 79,
       "calibration": [
         {
           "bin": "0-20%",
-          "predicted_prob": 0.0131,
-          "empirical_prob": 0.0021,
-          "count": 4354
+          "predicted_prob": 0.0311,
+          "empirical_prob": 0.0193,
+          "count": 1345
         },
         {
           "bin": "20-40%",
-          "predicted_prob": 0.2807,
-          "empirical_prob": 0.3333,
-          "count": 21
+          "predicted_prob": 0.2844,
+          "empirical_prob": 0.0296,
+          "count": 135
         },
         {
           "bin": "40-60%",
-          "predicted_prob": 0.5115,
-          "empirical_prob": 0.5,
-          "count": 12
+          "predicted_prob": 0.4785,
+          "empirical_prob": 0.1636,
+          "count": 55
         },
         {
           "bin": "60-80%",
-          "predicted_prob": 0.711,
-          "empirical_prob": 0.6667,
-          "count": 9
+          "predicted_prob": 0.6782,
+          "empirical_prob": 0.2593,
+          "count": 81
         },
         {
           "bin": "80-100%",
-          "predicted_prob": 0.9987,
-          "empirical_prob": 0.9973,
-          "count": 2593
+          "predicted_prob": 0.8758,
+          "empirical_prob": 0.2436,
+          "count": 78
         }
       ]
     },
     "baseline_time": {
       "model_name": "Logistic Regression",
       "target_name": "Time Overrun",
-      "pr_auc": 0.9982,
-      "roc_auc": 0.9981,
-      "brier_score": 0.0032,
-      "precision": 0.9959,
-      "recall": 0.9959,
-      "f1_score": 0.9959,
-      "top_20_recall": 0.4405,
-      "total_samples": 8000,
-      "positive_samples": 3630,
+      "pr_auc": 0.2696,
+      "roc_auc": 0.7597,
+      "brier_score": 0.0865,
+      "precision": 0.3333,
+      "recall": 0.0112,
+      "f1_score": 0.0216,
+      "top_20_recall": 0.514,
+      "total_samples": 1694,
+      "positive_samples": 179,
       "calibration": [
         {
           "bin": "0-20%",
-          "predicted_prob": 0.0115,
-          "empirical_prob": 0.0023,
-          "count": 4353
+          "predicted_prob": 0.0528,
+          "empirical_prob": 0.0737,
+          "count": 1493
         },
         {
           "bin": "20-40%",
-          "predicted_prob": 0.2895,
-          "empirical_prob": 0.2308,
-          "count": 13
+          "predicted_prob": 0.2766,
+          "empirical_prob": 0.3352,
+          "count": 176
         },
         {
           "bin": "40-60%",
-          "predicted_prob": 0.5051,
-          "empirical_prob": 0.5714,
-          "count": 7
+          "predicted_prob": 0.4599,
+          "empirical_prob": 0.4167,
+          "count": 24
         },
         {
           "bin": "60-80%",
-          "predicted_prob": 0.7209,
-          "empirical_prob": 0.4,
-          "count": 15
+          "predicted_prob": 0.6081,
+          "empirical_prob": 0.0,
+          "count": 1
         },
         {
           "bin": "80-100%",
-          "predicted_prob": 0.9989,
-          "empirical_prob": 0.9987,
-          "count": 3042
+          "predicted_prob": 0.9,
+          "empirical_prob": 0.9,
+          "count": 0
         }
       ]
     }
