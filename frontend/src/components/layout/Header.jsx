@@ -1,36 +1,53 @@
-import React from 'react';
-import { Search, Bell, Sparkles, User, Calendar, ChevronDown, CheckCircle2 } from 'lucide-react';
+import React from "react";
+import {
+  Search,
+  Bell,
+  Sparkles,
+  User,
+  Calendar,
+  ChevronDown,
+  Menu,
+} from "lucide-react";
 
 export default function Header({
-  latestReportMonth = 'Jun 2026',
+  latestReportMonth = "Jun 2026",
   activeAlertsCount = 12,
   onOpenAssistant,
   onOpenAlerts,
-  searchTerm = '',
-  onSearchChange
+  searchTerm = "",
+  onSearchChange,
 }) {
   return (
-    <header className="bg-[#07131F] border-b border-[#16324A] text-white select-none">
+    <header className="bg-white border-b border-[#dbe3ed] text-[#142235] select-none">
       {/* Top Telemetry Row */}
-      <div className="px-6 py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#16324A]/60">
+      <div className="px-6 py-2.5 flex items-center justify-between gap-4 border-b border-[#edf1f5]">
         {/* Title & Subtitle */}
         <div>
-          <h1 className="text-xl lg:text-2xl font-extrabold tracking-wide text-white uppercase">
-            National Infrastructure Command Centre
-          </h1>
-          <p className="text-xs text-slate-300 mt-0.5 font-normal">
-            Continuous intelligence for early warning, risk forecasting & decision support
-          </p>
+          <div className="flex items-center gap-3">
+            <Menu className="w-4 h-4 text-[#66758a] lg:hidden" />
+            <div>
+              <h1 className="text-base lg:text-lg font-bold tracking-tight text-[#142235]">
+                Dashboard
+              </h1>
+              <p className="text-[11px] text-[#66758a] mt-0.5 font-normal">
+                Overview of infrastructure projects across India
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Status Telemetry & User Controls */}
         <div className="flex items-center gap-6">
           {/* Data Through */}
           <div className="hidden sm:flex items-center gap-2.5">
-            <Calendar className="w-4 h-4 text-slate-300" />
+            <Calendar className="w-3.5 h-3.5 text-[#66758a]" />
             <div className="flex flex-col text-[11px] leading-tight">
-              <span className="text-[10px] font-mono text-slate-300 uppercase font-bold">Data Through</span>
-              <span className="font-mono text-white font-bold">JUN 2026</span>
+              <span className="text-[9px] font-mono text-[#66758a] uppercase font-bold">
+                Data Through
+              </span>
+              <span className="font-mono text-[#142235] font-bold text-[10px]">
+                {latestReportMonth}
+              </span>
             </div>
           </div>
 
@@ -41,15 +58,19 @@ export default function Header({
               <span className="w-2.5 h-2.5 rounded-full bg-[#00E5FF]"></span>
             </div>
             <div className="flex flex-col text-[11px] leading-tight">
-              <span className="text-[10px] font-mono text-slate-300 uppercase font-bold">System Operational</span>
-              <span className="text-slate-300 text-[10px]">All systems normal</span>
+              <span className="text-[9px] font-mono text-[#66758a] uppercase font-bold">
+                System Operational
+              </span>
+              <span className="text-[#66758a] text-[10px]">
+                All systems normal
+              </span>
             </div>
           </div>
 
           {/* Alert Notification Bell */}
           <button
             onClick={onOpenAlerts}
-            className="relative p-2 rounded-lg bg-[#0D1E30] hover:bg-[#16324A] border border-[#16324A] text-slate-300 hover:text-white transition-colors"
+            className="relative p-2 rounded-md hover:bg-[#f1f5f9] border border-[#dbe3ed] text-[#66758a] hover:text-[#142235] transition-colors"
             title="Active Bulletins"
           >
             <Bell className="w-4 h-4" />
@@ -60,28 +81,34 @@ export default function Header({
 
           {/* Officer Profile */}
           <div className="flex items-center gap-2.5 pl-2 border-l border-[#16324A]">
-            <div className="w-8 h-8 rounded-full bg-[#0D1E30] border border-[#16324A] flex items-center justify-center text-slate-300">
+            <div className="w-8 h-8 rounded-full bg-[#eaf1fb] border border-[#cddced] flex items-center justify-center text-[#1668d8]">
               <User className="w-4 h-4" />
             </div>
             <div className="flex flex-col text-left">
               <span className="text-xs font-bold text-white leading-tight">
+                Ankit Kumar
+              </span>
+              <span className="text-[10px] font-mono text-[#66758a]">
                 Monitoring Officer
               </span>
-              <span className="text-[10px] font-mono text-slate-300">MoSPI - IPMD</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Second Row: Reporting Cycle + Search + Ask PAIMANA Button */}
-      <div className="px-6 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0B1A2A]">
+      <div className="px-6 py-2 flex items-center justify-end gap-3 bg-[#f8fafc]">
         {/* Left: Reporting Cycle Dropdown */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0D1E30] border border-[#16324A] text-xs text-white cursor-pointer hover:border-[#1E4260] transition-colors">
-            <Calendar className="w-3.5 h-3.5 text-slate-300" />
+        <div className="hidden md:flex items-center gap-3">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-white border border-[#dbe3ed] text-xs text-[#142235] cursor-pointer">
+            <Calendar className="w-3.5 h-3.5 text-[#66758a]" />
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-mono text-slate-300 uppercase">Reporting Cycle</span>
-              <span className="font-bold font-mono text-white text-xs">Jun 2026 (Monthly)</span>
+              <span className="text-[10px] font-mono text-[#66758a] uppercase">
+                Reporting Cycle
+              </span>
+              <span className="font-bold font-mono text-[#142235] text-xs">
+                {latestReportMonth} (Monthly)
+              </span>
             </div>
             <ChevronDown className="w-3.5 h-3.5 text-slate-300 ml-1" />
           </div>
@@ -89,13 +116,13 @@ export default function Header({
 
         {/* Center: Search Bar */}
         <div className="relative flex-1 max-w-xl">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300 w-4 h-4" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8a98aa] w-4 h-4" />
           <input
             type="text"
             placeholder="Search project ID, code, ministry, state..."
             value={searchTerm}
             onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
-            className="w-full bg-[#07131F] border border-[#16324A] rounded-lg pl-10 pr-9 py-1.5 text-xs text-white placeholder:text-slate-400 focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF]/20 transition-all font-sans"
+            className="w-full bg-white border border-[#dbe3ed] rounded-md pl-10 pr-9 py-1.5 text-xs text-[#142235] placeholder:text-[#8a98aa] focus:outline-none focus:border-[#1668d8] focus:ring-1 focus:ring-[#1668d8]/10 transition-all font-sans"
           />
           <kbd className="absolute right-3 top-1/2 -translate-y-1/2 font-mono text-[10px] text-slate-300 bg-[#0D1E30] border border-[#16324A] px-1.5 py-0.5 rounded">
             /
@@ -106,9 +133,9 @@ export default function Header({
         <div>
           <button
             onClick={onOpenAssistant}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-lg bg-[#0D1E30] hover:bg-[#16324A] border border-[#F59E0B] text-[#F59E0B] font-bold text-xs shadow-gold-glow transition-all"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-[#1668d8] hover:bg-[#0d56b8] border border-[#1668d8] text-white font-bold text-xs transition-all"
           >
-            <Sparkles className="w-4 h-4 text-[#F59E0B]" />
+            <Sparkles className="w-3.5 h-3.5 text-white" />
             <span>Ask PAIMANA AI</span>
           </button>
         </div>

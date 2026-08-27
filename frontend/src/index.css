@@ -3,16 +3,21 @@
 @tailwind utilities;
 
 :root {
-  --bg-command: #07131F;
-  --card-command: #0D1E30;
-  --border-command: #16324A;
+  --bg-command: #f4f7fb;
+  --card-command: #ffffff;
+  --border-command: #dbe3ed;
+  --navy: #06295b;
+  --navy-deep: #041e46;
+  --ink: #142235;
+  --muted: #66758a;
+  --blue: #1668d8;
 }
 
 @layer base {
   body {
-    background-color: #07131F;
-    color: #F1F5F9;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #f4f7fb;
+    color: #142235;
+    font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     margin: 0;
@@ -20,28 +25,84 @@
     overflow-x: hidden;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    color: #FFFFFF;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: #142235;
     font-weight: 700;
     letter-spacing: -0.01em;
   }
 }
 
-/* Custom scrollbars for dark command center */
+/* Quiet scrollbar for the operations workspace. */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0B1A2A;
+  background: #edf2f7;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1E4260;
+  background: #b8c6d6;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #2E5A80;
+  background: #8ea3bb;
+}
+
+.shadow-command-card {
+  box-shadow: 0 2px 8px rgba(25, 55, 92, 0.06);
+}
+.shadow-gold-glow,
+.shadow-cyan-glow,
+.shadow-red-glow {
+  box-shadow: none;
+}
+
+/* Shared utility surfaces translated to the light reference treatment. */
+main [class*="bg-[#0D1E30]"] {
+  background-color: #ffffff !important;
+  color: #142235;
+  border-color: #dbe3ed !important;
+}
+
+main [class*="bg-[#07131F]"] {
+  background-color: #f4f7fb !important;
+}
+main [class*="border-[#16324A]"] {
+  border-color: #dbe3ed !important;
+}
+main [class*="text-slate-100"],
+main [class*="text-slate-200"],
+main [class*="text-slate-300"] {
+  color: #34455b !important;
+}
+main [class*="text-white"] {
+  color: #142235 !important;
+}
+
+/* Interactive dark utility classes are still used by legacy table markup. */
+main [class*="bg-[#11263C]"]:hover,
+main [class*="bg-[#16324A]"]:hover {
+  background-color: #eaf2fc !important;
+}
+
+main tr:hover [class*="text-white"] {
+  color: #142235 !important;
+}
+
+main [class*="hover:text-white"]:hover,
+main .group:hover [class*="group-hover:text-white"] {
+  color: #142235 !important;
+}
+
+/* The action modal intentionally keeps a dark institutional header. */
+.paimana-modal-header [class*="text-white"] {
+  color: #ffffff !important;
 }

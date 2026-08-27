@@ -47,8 +47,19 @@ class ProjectSnapshot(Base):
     revised_cost = Column(Float, nullable=False)
     cumulative_expenditure = Column(Float, nullable=False)
     physical_progress_pct = Column(Float, nullable=False)
+    planned_progress_pct = Column(Float, default=0.0)
     delay_days = Column(Integer, default=0)
     current_end_date = Column(String(20), nullable=False)
+
+    # Earned Value Management (EVM) Core Metrics
+    pv = Column(Float, default=0.0)             # Planned Value (₹ Cr)
+    ev = Column(Float, default=0.0)             # Earned Value (₹ Cr)
+    ac = Column(Float, default=0.0)             # Actual Cost (₹ Cr)
+    sv = Column(Float, default=0.0)             # Schedule Variance (₹ Cr)
+    cv = Column(Float, default=0.0)             # Cost Variance (₹ Cr)
+    spi = Column(Float, default=1.0)            # Schedule Performance Index
+    cpi = Column(Float, default=1.0)            # Cost Performance Index
+    critical_ratio = Column(Float, default=1.0) # SPI * CPI
     
     issue_procurement = Column(Integer, default=0)
     issue_land = Column(Integer, default=0)
@@ -76,6 +87,12 @@ class RiskPrediction(Base):
     time_risk_probability = Column(Float, nullable=False)
     expected_cost_overrun_pct = Column(Float, default=0.0)
     expected_delay_days = Column(Integer, default=0)
+    
+    # EVM Indicators
+    spi = Column(Float, default=1.0)
+    cpi = Column(Float, default=1.0)
+    sv = Column(Float, default=0.0)
+    cv = Column(Float, default=0.0)
     
     composite_risk_score = Column(Float, index=True, nullable=False)  # 0 to 100
     risk_level = Column(String(20), index=True, nullable=False)       # GREEN, AMBER, ORANGE, RED

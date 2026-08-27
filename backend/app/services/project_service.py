@@ -94,6 +94,9 @@ def get_projects(
             original_cost=proj.original_cost,
             revised_cost=snap.revised_cost,
             physical_progress_pct=snap.physical_progress_pct,
+            planned_progress_pct=snap.planned_progress_pct if snap.planned_progress_pct is not None else snap.physical_progress_pct,
+            spi=snap.spi if snap.spi is not None else 1.0,
+            cpi=snap.cpi if snap.cpi is not None else 1.0,
             delay_days=snap.delay_days,
             composite_risk_score=pred.composite_risk_score,
             risk_level=pred.risk_level,
@@ -104,9 +107,9 @@ def get_projects(
         
     return {
         "total": total_count,
-        "page": (offset // limit) + 1 if limit > 0 else 1,
+        "items": items,
         "limit": limit,
-        "items": items
+        "offset": offset
     }
 
 def get_priority_queue(
@@ -129,16 +132,18 @@ def get_priority_queue(
     return res["items"]
 
 def get_project_by_id(db: Session, project_id: str) -> Optional[ProjectDetail]:
-    proj = db.query(Project).filter(Project.project_id == project_id).first()
+    proj = db.query(Project).filter(
+        (Project.project_id == project_id) | (Project.project_code == project_id)
+    ).first()
     if not proj:
         return None
         
     latest_snap = db.query(ProjectSnapshot).filter(
-        ProjectSnapshot.project_id == project_id
+        ProjectSnapshot.project_id == proj.project_id
     ).order_by(desc(ProjectSnapshot.report_month)).first()
     
     latest_pred = db.query(RiskPrediction).filter(
-        RiskPrediction.project_id == project_id
+        RiskPrediction.project_id == proj.project_id
     ).order_by(desc(RiskPrediction.report_month)).first()
     
     return ProjectDetail(
@@ -173,8 +178,16 @@ def get_project_trajectory(db: Session, project_id: str) -> List[TrajectoryPoint
         trajectory.append(TrajectoryPoint(
             report_month=s.report_month,
             physical_progress_pct=s.physical_progress_pct,
+            planned_progress_pct=s.planned_progress_pct if s.planned_progress_pct is not None else s.physical_progress_pct,
             revised_cost=s.revised_cost,
             cumulative_expenditure=s.cumulative_expenditure,
+            pv=s.pv if s.pv is not None else 0.0,
+            ev=s.ev if s.ev is not None else 0.0,
+            ac=s.ac if s.ac is not None else s.cumulative_expenditure,
+            sv=s.sv if s.sv is not None else 0.0,
+            cv=s.cv if s.cv is not None else 0.0,
+            spi=s.spi if s.spi is not None else 1.0,
+            cpi=s.cpi if s.cpi is not None else 1.0,
             delay_days=s.delay_days,
             composite_risk_score=risk_score if risk_score is not None else 0.0
         ))
@@ -218,7 +231,21 @@ def get_project_recommendations(db: Session, project_id: str) -> List[Dict[str, 
         return []
         
     recs = []
-    if snap.delay_days >= 90:
+    if snap.spi is not None and snap.spi < 0.85:
+        recs.append({
+            "category": "EVM Schedule Review",
+            "title": f"Schedule Performance Deficit (SPI: {snap.spi:.2f})",
+            "action": f"Convene EVM schedule review with Project Management Consultant (PMC) to address ₹{abs(snap.sv or 0.0):.1f} Cr schedule lag.",
+            "urgency": "HIGH"
+        })
+    if snap.cpi is not None and snap.cpi < 0.90:
+        recs.append({
+            "category": "EVM Cost Audit",
+            "title": f"Cost Efficiency Inefficiency (CPI: {snap.cpi:.2f})",
+            "action": f"Audit contractor billing against certified physical measurements to curtail expenditure drawdowns outpacing earned value.",
+            "urgency": "HIGH"
+        })
+    if snap.delay_days >= 90 and not any("SPI" in r["title"] for r in recs):
         recs.append({
             "category": "Schedule Recovery",
             "title": "Critical Path Re-baselining",
@@ -270,6 +297,10 @@ def get_benchmarks(db: Session, sector: Optional[str] = None) -> List[BenchmarkI
     return [BenchmarkItem.model_validate(b) for b in bms]
 
 def create_intervention(db: Session, inv_in: InterventionCreate) -> InterventionResponse:
+    project = db.query(Project).filter(Project.project_id == inv_in.project_id).first()
+    if not project:
+        raise ValueError(f"Project {inv_in.project_id} not found")
+
     inv = Intervention(
         project_id=inv_in.project_id,
         intervention_type=inv_in.intervention_type,

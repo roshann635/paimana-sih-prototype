@@ -77,14 +77,15 @@ def train_risk_models(
     # Target 4: Expected Delay Days (Regression)
     y_time_reg_train = df_train["target_delay_delta_days"].values
     
-    # Ensure binary classes in train & test have at least 2 classes
-    for y_arr in [y_cost_train, y_time_train]:
-        if len(np.unique(y_arr)) < 2 and len(y_arr) > 0:
-            y_arr[0] = 1 - y_arr[0]
-            
-    for y_arr in [y_cost_test, y_time_test]:
-        if len(np.unique(y_arr)) < 2 and len(y_arr) > 0:
-            y_arr[0] = 1 - y_arr[0]
+    # Never mutate labels to manufacture class diversity; a split like this is invalid.
+    for name, y_arr in {
+        "cost train": y_cost_train,
+        "cost test": y_cost_test,
+        "time train": y_time_train,
+        "time test": y_time_test,
+    }.items():
+        if len(np.unique(y_arr)) < 2:
+            raise ValueError(f"Invalid {name} split: expected both binary classes")
 
     # ----------------------------------------------------
     # 1. Baseline Models (Logistic Regression)

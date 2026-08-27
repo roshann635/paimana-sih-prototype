@@ -18,12 +18,13 @@ export default function ProjectExplorer({
   const [error, setError] = useState(null);
 
   const [sectorFilter, setSectorFilter] = useState("ALL");
+  const [searchTerm, setSearchTerm] = useState(initialSearch);
 
   const loadProjects = async () => {
     setLoading(true);
     setError(null);
     try {
-      const params = { limit: 500 };
+      const params = { limit: 2500, search: searchTerm.trim() };
       if (sectorFilter !== "ALL") params.sector = sectorFilter;
 
       const res = await paimanaApi.getProjects(params);
@@ -44,7 +45,11 @@ export default function ProjectExplorer({
 
   useEffect(() => {
     loadProjects();
-  }, [sectorFilter]);
+  }, [sectorFilter, searchTerm]);
+
+  useEffect(() => {
+    setSearchTerm(initialSearch);
+  }, [initialSearch]);
 
   const columns = [
     {
@@ -157,7 +162,8 @@ export default function ProjectExplorer({
         exportFilename="paimana_projects_explorer.csv"
         itemsPerPage={15}
         searchPlaceholder="Search project code, name, ministry, state..."
-        initialSearchTerm={initialSearch}
+        initialSearchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
       />
     </div>
   );

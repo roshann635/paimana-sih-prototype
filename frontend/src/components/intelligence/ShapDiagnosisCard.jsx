@@ -1,5 +1,12 @@
-import React from 'react';
-import { Cpu, CheckCircle2, Info, Sparkles, FileText, ArrowRight } from 'lucide-react';
+import React from "react";
+import {
+  Cpu,
+  CheckCircle2,
+  Info,
+  Sparkles,
+  FileText,
+  ArrowRight,
+} from "lucide-react";
 
 export default function ShapDiagnosisCard({
   attributions = [],
@@ -7,7 +14,7 @@ export default function ShapDiagnosisCard({
   recommendations = [],
   projectName,
   compositeRisk = 84,
-  onOpenMemo
+  onOpenMemo,
 }) {
   const riskVal = Math.round(compositeRisk || 84);
 
@@ -29,7 +36,8 @@ export default function ShapDiagnosisCard({
               </span>
             </div>
             <p className="text-xs text-slate-400 mt-0.5">
-              Additive Shapley decomposition isolating positive risk accelerators and mitigating features.
+              Additive Shapley decomposition isolating positive risk
+              accelerators and mitigating features.
             </p>
           </div>
         </div>
@@ -39,7 +47,9 @@ export default function ShapDiagnosisCard({
       <div className="p-4 bg-[#07131F] rounded-lg border border-[#16324A] space-y-2">
         <div className="flex items-center justify-between text-[11px] font-mono font-bold text-slate-400">
           <span className="text-[#00E5FF]">LOWER RISK (0)</span>
-          <span className="font-extrabold text-white text-xs">COMPOSITE RISK: {riskVal} / 100</span>
+          <span className="font-extrabold text-white text-xs">
+            COMPOSITE RISK: {riskVal} / 100
+          </span>
           <span className="text-[#EF4444]">HIGHER RISK (100)</span>
         </div>
 
@@ -65,12 +75,16 @@ export default function ShapDiagnosisCard({
         <p className="text-xs leading-relaxed text-slate-200 font-sans">
           {diagnosis || (
             <>
-              Schedule deterioration is the dominant contributor to current project risk (+18 pts). Disproportionate expenditure drawdowns relative to physical milestone completion further exacerbate capital exposure (+11 pts).
+              Schedule deterioration is the dominant contributor to current
+              project risk (+18 pts). Disproportionate expenditure drawdowns
+              relative to physical milestone completion further exacerbate
+              capital exposure (+11 pts).
             </>
           )}
         </p>
         <div className="text-[10px] text-slate-400 italic font-mono pt-1">
-          * Model inference is indicative and based on trajectory pattern recognition across historical MoSPI reporting cycles.
+          * Model inference is indicative and based on trajectory pattern
+          recognition across historical MoSPI reporting cycles.
         </div>
       </div>
 
@@ -86,7 +100,7 @@ export default function ShapDiagnosisCard({
             </div>
           ) : (
             attributions.slice(0, 6).map((attr, idx) => {
-              const isPositive = attr.direction === '+' || attr.shap_value > 0;
+              const isPositive = attr.direction === "+" || attr.shap_value > 0;
               const absVal = Math.abs(attr.shap_value || 0.1);
               const barWidth = Math.min(100, Math.max(15, absVal * 280));
 
@@ -96,7 +110,9 @@ export default function ShapDiagnosisCard({
                     <span className="font-bold text-white">
                       {idx + 1}. {attr.display_name || attr.feature_name}
                     </span>
-                    <span className={`font-mono text-xs font-bold ${isPositive ? 'text-[#EF4444]' : 'text-[#10B981]'}`}>
+                    <span
+                      className={`font-mono text-xs font-bold ${isPositive ? "text-[#EF4444]" : "text-[#10B981]"}`}
+                    >
                       {isPositive ? (
                         <span>+{Math.round(absVal * 100)} impact</span>
                       ) : (
@@ -109,7 +125,7 @@ export default function ShapDiagnosisCard({
                     <div
                       style={{ width: `${barWidth}%` }}
                       className={`h-full rounded-full transition-all duration-500 ${
-                        isPositive ? 'bg-[#EF4444]' : 'bg-[#10B981]'
+                        isPositive ? "bg-[#EF4444]" : "bg-[#10B981]"
                       }`}
                     />
                   </div>
@@ -141,9 +157,32 @@ export default function ShapDiagnosisCard({
 
           <div className="space-y-2 text-xs">
             {recommendations.map((rec, i) => (
-              <div key={i} className="flex items-start gap-2 text-slate-200 font-sans">
+              <div
+                key={i}
+                className="flex items-start gap-2 text-slate-200 font-sans"
+              >
                 <CheckCircle2 className="w-4 h-4 text-[#10B981] mt-0.5 shrink-0" />
-                <span>{rec}</span>
+                <div className="min-w-0">
+                  {typeof rec === "string" ? (
+                    <span>{rec}</span>
+                  ) : (
+                    <>
+                      <div className="font-bold text-white">
+                        {rec.title || rec.category || "Recommended action"}
+                        {rec.urgency && (
+                          <span className="ml-2 text-[10px] font-mono text-[#F59E0B]">
+                            {rec.urgency}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-xs text-slate-400 mt-0.5">
+                        {rec.action ||
+                          rec.recommended_action ||
+                          "Review required."}
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
             ))}
           </div>

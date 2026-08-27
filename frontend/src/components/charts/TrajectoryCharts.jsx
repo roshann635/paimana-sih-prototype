@@ -45,14 +45,16 @@ export default function TrajectoryCharts({ trajectory = [] }) {
               <Tooltip
                 contentStyle={{ backgroundColor: '#07131F', borderColor: '#16324A', color: '#FFFFFF', fontSize: '11px', borderRadius: '8px', boxShadow: '0 8px 20px rgba(0,0,0,0.5)', fontFamily: 'JetBrains Mono' }}
                 formatter={(val, name) => [
-                  name === 'Physical Progress %' ? `${val}%` : `₹${Number(val).toLocaleString()} Cr`,
+                  name.includes('%') ? `${Number(val).toFixed(1)}%` : `₹${Number(val).toLocaleString()} Cr`,
                   name
                 ]}
               />
               <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px', fontFamily: 'JetBrains Mono' }} />
-              <Line yAxisId="left" type="monotone" dataKey="physical_progress_pct" name="Physical Progress %" stroke="#00E5FF" strokeWidth={3} dot={{ r: 4, fill: '#00E5FF' }} />
+              <Line yAxisId="left" type="monotone" dataKey="physical_progress_pct" name="Actual Physical %" stroke="#00E5FF" strokeWidth={3} dot={{ r: 4, fill: '#00E5FF' }} />
+              <Line yAxisId="left" type="monotone" dataKey="planned_progress_pct" name="Planned Progress %" stroke="#94A3B8" strokeWidth={2} strokeDasharray="4 4" dot={{ r: 3, fill: '#94A3B8' }} />
               <Line yAxisId="right" type="monotone" dataKey="cumulative_expenditure" name="Cumulative Capex (₹ Cr)" stroke="#F59E0B" strokeWidth={2.5} dot={{ r: 4, fill: '#F59E0B' }} />
             </LineChart>
+
           </ResponsiveContainer>
         </div>
       </div>

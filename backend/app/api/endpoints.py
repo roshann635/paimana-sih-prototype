@@ -148,7 +148,10 @@ def record_intervention(
     inv_in: InterventionCreate,
     db: Session = Depends(get_db)
 ):
-    return project_service.create_intervention(db, inv_in)
+    try:
+        return project_service.create_intervention(db, inv_in)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 @router.get("/interventions", response_model=List[InterventionResponse])
 def list_interventions(

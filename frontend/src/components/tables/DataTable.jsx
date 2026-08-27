@@ -12,6 +12,7 @@ export default function DataTable({
   searchable = true,
   searchPlaceholder = "Filter records...",
   initialSearchTerm = "",
+  onSearchChange,
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
@@ -32,6 +33,10 @@ export default function DataTable({
       (val) => val && String(val).toLowerCase().includes(term),
     );
   });
+
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [data, searchTerm]);
 
   // Pagination
   const totalPages = Math.ceil(filteredData.length / itemsPerPage) || 1;
@@ -95,6 +100,7 @@ export default function DataTable({
                   onChange={(e) => {
                     setSearchTerm(e.target.value);
                     setCurrentPage(1);
+                    if (onSearchChange) onSearchChange(e.target.value);
                   }}
                   className="w-full bg-[#07131F] border border-[#16324A] rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-[#00E5FF] transition-colors font-sans"
                 />
@@ -149,7 +155,7 @@ export default function DataTable({
                 <tr
                   key={rowIdx}
                   onClick={() => onRowClick && onRowClick(row)}
-                  className={`hover:bg-[#11263C] transition-colors ${
+                  className={`hover:bg-[#eaf2fc] transition-colors ${
                     onRowClick ? "cursor-pointer group" : ""
                   }`}
                 >

@@ -97,8 +97,10 @@ def test_model_health():
     assert health["time_model"]["roc_auc"] > 0.70
 
 def test_create_intervention():
+    project_res = client.get("/api/v1/projects?limit=1")
+    project_id = project_res.json()["items"][0]["project_id"]
     payload = {
-        "project_id": "P0001",
+        "project_id": project_id,
         "intervention_type": "Schedule Recovery",
         "recommended_action": "Re-baseline critical path activities with EPC contractor.",
         "assigned_to": "Joint Secretary (Infrastructure)",
@@ -107,8 +109,18 @@ def test_create_intervention():
     res = client.post("/api/v1/interventions", json=payload)
     assert res.status_code == 200
     inv_data = res.json()
-    assert inv_data["project_id"] == "P0001"
+    assert inv_data["project_id"] == project_id
     assert inv_data["status"] == "UNDER_REVIEW"
+
+def test_create_intervention_rejects_unknown_project():
+    payload = {
+        "project_id": "DOES_NOT_EXIST",
+        "intervention_type": "Schedule Recovery",
+        "recommended_action": "Test action",
+        "initial_risk_score": 50
+    }
+    res = client.post("/api/v1/interventions", json=payload)
+    assert res.status_code == 404
 
 def test_assistant_query():
     query_res = client.post("/api/v1/assistant/query", json={"query": "Which projects have highest priority?"})

@@ -58,6 +58,7 @@ export const paimanaApi = {
     if (params.ministry) query.set("ministry", params.ministry);
     if (params.state) query.set("state", params.state);
     if (params.risk_level) query.set("risk_level", params.risk_level);
+    if (params.search) query.set("search", params.search);
     if (params.sort_by) query.set("sort_by", params.sort_by);
     if (params.order) query.set("order", params.order);
     if (params.limit) query.set("limit", params.limit);

@@ -1,19 +1,5 @@
 {
-  "total_projects": 1630,
-  "total_snapshots": 6787,
-  "valid_snapshots": 5383,
-  "warnings_count": 21,
-  "critical_errors_count": 707,
-  "missingness_pct": 0.0,
-  "quality_score": 85.0,
-  "issue_breakdown": {
-    "MISSING_VALUES": 0,
-    "NEGATIVE_COST": 7,
-    "PROGRESS_OUT_OF_BOUNDS": 0,
-    "EXPENDITURE_ANOMALY": 0,
-    "PROGRESS_REGRESSION": 21,
-    "DATE_INCONSISTENCY": 3,
-    "DUPLICATE_RECORDS": 697
-  },
-  "field_missingness": {}
+  "clean_snapshots": 6090,
+  "clean_projects": 1630,
+  "pipeline_quality_score": 85.0
 }

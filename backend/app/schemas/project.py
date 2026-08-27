@@ -1,5 +1,6 @@
 """
 Pydantic API Schemas (backend/app/schemas/project.py) - Pydantic v2 Compliant
+Includes Earned Value Management (EVM) Core Metrics & Performance Indicators
 """
 
 from typing import List, Optional, Dict, Any
@@ -15,13 +16,25 @@ class SnapshotSchema(BaseModel):
     revised_cost: float
     cumulative_expenditure: float
     physical_progress_pct: float
+    planned_progress_pct: Optional[float] = 0.0
     delay_days: int
     current_end_date: str
-    issue_procurement: int
-    issue_land: int
-    issue_contractor: int
-    issue_approval: int
-    status: str
+    
+    # EVM Core Metrics
+    pv: Optional[float] = 0.0             # Planned Value (₹ Cr)
+    ev: Optional[float] = 0.0             # Earned Value (₹ Cr)
+    ac: Optional[float] = 0.0             # Actual Cost (₹ Cr)
+    sv: Optional[float] = 0.0             # Schedule Variance (₹ Cr)
+    cv: Optional[float] = 0.0             # Cost Variance (₹ Cr)
+    spi: Optional[float] = 1.0            # Schedule Performance Index
+    cpi: Optional[float] = 1.0            # Cost Performance Index
+    critical_ratio: Optional[float] = 1.0 # SPI * CPI
+    
+    issue_procurement: int = 0
+    issue_land: int = 0
+    issue_contractor: int = 0
+    issue_approval: int = 0
+    status: str = "Ongoing"
 
 class RiskPredictionSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -31,6 +44,13 @@ class RiskPredictionSchema(BaseModel):
     time_risk_probability: float
     expected_cost_overrun_pct: float
     expected_delay_days: int
+    
+    # EVM Indicators
+    spi: Optional[float] = 1.0
+    cpi: Optional[float] = 1.0
+    sv: Optional[float] = 0.0
+    cv: Optional[float] = 0.0
+    
     composite_risk_score: float
     risk_level: str
     ipi_score: float
@@ -74,6 +94,9 @@ class ProjectListItem(BaseModel):
     original_cost: float
     revised_cost: float
     physical_progress_pct: float
+    planned_progress_pct: Optional[float] = 0.0
+    spi: Optional[float] = 1.0
+    cpi: Optional[float] = 1.0
     delay_days: int
     composite_risk_score: float
     risk_level: str
@@ -103,8 +126,16 @@ class TrajectoryPoint(BaseModel):
 
     report_month: str
     physical_progress_pct: float
+    planned_progress_pct: Optional[float] = 0.0
     revised_cost: float
     cumulative_expenditure: float
+    pv: Optional[float] = 0.0
+    ev: Optional[float] = 0.0
+    ac: Optional[float] = 0.0
+    sv: Optional[float] = 0.0
+    cv: Optional[float] = 0.0
+    spi: Optional[float] = 1.0
+    cpi: Optional[float] = 1.0
     delay_days: int
     composite_risk_score: float
 
@@ -169,3 +200,4 @@ class AssistantResponse(BaseModel):
     evidence_sources: List[str] = []
     confidence: float = 0.95
     data_freshness: str = "April 2026"
+    project_id: Optional[str] = None

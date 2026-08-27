@@ -1,7 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { LoadingSkeleton, ErrorState } from '../../components/common/FeedbackStates';
-import { paimanaApi } from '../../services/api/paimanaApi';
-import { ShieldCheck, Database, CheckCircle2, AlertTriangle, FileText } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import {
+  LoadingSkeleton,
+  ErrorState,
+} from "../../components/common/FeedbackStates";
+import { paimanaApi } from "../../services/api/paimanaApi";
+import {
+  ShieldCheck,
+  Database,
+  CheckCircle2,
+  AlertTriangle,
+  FileText,
+} from "lucide-react";
 
 export default function DataQualityCenter() {
   const [dqe, setDqe] = useState(null);
@@ -9,14 +18,15 @@ export default function DataQualityCenter() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    paimanaApi.getDataQuality()
+    paimanaApi
+      .getDataQuality()
       .then((data) => {
         setDqe(data);
         setLoading(false);
       })
       .catch((err) => {
-        console.error('Failed to load DQE audit:', err);
-        setError('Unable to load data quality report.');
+        console.error("Failed to load DQE audit:", err);
+        setError("Unable to load data quality report.");
         setLoading(false);
       });
   }, []);
@@ -26,13 +36,42 @@ export default function DataQualityCenter() {
 
   const report = dqe || {};
   const score = report.quality_score != null ? report.quality_score : 85.0;
+  const issues = report.issue_breakdown || {};
+  const duplicateCount = issues.DUPLICATE_RECORDS || 0;
+  const regressionCount = issues.PROGRESS_REGRESSION || 0;
+  const criticalErrorCount = report.critical_errors_count || 0;
 
   const checks = [
-    { name: 'Duplicate Project IDs & Month Keys', status: 'PASSED', count: 0, desc: 'Deduplicated across all monthly reporting cycles.' },
-    { name: 'Negative Cost & Expenditure Check', status: 'RESOLVED', count: report.issue_breakdown?.NEGATIVE_COST || 0, desc: 'Cost figures verified non-negative; zero/missing imputed from original sanction.' },
-    { name: 'Physical Progress Range (0–100%)', status: 'PASSED', count: report.issue_breakdown?.PROGRESS_OUT_OF_BOUNDS || 0, desc: 'Progress clamped strictly within standard 0% to 100% bounds.' },
-    { name: 'Date Inconsistency & Sequence Order', status: 'RESOLVED', count: report.issue_breakdown?.DATE_INCONSISTENCY || 0, desc: 'Verified commissioning date >= start date; normalized multi-state date horizons.' },
-    { name: 'Expenditure Exceeding Revised Baseline', status: 'FLAGGED', count: report.issue_breakdown?.EXPENDITURE_EXCEEDS_REVISED_COST || 7, desc: 'Drawdowns outpacing revised baseline flagged for financial reconciliation.' },
+    {
+      name: "Duplicate Project IDs & Month Keys",
+      status: duplicateCount ? "FLAGGED" : "PASSED",
+      count: duplicateCount,
+      desc: "Duplicate records identified across monthly reporting cycles.",
+    },
+    {
+      name: "Negative Cost & Expenditure Check",
+      status: issues.NEGATIVE_COST ? "FLAGGED" : "PASSED",
+      count: issues.NEGATIVE_COST || 0,
+      desc: "Cost figures checked for non-negative values.",
+    },
+    {
+      name: "Physical Progress Range (0–100%)",
+      status: issues.PROGRESS_OUT_OF_BOUNDS ? "FLAGGED" : "PASSED",
+      count: issues.PROGRESS_OUT_OF_BOUNDS || 0,
+      desc: "Progress checked against standard 0% to 100% bounds.",
+    },
+    {
+      name: "Date Inconsistency & Sequence Order",
+      status: issues.DATE_INCONSISTENCY ? "FLAGGED" : "PASSED",
+      count: issues.DATE_INCONSISTENCY || 0,
+      desc: "Commissioning and start-date ordering validated.",
+    },
+    {
+      name: "Progress Regression Across Cycles",
+      status: regressionCount ? "FLAGGED" : "PASSED",
+      count: regressionCount,
+      desc: "Month-over-month progress regressions require review.",
+    },
   ];
 
   return (
@@ -45,7 +84,8 @@ export default function DataQualityCenter() {
             Data Quality & Ingestion Audit Center
           </h1>
           <p className="text-xs text-slate-400 mt-0.5">
-            Validation, integrity checks, and anomaly resolution executed by the automated Data Quality Engine (DQE).
+            Validation, integrity checks, and anomaly resolution executed by the
+            automated Data Quality Engine (DQE).
           </p>
         </div>
       </div>
@@ -54,7 +94,9 @@ export default function DataQualityCenter() {
       <div className="bg-[#0D1E30] border border-[#16324A] rounded-xl p-6 shadow-command-card">
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 items-center">
           <div className="sm:border-r border-[#16324A] pr-4">
-            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">Overall Quality Score</div>
+            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+              Overall Quality Score
+            </div>
             <div className="text-3xl font-extrabold font-mono text-[#10B981] mt-1">
               {score.toFixed(1)}%
             </div>
@@ -67,27 +109,43 @@ export default function DataQualityCenter() {
           </div>
 
           <div className="sm:border-r border-[#16324A] pr-4">
-            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">Total Snapshots Audited</div>
-            <div className="text-2xl font-extrabold font-mono text-white mt-1">
-              {report.total_snapshots ? report.total_snapshots.toLocaleString() : '6,787'}
+            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+              Total Snapshots Audited
             </div>
-            <div className="text-[11px] text-slate-400 mt-0.5">Across 1,630 central projects</div>
+            <div className="text-2xl font-extrabold font-mono text-white mt-1">
+              {report.total_snapshots
+                ? report.total_snapshots.toLocaleString()
+                : "6,787"}
+            </div>
+            <div className="text-[11px] text-slate-400 mt-0.5">
+              Across 1,630 central projects
+            </div>
           </div>
 
           <div className="sm:border-r border-[#16324A] pr-4">
-            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">Valid Verified Records</div>
-            <div className="text-2xl font-extrabold font-mono text-[#00E5FF] mt-1">
-              {report.valid_snapshots ? report.valid_snapshots.toLocaleString() : '5,383'}
+            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+              Valid Verified Records
             </div>
-            <div className="text-[11px] text-slate-400 mt-0.5">Directly admitted to feature matrix</div>
+            <div className="text-2xl font-extrabold font-mono text-[#00E5FF] mt-1">
+              {report.valid_snapshots
+                ? report.valid_snapshots.toLocaleString()
+                : "5,383"}
+            </div>
+            <div className="text-[11px] text-slate-400 mt-0.5">
+              Directly admitted to feature matrix
+            </div>
           </div>
 
           <div>
-            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">Anomalies Sanitized</div>
-            <div className="text-2xl font-extrabold font-mono text-[#F59E0B] mt-1">
-              {report.critical_errors_count || 707}
+            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+              Critical Issues Found
             </div>
-            <div className="text-[11px] text-slate-400 mt-0.5">Imputed / Normalized by DQE</div>
+            <div className="text-2xl font-extrabold font-mono text-[#F59E0B] mt-1">
+              {criticalErrorCount.toLocaleString()}
+            </div>
+            <div className="text-[11px] text-slate-400 mt-0.5">
+              Duplicates and validation flags included
+            </div>
           </div>
         </div>
       </div>
@@ -99,20 +157,27 @@ export default function DataQualityCenter() {
         </h3>
         <div className="divide-y divide-[#16324A]">
           {checks.map((c, i) => (
-            <div key={i} className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div
+              key={i}
+              className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2"
+            >
               <div className="space-y-0.5">
                 <div className="text-xs font-bold text-white">{c.name}</div>
-                <div className="text-[11px] text-slate-400 font-sans">{c.desc}</div>
+                <div className="text-[11px] text-slate-400 font-sans">
+                  {c.desc}
+                </div>
               </div>
 
               <div className="flex items-center gap-3">
-                <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold border ${
-                  c.status === 'PASSED'
-                    ? 'bg-[#10B981]/15 text-[#10B981] border-[#10B981]/30'
-                    : c.status === 'RESOLVED'
-                    ? 'bg-[#00E5FF]/15 text-[#00E5FF] border-[#00E5FF]/30'
-                    : 'bg-[#F59E0B]/15 text-[#F59E0B] border-[#F59E0B]/30'
-                }`}>
+                <span
+                  className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold border ${
+                    c.status === "PASSED"
+                      ? "bg-[#10B981]/15 text-[#10B981] border-[#10B981]/30"
+                      : c.status === "RESOLVED"
+                        ? "bg-[#00E5FF]/15 text-[#00E5FF] border-[#00E5FF]/30"
+                        : "bg-[#F59E0B]/15 text-[#F59E0B] border-[#F59E0B]/30"
+                  }`}
+                >
                   {c.status}
                 </span>
                 <span className="font-mono text-xs text-slate-400">

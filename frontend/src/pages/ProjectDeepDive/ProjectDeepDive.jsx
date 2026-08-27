@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import TrajectoryCharts from '../../components/charts/TrajectoryCharts';
-import ShapDiagnosisCard from '../../components/intelligence/ShapDiagnosisCard';
-import StatusBadge from '../../components/common/StatusBadge';
-import TrendBadge from '../../components/common/TrendBadge';
-import InterventionModal from '../../components/common/InterventionModal';
-import { LoadingSkeleton, ErrorState } from '../../components/common/FeedbackStates';
-import { paimanaApi } from '../../services/api/paimanaApi';
+import React, { useState, useEffect } from "react";
+import TrajectoryCharts from "../../components/charts/TrajectoryCharts";
+import ShapDiagnosisCard from "../../components/intelligence/ShapDiagnosisCard";
+import EVMPerformanceCard from "../../components/intelligence/EVMPerformanceCard";
+import StatusBadge from "../../components/common/StatusBadge";
+
+import TrendBadge from "../../components/common/TrendBadge";
+import InterventionModal from "../../components/common/InterventionModal";
+import {
+  LoadingSkeleton,
+  ErrorState,
+} from "../../components/common/FeedbackStates";
+import { paimanaApi } from "../../services/api/paimanaApi";
 import {
   FileCheck,
   ChevronLeft,
@@ -14,8 +19,8 @@ import {
   Layers,
   MapPin,
   AlertTriangle,
-  ArrowUpRight
-} from 'lucide-react';
+  ArrowUpRight,
+} from "lucide-react";
 
 export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
   const [project, setProject] = useState(null);
@@ -34,16 +39,18 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
         paimanaApi.getProjectById(pid),
         paimanaApi.getProjectTrajectory(pid).catch(() => []),
         paimanaApi.getProjectExplanation(pid).catch(() => null),
-        paimanaApi.getProjectRecommendations(pid).catch(() => [])
+        paimanaApi.getProjectRecommendations(pid).catch(() => []),
       ]);
 
       setProject(projData);
       setTrajectory(trajData || []);
       setExplanation(expData);
-      setRecommendations(recData?.recommendations || []);
+      setRecommendations(
+        Array.isArray(recData) ? recData : recData?.recommendations || [],
+      );
     } catch (err) {
-      console.error('Failed to load project deep dive:', err);
-      setError('Unable to load project details from backend.');
+      console.error("Failed to load project deep dive:", err);
+      setError("Unable to load project details from backend.");
     } finally {
       setLoading(false);
     }
@@ -67,7 +74,10 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
   if (error || !project) {
     return (
       <div className="p-6 bg-[#07131F] min-h-screen">
-        <ErrorState message={error || 'Project not found.'} onRetry={() => loadProjectDeepDive(projectId)} />
+        <ErrorState
+          message={error || "Project not found."}
+          onRetry={() => loadProjectDeepDive(projectId)}
+        />
       </div>
     );
   }
@@ -76,8 +86,14 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
   const snap = p.latest_snapshot || {};
   const pred = p.latest_prediction || {};
 
-  const costOverrunCr = Math.max(0, (snap.revised_cost || p.original_cost) - p.original_cost);
-  const expUtilizationPct = snap.revised_cost > 0 ? ((snap.cumulative_expenditure || 0) / snap.revised_cost) * 100 : 0;
+  const costOverrunCr = Math.max(
+    0,
+    (snap.revised_cost || p.original_cost) - p.original_cost,
+  );
+  const expUtilizationPct =
+    snap.revised_cost > 0
+      ? ((snap.cumulative_expenditure || 0) / snap.revised_cost) * 100
+      : 0;
 
   return (
     <div className="p-6 space-y-5 bg-[#07131F] min-h-screen">
@@ -96,13 +112,20 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
               <span className="font-mono text-xs font-bold text-[#00E5FF] bg-[#0D1E30] px-2 py-0.5 rounded border border-[#16324A]">
                 {p.project_code || p.project_id}
               </span>
-              <StatusBadge level={pred.risk_level || 'CRITICAL'} size="sm" />
+              <StatusBadge level={pred.risk_level || "CRITICAL"} size="sm" />
             </div>
             <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
               {p.project_name}
             </h1>
             <div className="text-xs text-slate-400 mt-0.5">
-              {p.ministry} · {p.sector} · State: <strong className="text-slate-200">{p.state || 'Multi-State'}</strong> · Agency: <strong className="text-slate-200">{p.implementing_agency}</strong>
+              {p.ministry} · {p.sector} · State:{" "}
+              <strong className="text-slate-200">
+                {p.state || "Multi-State"}
+              </strong>{" "}
+              · Agency:{" "}
+              <strong className="text-slate-200">
+                {p.implementing_agency}
+              </strong>
             </div>
           </div>
         </div>
@@ -122,17 +145,22 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
       {/* 4 Core Command Metric Blocks */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="p-4 bg-[#0D1E30] border border-[#16324A] border-t-[3px] border-t-[#F97316] rounded-xl shadow-command-card flex flex-col justify-between">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">Cost Overrun Risk</div>
+          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+            Cost Overrun Risk
+          </div>
           <div className="text-2xl font-extrabold font-mono text-[#F97316] my-1">
             {Math.round((pred.cost_risk_probability || 0.78) * 100)}%
           </div>
           <div className="text-[11px] font-mono text-[#F97316] font-bold">
-            +{(pred.expected_cost_overrun_pct || 14.8).toFixed(1)}% expected overrun
+            +{(pred.expected_cost_overrun_pct || 14.8).toFixed(1)}% expected
+            overrun
           </div>
         </div>
 
         <div className="p-4 bg-[#0D1E30] border border-[#16324A] border-t-[3px] border-t-[#EF4444] rounded-xl shadow-command-card flex flex-col justify-between">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">Schedule Delay Risk</div>
+          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+            Schedule Delay Risk
+          </div>
           <div className="text-2xl font-extrabold font-mono text-[#EF4444] my-1">
             {Math.round((pred.time_risk_probability || 0.71) * 100)}%
           </div>
@@ -142,28 +170,43 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
         </div>
 
         <div className="p-4 bg-[#0D1E30] border border-[#16324A] border-t-[3px] border-t-[#F59E0B] rounded-xl shadow-command-card flex flex-col justify-between">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">Financial Exposure</div>
+          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+            Financial Exposure
+          </div>
           <div className="text-2xl font-extrabold font-mono text-white my-1">
             ₹{Number(snap.revised_cost || p.original_cost).toLocaleString()} Cr
           </div>
           <div className="text-[11px] text-slate-400 font-mono">
-            ₹{Number(snap.cumulative_expenditure || 0).toLocaleString()} Cr drawn ({expUtilizationPct.toFixed(0)}%)
+            ₹{Number(snap.cumulative_expenditure || 0).toLocaleString()} Cr
+            drawn ({expUtilizationPct.toFixed(0)}%)
           </div>
         </div>
 
         <div className="p-4 bg-[#0D1E30] border border-[#16324A] border-t-[3px] border-t-[#00E5FF] rounded-xl shadow-command-card flex flex-col justify-between">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">Intervention Priority</div>
+          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+            Intervention Priority
+          </div>
           <div className="text-2xl font-extrabold font-mono text-[#F59E0B] my-1">
             #{pred.ipi_rank || 3}
           </div>
           <div className="text-[11px] font-mono font-bold text-[#00E5FF]">
-            IPI Index: {pred.ipi_score ? pred.ipi_score.toFixed(1) : '91.2'} / 100
+            IPI Index: {pred.ipi_score ? pred.ipi_score.toFixed(1) : "91.2"} /
+            100
           </div>
         </div>
       </div>
 
+      {/* Objective EVM Performance Layer & Early Warning */}
+      <EVMPerformanceCard
+        snapshot={snap}
+        prediction={pred}
+        originalCost={p.original_cost}
+        onOpenMemo={() => setIsMemoOpen(true)}
+      />
+
       {/* Trajectory S-Curves & Risk Evolution */}
       <TrajectoryCharts trajectory={trajectory} />
+
 
       {/* TreeSHAP Factor Attribution & Directives */}
       <ShapDiagnosisCard
