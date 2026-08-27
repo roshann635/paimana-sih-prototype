@@ -16,12 +16,14 @@ import {
 } from "lucide-react";
 import { paimanaApi } from "../../services/api/paimanaApi";
 import { LoadingSkeleton, ErrorState } from "../../components/common/FeedbackStates";
+import SatelliteEvidenceModal from "../../components/satellite/SatelliteEvidenceModal";
 
 export default function SatelliteObservatory({ onSelectProject }) {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState("ALL"); // ALL, SIGNIFICANT, REVIEW, CONSISTENT
+  const [inspectingProject, setInspectingProject] = useState(null);
 
   const loadData = async () => {
     setLoading(true);
@@ -43,8 +45,8 @@ export default function SatelliteObservatory({ onSelectProject }) {
 
   if (loading) {
     return (
-      <div className="p-6 space-y-5 bg-[#07131F] min-h-screen">
-        <div className="h-8 bg-[#0D1E30] rounded-lg w-1/3 animate-pulse"></div>
+      <div className="p-6 space-y-5 bg-[#f4f7fb] min-h-screen">
+        <div className="h-8 bg-white border border-[#dbe3ed] rounded-lg w-1/3 animate-pulse"></div>
         <LoadingSkeleton rows={10} />
       </div>
     );
@@ -52,7 +54,7 @@ export default function SatelliteObservatory({ onSelectProject }) {
 
   if (error || !summary) {
     return (
-      <div className="p-6 bg-[#07131F] min-h-screen">
+      <div className="p-6 bg-[#f4f7fb] min-h-screen">
         <ErrorState message={error || "Satellite data unavailable."} onRetry={loadData} />
       </div>
     );
@@ -72,7 +74,7 @@ export default function SatelliteObservatory({ onSelectProject }) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#dbe3ed]">
         <div>
           <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-[#06295B]/10 rounded-lg text-[#06295B]">
+            <div className="p-1.5 bg-[#1668d8]/10 rounded-lg text-[#1668d8]">
               <Satellite className="w-5 h-5" />
             </div>
             <h1 className="text-xl lg:text-2xl font-extrabold text-[#142235] tracking-tight uppercase">
@@ -86,7 +88,7 @@ export default function SatelliteObservatory({ onSelectProject }) {
 
         <div className="flex items-center gap-2">
           <span className="text-xs font-mono font-bold px-3 py-1.5 bg-white border border-[#dbe3ed] text-slate-700 rounded-lg shadow-2xs">
-            Evaluation Freshness: <strong className="text-[#06295B]">{s.data_freshness_month}</strong>
+            Evaluation Freshness: <strong className="text-[#1668d8]">{s.data_freshness_month}</strong>
           </span>
         </div>
       </div>
@@ -163,9 +165,9 @@ export default function SatelliteObservatory({ onSelectProject }) {
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => setSelectedFilter("ALL")}
-              className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+              className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
                 selectedFilter === "ALL"
-                  ? "bg-[#06295B] text-white shadow-xs"
+                  ? "bg-[#1668d8] text-white shadow-xs"
                   : "bg-[#f4f7fb] text-slate-700 border border-[#dbe3ed] hover:bg-slate-100"
               }`}
             >
@@ -173,7 +175,7 @@ export default function SatelliteObservatory({ onSelectProject }) {
             </button>
             <button
               onClick={() => setSelectedFilter("SIGNIFICANT")}
-              className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+              className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
                 selectedFilter === "SIGNIFICANT"
                   ? "bg-[#dc2626] text-white shadow-xs"
                   : "bg-[#f4f7fb] text-slate-700 border border-[#dbe3ed] hover:bg-slate-100"
@@ -183,7 +185,7 @@ export default function SatelliteObservatory({ onSelectProject }) {
             </button>
             <button
               onClick={() => setSelectedFilter("REVIEW")}
-              className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+              className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
                 selectedFilter === "REVIEW"
                   ? "bg-[#d97706] text-white shadow-xs"
                   : "bg-[#f4f7fb] text-slate-700 border border-[#dbe3ed] hover:bg-slate-100"
@@ -226,7 +228,7 @@ export default function SatelliteObservatory({ onSelectProject }) {
                     <td className="py-3 px-3.5 text-right font-mono font-bold text-slate-900">
                       {p.reported_progress_pct}%
                     </td>
-                    <td className="py-3 px-3.5 text-right font-mono font-bold text-[#06295B]">
+                    <td className="py-3 px-3.5 text-right font-mono font-bold text-[#142235]">
                       {p.observed_site_change_index}/100
                     </td>
                     <td className={`py-3 px-3.5 text-right font-mono font-extrabold ${
@@ -247,11 +249,11 @@ export default function SatelliteObservatory({ onSelectProject }) {
                     </td>
                     <td className="py-3 px-3.5 text-right">
                       <button
-                        onClick={() => onSelectProject && onSelectProject(p.project_id)}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#06295B] hover:bg-[#1668d8] text-white text-xs font-bold rounded-lg transition-all shadow-2xs cursor-pointer"
+                        onClick={() => setInspectingProject(p)}
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#1668d8] hover:bg-[#0b4db3] text-white text-xs font-bold rounded-lg transition-all shadow-xs cursor-pointer active:scale-95"
                       >
+                        <Eye className="w-3.5 h-3.5" />
                         <span>Inspect</span>
-                        <ArrowUpRight className="w-3.5 h-3.5" />
                       </button>
                     </td>
                   </tr>
@@ -298,7 +300,23 @@ export default function SatelliteObservatory({ onSelectProject }) {
           })}
         </div>
       </div>
+
+      {/* Interactive Evidence Modal */}
+      {inspectingProject && (
+        <SatelliteEvidenceModal
+          isOpen={Boolean(inspectingProject)}
+          onClose={() => setInspectingProject(null)}
+          projectId={inspectingProject.project_id}
+          projectName={inspectingProject.project_name}
+          onOpenMemo={() => {
+            const pid = inspectingProject.project_id;
+            setInspectingProject(null);
+            if (onSelectProject) onSelectProject(pid);
+          }}
+        />
+      )}
     </div>
   );
 }
+
 
