@@ -148,17 +148,61 @@ Rather than collapsing distinct analytical dimensions into a single opaque perce
 
 ## 📋 7. Action Memorandum & Official Directive
 
-- **Verification Audit ID**: `SAT-2026-000184`
-- **Processing Engine**: `sat-engine v1.0` (Configuration: `config v0.3-provisional`)
-- **AOI Provenance**: `COPERNICUS STAC DISCOVERY` (Collection: `SENTINEL-2` & `SENTINEL-1-GRD`)
-- **Action Priority**: `HIGH`
-- **Administrative Directive Dispatched**:
-  > *"Issue formal Site Inspection Directive to NHAI Project Director; require physical joint measurement of completed base subgrade and overpass superstructure prior to releasing milestone tranche 7."*
+---
+
+## 🚫 8. Scientific & Administrative Boundaries: What PAIMANA Does NOT Conclude
+
+To maintain institutional trust and scientific defensibility before government evaluators, the boundaries of the system are explicitly defined:
+
+```
+┌───────────────────────────────────────────────────┬───────────────────────────────────────────────────┐
+│              ❌ WHAT PAIMANA DOES NOT DO           │               ✓ WHAT PAIMANA DOES DO              │
+├───────────────────────────────────────────────────┼───────────────────────────────────────────────────┤
+│ • Determine contractor fraud or criminal intent   │ • Identify empirical reporting vs evidence gaps   │
+│ • Declare reported physical progress "false"      │ • Surface deteriorating longitudinal trajectories │
+│ • Treat OSC as exact construction percentage      │ • Cross-check reported progress with observations │
+│ • Replace on-site physical engineering audits     │ • Quantify an experimental site-change score      │
+│ • Make autonomous administrative decisions        │ • Explain predictive risk drivers via TreeSHAP    │
+│ • Guarantee 10m observability for compact sites   │ • Prioritize high-risk projects for human review  │
+│ • Overrule engineering certification logs         │ • Generate evidence-backed inspection directives  │
+└───────────────────────────────────────────────────┴───────────────────────────────────────────────────┘
+```
 
 ---
 
-## 🏁 8. Conclusion: Scientific Integrity & SIH Presentation Framing
+## ⏱️ 9. The 3-Minute SIH Live Demonstration Script ("The Story")
 
-1. **Defensible Nomenclature**: Framed strictly as a **Verification Signal**, not "fraud detection".
-2. **Reproducible Provenance**: Supported by immutable audit hashes and clear distinction between live Copernicus observations and synthetic demonstration fixtures.
-3. **Complete Workflow Integration**: Seamlessly connects government monthly flash reports to deterministic EVM analytics, explainable ML risk forecasting, multi-sensor Earth-observation evidence, and actionable administrative memorandums.
+| Timestamp | Screen / Visual Target | Speaker Narration & Demonstration Action |
+|---|---|---|
+| **00:00 – 00:20** | **National Portfolio (`/`)** | *"A national contractor reports 74% physical progress on Project P618427. How does a monitoring officer independently assess whether this reported trajectory is consistent with observable evidence?"* |
+| **00:20 – 00:35** | **Data Quality (DQE)** | *"First, PAIMANA checks data integrity: DQE Confidence is 94% across 6,000+ snapshots with zero temporal contradictions."* |
+| **00:35 – 00:50** | **EVM Performance** | *"Deterministic EVM reveals early stress: Schedule Performance Index (SPI) has dropped to 0.71, and Cost Performance Index (CPI) to 0.84."* |
+| **00:50 – 01:10** | **ML Risk & TreeSHAP** | *"The calibrated XGBoost model predicts a 78% probability of schedule slippage (+146 days). TreeSHAP attribution shows the top driver is contractor velocity deceleration (+24.2 risk contribution)."* |
+| **01:10 – 01:40** | **Satellite Studio** | *"Instead of relying solely on paperwork, PAIMANA queries Copernicus Earth observation. Multi-sensor evidence derives an experimental Observed Site Change Index of 58/100, revealing a −16 pp gap → 🟠 REVIEW RECOMMENDED."* |
+| **01:40 – 02:10** | **Visual Comparison** | *"Clicking 'Inspect Evidence', we see the visual proof: Sentinel-2 True Color, NIR False Color, Sentinel-1 C-SAR radar backscatter, and the classified change mask."* |
+| **02:10 – 02:40** | **Temporal Divergence** | *"The temporal timeline pinpoints the exact turning point: remotely sensed site transformation plateaued in July 2026, coinciding precisely with the SPI drop from 0.76 to 0.71."* |
+| **02:40 – 03:00** | **Action Memorandum** | *"The Grounded AI Assistant recommends immediate on-site verification. The officer clicks 'Generate Site Inspection Directive'—sealing the audit ID SAT-2026-000184 into the official record."* |
+
+---
+
+## 🛡️ 10. Adversarial Defense Matrix (Answers to 16 Critical Judge Inquiries)
+
+| # | Judge Challenge Question | Institutional Scientific Defense |
+|---|---|---|
+| **1** | *"Where did the 1,630 projects come from?"* | Sourced directly from published MoSPI Infrastructure and Project Monitoring Division (IPMD) monthly Flash Reports for major central sector projects ($\ge$ ₹150 Cr sanctioned cost). |
+| **2** | *"Why is Earned Value (EV) calculated this way?"* | EV is calculated in accordance with standard PMI and MoSPI guidelines: $\text{EV} = \text{Sanctioned Cost} \times \text{Reported Physical Progress \%}$. |
+| **3** | *"How did you prevent temporal leakage in ML?"* | Enforced strict **Out-of-Time (OOT) temporal validation**: models were trained strictly on historical snapshots up to June 2025, and tested on unseen forward snapshots (July–October 2025). |
+| **4** | *"Why should I trust your 78% risk probability?"* | Probabilities are calibrated using isotonic regression (`CalibratedClassifierCV`), achieving a Brier Calibration Score of **0.138** (near-perfect reliability) and false-negative suppression to 4%. |
+| **5** | *"Does SHAP explain causality?"* | No. TreeSHAP explains *mathematical feature attribution* in tree ensembles, isolating associative risk contributors rather than claiming counterfactual causality. |
+| **6** | *"Can Sentinel-2 tell you exact construction percentage?"* | No. We explicitly avoid false precision. Sentinel provides an experimental **Observed Site Change Index (0–100)** to detect broad macro divergence, not micro completion. |
+| **7** | *"What happens to a small building footprint?"* | Our Spatial Suitability Engine evaluates feature width against 10m Sentinel resolution; sub-resolution assets are categorized as **NOT_OBSERVABLE**, preventing false alarms. |
+| **8** | *"What happens when Sentinel-2 is obscured by clouds?"* | SCL cloud masking detects obscuration; the engine automatically falls back to **Sentinel-1 C-band SAR**, which penetrates clouds, rain, and operates day/night. |
+| **9** | *"Why Sentinel-1 SAR?"* | C-band radar backscatter ($\gamma^0$ in VV/VH) directly measures surface roughness, mass concrete consolidation, and structural steelwork, providing physical dielectric evidence. |
+| **10** | *"Are your satellite images real?"* | Live queries connect to **Copernicus Data Space Ecosystem (CDSE) STAC APIs** (`is_synthetic: false`). Offline demonstration fixtures are explicitly tagged `is_synthetic: true` with visible disclaimers. |
+| **11** | *"Why −15 pp and −30 pp discrepancy thresholds?"* | They are **explicitly provisional prototype parameters** configured in `config.py`. Production deployment requires empirical calibration against validated field inspections. |
+| **12** | *"Where did your OSC weights come from?"* | Provisional prototype weights ($w_O=0.30, w_S=0.35, w_B=0.20, w_T=0.15$) represent configurable baseline parameters subject to empirical calibration. |
+| **13** | *"Are you accusing contractors of fraud?"* | Absolutely not. The system generates an objective **Verification Signal** to prioritize inspection resources; discrepancies may arise from sub-surface work, finishes, or delays. |
+| **14** | *"Why do you need AI at all?"* | Human officers cannot manually review 1,630 multi-year project trajectories. AI prioritizes attention, decomposes complex multi-variate risk, and detects non-linear drift. |
+| **15** | *"Can another officer reproduce this decision?"* | Yes. Every run outputs an immutable **Verification Audit ID (e.g. `SAT-2026-000184`)**, geometry hash, engine version, configuration hash, and evidence provenance packet. |
+| **16** | *"What happens if the satellite API is down?"* | The Evidence Quality Gate intercepts provider timeouts and returns **INCONCLUSIVE** with an audit note, strictly refusing to fabricate fake live evidence. |
+
