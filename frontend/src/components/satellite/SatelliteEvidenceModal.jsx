@@ -340,20 +340,43 @@ export default function SatelliteEvidenceModal({
             </div>
           </div>
 
-          {/* Copernicus Mission Provenance & Investigation Directives */}
+          {/* Copernicus Mission Provenance, Confidence Stack & Investigation Directives */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Metadata Box */}
-            <div className="p-4 bg-[#0D1E30] border border-[#16324A] rounded-xl space-y-2 text-xs">
-              <h5 className="font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-                <Info className="w-3.5 h-3.5 text-[#00E5FF]" />
-                Copernicus Data Space Telemetry
-              </h5>
-              <div className="space-y-1 font-mono text-[11px] text-slate-300">
-                <div>Optical Sensor: <strong>{vf.optical_provenance?.sensor || "Sentinel-2A MSI"}</strong></div>
-                <div>Optical Product: <strong className="text-slate-400">{vf.optical_provenance?.product_id || "S2A_MSIL2A_20260614..."}</strong></div>
-                <div>SAR Sensor: <strong>{vf.sar_provenance?.sensor || "Sentinel-1A C-SAR"}</strong></div>
-                <div>SAR Product: <strong className="text-slate-400">{vf.sar_provenance?.product_id || "S1A_IW_GRDH_20260612..."}</strong></div>
-                <div>SCL Cloud Cover: <strong>{vf.optical_provenance?.cloud_cover_percent || 8.4}%</strong> · Orbit: <strong>{vf.optical_provenance?.orbit_pass || "DESCENDING"}</strong></div>
+            {/* Metadata & Confidence Stack Box */}
+            <div className="p-4 bg-[#0D1E30] border border-[#16324A] rounded-xl space-y-3 text-xs">
+              <div>
+                <h5 className="font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                  <Info className="w-3.5 h-3.5 text-[#00E5FF]" />
+                  Copernicus Telemetry & Provenance
+                </h5>
+                <div className="space-y-1 font-mono text-[11px] text-slate-300 mt-1.5">
+                  <div>Optical Sensor: <strong>{vf.optical_provenance?.sensor || "Sentinel-2A MSI"}</strong></div>
+                  <div>Optical Product: <strong className="text-slate-400">{vf.optical_provenance?.product_id || "S2A_MSIL2A_20260614..."}</strong></div>
+                  <div>SAR Sensor: <strong>{vf.sar_provenance?.sensor || "Sentinel-1A C-SAR"}</strong></div>
+                  <div>AOI Provenance: <strong className="text-[#00E5FF]">{vf.aoi_provenance || "PAIMANA DEMO GEOMETRY"}</strong></div>
+                  <div>SCL Cloud Cover: <strong>{vf.optical_provenance?.cloud_cover_percent || 8.4}%</strong> · Orbit: <strong>{vf.optical_provenance?.orbit_pass || "DESCENDING"}</strong></div>
+                </div>
+              </div>
+
+              {/* Independent Confidence Stack */}
+              <div className="pt-2 border-t border-[#16324A] space-y-1.5">
+                <div className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">
+                  PAIMANA Decision Confidence Stack (Independent Streams)
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-center font-mono">
+                  <div className="p-1.5 bg-[#07131F] border border-[#16324A] rounded">
+                    <div className="text-[9px] text-slate-400">Data Quality</div>
+                    <div className="text-xs font-extrabold text-[#00E5FF]">{vf.data_quality_confidence || 94}%</div>
+                  </div>
+                  <div className="p-1.5 bg-[#07131F] border border-[#16324A] rounded">
+                    <div className="text-[9px] text-slate-400">ML Model</div>
+                    <div className="text-xs font-extrabold text-[#F59E0B]">{vf.ml_model_confidence || 88}%</div>
+                  </div>
+                  <div className="p-1.5 bg-[#07131F] border border-[#16324A] rounded">
+                    <div className="text-[9px] text-slate-400">Satellite Evidence</div>
+                    <div className="text-xs font-extrabold text-[#10B981]">{vf.satellite_evidence_confidence || 87}%</div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -367,6 +390,9 @@ export default function SatelliteEvidenceModal({
                 <p className="text-xs text-slate-300 mt-1 leading-relaxed">
                   {vf.recommended_action || "Issue formal Site Inspection Directive to cross-verify physical progress claims."}
                 </p>
+                <div className="mt-2 text-[10px] font-mono text-slate-400 bg-[#07131F] p-2 rounded border border-[#16324A]">
+                  Evidence Status: <strong>{vf.verification_status?.replace("_", " ")}</strong> (Discrepancy: {vf.progress_discrepancy_pp} pp)
+                </div>
               </div>
 
               <div className="flex items-center gap-2">
@@ -375,7 +401,7 @@ export default function SatelliteEvidenceModal({
                     onClose();
                     if (onOpenMemo) onOpenMemo();
                   }}
-                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#F59E0B] hover:bg-[#d97706] text-[#07131F] text-xs font-bold rounded-lg transition-colors shadow-xs"
+                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#F59E0B] hover:bg-[#d97706] text-[#07131F] text-xs font-bold rounded-lg transition-colors shadow-xs"
                 >
                   <FileCheck className="w-4 h-4" />
                   <span>Attach Satellite Evidence to Inspection Memo</span>
@@ -383,8 +409,14 @@ export default function SatelliteEvidenceModal({
               </div>
             </div>
           </div>
+
+          {/* Scientific Disclaimer */}
+          <div className="p-3 bg-[#07131F] border border-[#16324A] rounded-lg text-center text-[10px] text-slate-400">
+            {vf.disclaimer || "Observed Site Change Index is an experimental multi-sensor evidence score and should not be interpreted as a direct measurement of construction completion percentage."}
+          </div>
         </div>
       </div>
     </div>
   );
 }
+

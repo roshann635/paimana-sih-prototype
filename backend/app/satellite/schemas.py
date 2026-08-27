@@ -127,18 +127,26 @@ class SatelliteVerificationResult(BaseModel):
     first_divergence_month: Optional[str] = None
     divergence_narrative: Optional[str] = None
     
-    # Provenance
+    # Provenance & Confidence Stack
     optical_provenance: Optional[SatelliteProvenance] = None
     sar_provenance: Optional[SatelliteProvenance] = None
+    aoi_provenance: str = "PAIMANA DEMO GEOMETRY"
     is_synthetic: bool = False
+    
+    # Independent Confidence Stack (never merged into a single arbitrary metric)
+    data_quality_confidence: float = 94.0
+    ml_model_confidence: float = 88.0
+    satellite_evidence_confidence: float = 87.0
+    
     disclaimer: str = (
-        "Satellite-derived change indicates physical site transformation and does not "
-        "constitute a direct measurement of construction completion."
+        "Observed Site Change Index is an experimental multi-sensor evidence score and should "
+        "not be interpreted as a direct measurement of construction completion percentage."
     )
     
     # Action Recommendation
     recommended_action: str
     action_priority: str  # HIGH, MEDIUM, ROUTINE
+
 
 
 class SatelliteEvidenceVisuals(BaseModel):

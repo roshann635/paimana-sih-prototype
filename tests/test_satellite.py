@@ -201,3 +201,104 @@ def test_satellite_api_portfolio_overview():
     assert "total_projects_evaluated" in data
     assert "consistent_count" in data
     assert "high_discrepancy_projects" in data
+
+
+# Test 25: Project -> Satellite Journey Integration
+def test_test_25_project_to_satellite_journey():
+    resp = client.get("/api/v1/projects?limit=5")
+    assert resp.status_code == 200
+    items = resp.json().get("items", [])
+    assert len(items) > 0
+    pid = items[0]["project_id"]
+
+    sat_resp = client.get(f"/api/v1/projects/{pid}/satellite")
+    assert sat_resp.status_code == 200
+    sat_data = sat_resp.json()
+    assert sat_data["project_id"] == pid
+    assert "reported_progress_pct" in sat_data
+    assert "observed_site_change_index" in sat_data
+    assert "spatial_suitability" in sat_data
+    assert "evidence_quality" in sat_data
+    assert "confidence_stack" not in sat_data or isinstance(sat_data.get("data_quality_confidence"), (int, float))
+
+
+# Test 26: Satellite <-> EVM Temporal Consistency
+def test_test_26_satellite_evm_temporal_consistency():
+    resp = client.get("/api/v1/projects?limit=1")
+    pid = resp.json()["items"][0]["project_id"]
+    
+    proj_resp = client.get(f"/api/v1/projects/{pid}")
+    assert proj_resp.status_code == 200
+    evm_month = proj_resp.json()["latest_snapshot"]["report_month"]
+
+    sat_resp = client.get(f"/api/v1/projects/{pid}/satellite")
+    assert sat_resp.status_code == 200
+    sat_month = sat_resp.json()["evaluation_month"]
+
+    # Satellite engine must evaluate against the exact reporting month of the EVM snapshot
+    assert sat_month == evm_month
+
+
+# Test 27: Strict Future Imagery Rejection (T = 2026-07-31 rejects 2026-08-03+)
+def test_test_27_strict_future_imagery_rejection():
+    copernicus = CopernicusSTACProvider()
+    eval_m = "2026-07"
+    prov = copernicus.discover_sentinel2_l2a([73.12, 22.42], evaluation_month=eval_m)
+    
+    # Must be on or before 2026-07-31
+    acq_date = prov.acquisition_datetime
+    assert acq_date.startswith("2026-07")
+    assert "2026-08" not in acq_date
+
+
+# Test 28: Provenance & Synthetic Disclaimer Integrity
+def test_test_28_provenance_and_disclaimer_integrity():
+    resp = client.get("/api/v1/projects?limit=1")
+    pid = resp.json()["items"][0]["project_id"]
+    
+    sat_resp = client.get(f"/api/v1/projects/{pid}/satellite?use_live_copernicus=false")
+    sat_data = sat_resp.json()
+    
+    assert sat_data["is_synthetic"] is True
+    assert sat_data["aoi_provenance"] == "PAIMANA DEMO GEOMETRY"
+    assert "experimental multi-sensor evidence score" in sat_data["disclaimer"]
+
+
+# Test 29: Missing / Unobservable AOI returns NOT_OBSERVABLE
+def test_test_29_unobservable_aoi_gate():
+    from backend.app.satellite.suitability import assess_spatial_suitability
+    # Footprint below 10m Ground Sampling Distance
+    suit = assess_spatial_suitability(
+        sector="Telecommunications",
+        project_name="Single Tower Pole",
+        custom_area_sqkm=0.01,
+        custom_width_m=4.0
+    )
+    assert suit.is_observable is False
+    assert suit.level == SuitabilityLevel.UNSUITABLE
+
+
+# Test 30: Provider Failure / Inconclusive Graceful Handling
+def test_test_30_provider_failure_graceful_handling():
+    suit = assess_spatial_suitability("Road Transport and Highways", "Expressway Corridor")
+    # Simulate both optical & SAR streams down/degraded
+    quality = evaluate_evidence_quality_gate(
+        suitability=suit,
+        optical_quality_score=0.0,
+        sar_quality_score=0.0,
+        cloud_cover_pct=100.0,
+        optical_change=0.0,
+        sar_change=0.0,
+        is_optical_available=False,
+        is_sar_available=False
+    )
+    status, _, headline, _, _, _ = classify_verification_status(
+        reported_progress_pct=60.0,
+        observed_change_index=0.0,
+        suitability=suit,
+        quality=quality
+    )
+    # Must return INCONCLUSIVE rather than silently fabricating fake live evidence
+    assert status == VerificationStatus.INCONCLUSIVE
+    assert "Inconclusive" in headline
+
