@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import TrajectoryCharts from "../../components/charts/TrajectoryCharts";
 import ShapDiagnosisCard from "../../components/intelligence/ShapDiagnosisCard";
 import EVMPerformanceCard from "../../components/intelligence/EVMPerformanceCard";
+import WhatIfSimulator from "../../components/intelligence/WhatIfSimulator";
+import DigitalProjectTimeline from "../../components/intelligence/DigitalProjectTimeline";
+import ProjectPeerBenchmark from "../../components/intelligence/ProjectPeerBenchmark";
 import StatusBadge from "../../components/common/StatusBadge";
-
 import TrendBadge from "../../components/common/TrendBadge";
 import InterventionModal from "../../components/common/InterventionModal";
 import {
@@ -96,7 +98,7 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
       : 0;
 
   return (
-    <div className="p-6 space-y-5 bg-[#07131F] min-h-screen">
+    <div className="p-6 space-y-6 bg-[#07131F] min-h-screen">
       {/* Top Navigation & Action Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#16324A]">
         <div className="flex items-center gap-3">
@@ -196,7 +198,7 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
         </div>
       </div>
 
-      {/* Objective EVM Performance Layer & Early Warning */}
+      {/* 1. Objective EVM Performance Layer & Early Warning */}
       <EVMPerformanceCard
         snapshot={snap}
         prediction={pred}
@@ -204,11 +206,23 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
         onOpenMemo={() => setIsMemoOpen(true)}
       />
 
-      {/* Trajectory S-Curves & Risk Evolution */}
+      {/* 2. Digital Project Timeline & Deviation Reconstruction */}
+      <DigitalProjectTimeline projectId={p.project_id} />
+
+      {/* 3. Cross-Project Sector Peer Benchmarking */}
+      <ProjectPeerBenchmark projectId={p.project_id} sector={p.sector} />
+
+      {/* 4. What-If Scenario Risk Simulator */}
+      <WhatIfSimulator
+        projectId={p.project_id}
+        baselineSnapshot={snap}
+        baselinePrediction={pred}
+      />
+
+      {/* 5. Trajectory S-Curves & Risk Evolution */}
       <TrajectoryCharts trajectory={trajectory} />
 
-
-      {/* TreeSHAP Factor Attribution & Directives */}
+      {/* 6. TreeSHAP Factor Attribution & Directives */}
       <ShapDiagnosisCard
         attributions={explanation?.attributions || []}
         diagnosis={explanation?.diagnosis}

@@ -97,6 +97,22 @@ export const paimanaApi = {
     return await fetchJson(`/projects/${projectId}/recommendations`);
   },
 
+  async getProjectTimeline(projectId) {
+    return await fetchJson(`/projects/${projectId}/timeline`);
+  },
+
+  async simulateProjectScenario(projectId, payload) {
+    return await fetchJson(`/projects/${projectId}/simulate`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+
+  async getProjectBenchmark(projectId) {
+    return await fetchJson(`/projects/${projectId}/benchmark`);
+  },
+
+
   // 5. Early Warning Alerts
   async getAlerts(params = {}) {
     const query = new URLSearchParams();

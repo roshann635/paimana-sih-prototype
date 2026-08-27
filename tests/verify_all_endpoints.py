@@ -57,7 +57,7 @@ pq_res = client.get("/api/v1/risk/priority-queue?limit=1")
 if pq_res.status_code == 200 and len(pq_res.json()) > 0:
     pid = pq_res.json()[0]["project_id"]
     print(f"\nTesting Deep Dive Endpoints for Real Project: {pid}")
-    for sub in ["", "/risk", "/trajectory", "/explanation", "/recommendations"]:
+    for sub in ["", "/risk", "/trajectory", "/explanation", "/recommendations", "/timeline", "/benchmark"]:
         sub_path = f"/api/v1/projects/{pid}{sub}"
         r = client.get(sub_path)
         if r.status_code == 200:
@@ -66,6 +66,16 @@ if pq_res.status_code == 200 and len(pq_res.json()) > 0:
             print(f"[FAIL] GET  {sub_path:40} -> {r.status_code} | {r.text}")
             all_passed = False
 
+    # Test What-If Scenario Simulation
+    sim_path = f"/api/v1/projects/{pid}/simulate"
+    r_sim = client.post(sim_path, json={"progress_delta_pct": -10, "expenditure_multiplier": 1.2, "delay_delta_days": 60})
+    if r_sim.status_code == 200:
+        sim_data = r_sim.json()
+        print(f"[PASS] POST {sim_path:40} -> 200 OK | Delta Score: {sim_data.get('simulation', {}).get('delta_risk_score')} pts")
+    else:
+        print(f"[FAIL] POST {sim_path:40} -> {r_sim.status_code}")
+        all_passed = False
+
 # Test Assistant Query
 r_ai = client.post("/api/v1/assistant/query", json={"query": "Why is project at risk?"})
 if r_ai.status_code == 200:
@@ -73,6 +83,7 @@ if r_ai.status_code == 200:
 else:
     print(f"[FAIL] POST {'/api/v1/assistant/query':40} -> {r_ai.status_code}")
     all_passed = False
+
 
 print("\nFINAL STATUS:", "ALL TESTS PASSED [PASS]" if all_passed else "FAILURES DETECTED [FAIL]")
 

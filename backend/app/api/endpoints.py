@@ -95,6 +95,38 @@ def get_project_explanation(project_id: str, db: Session = Depends(get_db)):
 def get_project_recommendations(project_id: str, db: Session = Depends(get_db)):
     return project_service.get_project_recommendations(db, project_id)
 
+@router.get("/projects/{project_id}/timeline")
+def get_project_timeline(project_id: str, db: Session = Depends(get_db)):
+    res = project_service.get_project_timeline(db, project_id)
+    if not res:
+        raise HTTPException(status_code=404, detail=f"Timeline for {project_id} not found")
+    return res
+
+@router.post("/projects/{project_id}/simulate")
+def simulate_project_scenario(
+    project_id: str,
+    payload: Dict[str, Any],
+    db: Session = Depends(get_db)
+):
+    prog_delta = float(payload.get("progress_delta_pct", 0.0))
+    exp_mult = float(payload.get("expenditure_multiplier", 1.0))
+    delay_delta = int(payload.get("delay_delta_days", 0))
+    return project_service.simulate_project_scenario(
+        db,
+        project_id=project_id,
+        progress_delta_pct=prog_delta,
+        expenditure_multiplier=exp_mult,
+        delay_delta_days=delay_delta
+    )
+
+@router.get("/projects/{project_id}/benchmark")
+def get_project_benchmark(project_id: str, db: Session = Depends(get_db)):
+    res = project_service.get_project_benchmark(db, project_id)
+    if not res:
+        raise HTTPException(status_code=404, detail=f"Benchmark for {project_id} not found")
+    return res
+
+
 @router.get("/alerts", response_model=List[AlertSchema])
 def list_alerts(
     severity: Optional[str] = Query(None),
