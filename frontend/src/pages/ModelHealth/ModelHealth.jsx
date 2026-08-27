@@ -372,6 +372,78 @@ export default function ModelHealth() {
           </table>
         </div>
       </div>
+
+      {/* Research Literature & Mendeley Knowledge Grounding */}
+      <ResearchCitationsSection />
     </div>
   );
 }
+
+function ResearchCitationsSection() {
+  const [citationsData, setCitationsData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    paimanaApi.getResearchCitations()
+      .then(res => setCitationsData(res))
+      .catch(err => console.error("Failed to load citations:", err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading || !citationsData || !citationsData.citations || citationsData.citations.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="bg-[#0D1E30] border border-[#16324A] rounded-xl p-5 shadow-command-card space-y-4">
+      <div className="flex items-center justify-between pb-3 border-b border-[#16324A]">
+        <div>
+          <div className="flex items-center gap-2">
+            <h3 className="text-xs font-bold text-white tracking-wider uppercase font-mono">
+              Empirical Literature & Research Evidence Grounding
+            </h3>
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/30">
+              Mendeley Research Library
+            </span>
+          </div>
+          <p className="text-[11px] text-slate-400 mt-0.5">
+            Academic megaproject overrun distributions, MoSPI Flash Reports, and EVM project-control methodologies grounding our ML pipeline.
+          </p>
+        </div>
+        <span className="text-xs font-mono font-bold text-slate-400 bg-[#07131F] px-3 py-1 rounded border border-[#16324A]">
+          {citationsData.total} Ingested Works
+        </span>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        {citationsData.citations.map((c, idx) => (
+          <div key={idx} className="p-3.5 bg-[#07131F] rounded-lg border border-[#16324A] space-y-1.5 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between text-[10px] font-mono mb-1">
+                <span className="text-[#00E5FF] uppercase font-bold">{c.type}</span>
+                <span className="text-slate-400">{c.year}</span>
+              </div>
+              <h4 className="text-xs font-bold text-white line-clamp-2">
+                {c.title}
+              </h4>
+            </div>
+            <div className="text-[10px] font-mono text-slate-400 pt-1.5 border-t border-[#16324A] flex justify-between items-center">
+              <span className="truncate max-w-[200px]">{c.publisher}</span>
+              {c.url && (
+                <a
+                  href={c.url.startsWith("http") ? c.url : `https://${c.url}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#00E5FF] hover:underline"
+                >
+                  View Source &rarr;
+                </a>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+

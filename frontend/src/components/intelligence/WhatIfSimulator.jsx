@@ -249,14 +249,17 @@ export default function WhatIfSimulator({
                     : (baselineSnapshot.cpi || 1.0).toFixed(2)}
                 </span>
               </div>
+            </div>
+
             {/* Out-of-Distribution Guard Warning */}
             {(expMultiplier > 1.30 || delayDelta > 120 || progressDelta < -20) && (
-              <div className="p-2 bg-[#F59E0B]/10 border border-[#F59E0B]/30 rounded text-[10px] text-[#F59E0B] font-mono flex items-center gap-1.5">
+              <div className="p-2 bg-[#F59E0B]/10 border border-[#F59E0B]/30 rounded text-[10px] text-[#F59E0B] font-mono flex items-center gap-1.5 mt-2">
                 <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
                 <span>⚠ Scenario parameters extend beyond empirical baseline training distribution.</span>
               </div>
             )}
           </div>
+
 
           <div className="p-2.5 bg-[#0D1E30] rounded border border-[#16324A] text-[11px] text-slate-300 flex items-start gap-1.5">
             <Sparkles className="w-3.5 h-3.5 text-[#F59E0B] shrink-0 mt-0.5" />

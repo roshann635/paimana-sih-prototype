@@ -112,7 +112,6 @@ export const paimanaApi = {
     return await fetchJson(`/projects/${projectId}/benchmark`);
   },
 
-
   // 5. Early Warning Alerts
   async getAlerts(params = {}) {
     const query = new URLSearchParams();
@@ -132,7 +131,7 @@ export const paimanaApi = {
     return await fetchJson(`/benchmarks${qs ? `?${qs}` : ""}`);
   },
 
-  // 7. Model Health
+  // 7. Model Health & Research Citations
   async getModelHealth() {
     try {
       return await fetchJson("/model/health");
@@ -140,6 +139,15 @@ export const paimanaApi = {
       return mockModelHealth;
     }
   },
+
+  async getResearchCitations() {
+    try {
+      return await fetchJson("/research/citations");
+    } catch {
+      return { total: 0, citations: [] };
+    }
+  },
+
 
   // 8. Data Quality Engine
   async getDataQuality() {

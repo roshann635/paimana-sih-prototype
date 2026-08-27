@@ -159,6 +159,44 @@ def get_model_health():
     with open(health_path, "r", encoding="utf-8") as f:
         return json.load(f)
 
+@router.get("/research/citations")
+def get_research_citations():
+    """
+    Returns research literature, empirical studies, and MoSPI institutional papers
+    exported from Mendeley and used to ground model methodology and EVM design.
+    """
+    import xml.etree.ElementTree as ET
+    xml_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../data/raw/export.xml"))
+    if not os.path.exists(xml_path):
+        return {"total": 0, "citations": []}
+    
+    try:
+        tree = ET.parse(xml_path)
+        root = tree.getroot()
+        ns = {'b': 'http://schemas.openxmlformats.org/officeDocument/2006/bibliography'}
+        citations = []
+        for s in root.findall('b:Source', ns):
+            title = s.find('b:Title', ns)
+            stype = s.find('b:SourceType', ns)
+            url = s.find('b:URL', ns)
+            year = s.find('b:Year', ns)
+            publisher = s.find('b:Publisher', ns)
+            citations.append({
+                "title": title.text if title is not None else "Untitled Reference",
+                "type": stype.text if stype is not None else "Report",
+                "url": url.text if url is not None else None,
+                "year": year.text if year is not None else "2025-2026",
+                "publisher": publisher.text if publisher is not None else "MoSPI / Academic Press"
+            })
+        return {
+            "source": "Mendeley Research Library",
+            "total": len(citations),
+            "citations": citations
+        }
+    except Exception as e:
+        return {"error": str(e), "citations": []}
+
+
 @router.get("/data-quality")
 def get_data_quality_report():
     dqe_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../data/processed/dqe_report.json"))

@@ -1,6 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Scale, Users, CheckCircle2, AlertTriangle, ArrowUpRight } from 'lucide-react';
-import { paimanaApi } from '../../services/api/paimanaApi';
+import React, { useState, useEffect } from "react";
+import {
+  Scale,
+  Users,
+  CheckCircle2,
+  AlertTriangle,
+  ArrowUpRight,
+} from "lucide-react";
+import { paimanaApi } from "../../services/api/paimanaApi";
 
 export default function ProjectPeerBenchmark({ projectId, sector }) {
   const [benchmarkData, setBenchmarkData] = useState(null);
@@ -8,9 +14,10 @@ export default function ProjectPeerBenchmark({ projectId, sector }) {
 
   useEffect(() => {
     if (projectId) {
-      paimanaApi.getProjectBenchmark(projectId)
-        .then(data => setBenchmarkData(data))
-        .catch(err => console.error('Failed to load peer benchmarks:', err))
+      paimanaApi
+        .getProjectBenchmark(projectId)
+        .then((data) => setBenchmarkData(data))
+        .catch((err) => console.error("Failed to load peer benchmarks:", err))
         .finally(() => setLoading(false));
     }
   }, [projectId]);
@@ -47,24 +54,32 @@ export default function ProjectPeerBenchmark({ projectId, sector }) {
               </span>
             </div>
             <p className="text-[11px] text-slate-400 mt-0.5">
-              Side-by-side performance comparison against {benchmarkData.peer_sample_size} monitored projects in <strong className="text-white">{benchmarkData.sector}</strong>.
+              Side-by-side performance comparison against{" "}
+              {benchmarkData.peer_sample_size} monitored projects in{" "}
+              <strong className="text-white">{benchmarkData.sector}</strong>.
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 font-mono text-xs text-slate-400 bg-[#07131F] px-3 py-1 rounded border border-[#16324A]">
           <Users className="w-3.5 h-3.5 text-[#00E5FF]" />
-          <span>Peer Group: <strong className="text-white">{benchmarkData.sector}</strong></span>
+          <span>
+            Peer Group:{" "}
+            <strong className="text-white">{benchmarkData.sector}</strong>
+          </span>
         </div>
       </div>
 
       {/* Comparative Metrics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
         {metrics.map((m, idx) => {
-          const isWorse = m.status === 'WORSE';
+          const isWorse = m.status === "WORSE";
 
           return (
-            <div key={idx} className="p-3.5 bg-[#07131F] rounded-lg border border-[#16324A] space-y-2 flex flex-col justify-between">
+            <div
+              key={idx}
+              className="p-3.5 bg-[#07131F] rounded-lg border border-[#16324A] space-y-2 flex flex-col justify-between"
+            >
               <div>
                 <div className="text-[10px] font-mono text-slate-400 uppercase font-bold truncate">
                   {m.kpi}
@@ -77,12 +92,16 @@ export default function ProjectPeerBenchmark({ projectId, sector }) {
               <div className="pt-2 border-t border-[#16324A] text-xs font-mono space-y-1">
                 <div className="flex justify-between text-[11px]">
                   <span className="text-slate-400">Sector Median:</span>
-                  <span className="text-slate-200">{m.peer_median} {m.unit}</span>
+                  <span className="text-slate-200">
+                    {m.peer_median} {m.unit}
+                  </span>
                 </div>
                 <div className="flex justify-between text-[10px] font-bold">
                   <span className="text-slate-400">Position:</span>
-                  <span className={isWorse ? 'text-[#EF4444]' : 'text-[#10B981]'}>
-                    {isWorse ? '▼ Lagging Peers' : '▲ Outperforming'}
+                  <span
+                    className={isWorse ? "text-[#EF4444]" : "text-[#10B981]"}
+                  >
+                    {isWorse ? "▼ Lagging Peers" : "▲ Outperforming"}
                   </span>
                 </div>
               </div>
