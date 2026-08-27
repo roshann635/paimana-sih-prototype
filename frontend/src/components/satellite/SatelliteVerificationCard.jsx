@@ -265,7 +265,7 @@ export default function SatelliteVerificationCard({
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={onInspectEvidence}
-            className="inline-flex items-center gap-1.5 px-3 py-2 bg-[#06295B] hover:bg-[#1668d8] text-white text-xs font-bold rounded-lg transition-colors shadow-2xs cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#1668d8] hover:bg-[#0b4db3] text-white text-xs font-bold rounded-lg transition-colors shadow-xs cursor-pointer active:scale-95"
           >
             <Eye className="w-3.5 h-3.5" />
             <span>Inspect Satellite Evidence</span>
