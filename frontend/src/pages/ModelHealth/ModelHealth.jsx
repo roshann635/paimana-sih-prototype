@@ -384,13 +384,19 @@ function ResearchCitationsSection() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    paimanaApi.getResearchCitations()
-      .then(res => setCitationsData(res))
-      .catch(err => console.error("Failed to load citations:", err))
+    paimanaApi
+      .getResearchCitations()
+      .then((res) => setCitationsData(res))
+      .catch((err) => console.error("Failed to load citations:", err))
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading || !citationsData || !citationsData.citations || citationsData.citations.length === 0) {
+  if (
+    loading ||
+    !citationsData ||
+    !citationsData.citations ||
+    citationsData.citations.length === 0
+  ) {
     return null;
   }
 
@@ -407,7 +413,8 @@ function ResearchCitationsSection() {
             </span>
           </div>
           <p className="text-[11px] text-slate-400 mt-0.5">
-            Academic megaproject overrun distributions, MoSPI Flash Reports, and EVM project-control methodologies grounding our ML pipeline.
+            Academic megaproject overrun distributions, MoSPI Flash Reports, and
+            EVM project-control methodologies grounding our ML pipeline.
           </p>
         </div>
         <span className="text-xs font-mono font-bold text-slate-400 bg-[#07131F] px-3 py-1 rounded border border-[#16324A]">
@@ -417,10 +424,15 @@ function ResearchCitationsSection() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {citationsData.citations.map((c, idx) => (
-          <div key={idx} className="p-3.5 bg-[#07131F] rounded-lg border border-[#16324A] space-y-1.5 flex flex-col justify-between">
+          <div
+            key={idx}
+            className="p-3.5 bg-[#07131F] rounded-lg border border-[#16324A] space-y-1.5 flex flex-col justify-between"
+          >
             <div>
               <div className="flex items-center justify-between text-[10px] font-mono mb-1">
-                <span className="text-[#00E5FF] uppercase font-bold">{c.type}</span>
+                <span className="text-[#00E5FF] uppercase font-bold">
+                  {c.type}
+                </span>
                 <span className="text-slate-400">{c.year}</span>
               </div>
               <h4 className="text-xs font-bold text-white line-clamp-2">
@@ -446,4 +458,3 @@ function ResearchCitationsSection() {
     </div>
   );
 }
-

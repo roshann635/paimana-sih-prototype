@@ -20,14 +20,33 @@ COST OVERRUN MODEL (XGBoost)                                                SCHE
                                  ▼
                      COMPOSITE RISK ENGINE & IPI
                                  │
-     ┌───────────────────────────┼───────────────────────────┐
-     ▼                           ▼                           ▼
-TreeSHAP EXPLANATIONS    EARLY WARNING ALERTS       ADMINISTRATIVE INTERVENTIONS
-(Local Attributions)     (101 Active Bulletins)     (Longitudinal Feedback Loop)
+     ┌───────────────────────────┼───────────────────────────┬───────────────────────────┐
+     ▼                           ▼                           ▼                           ▼
+TreeSHAP EXPLANATIONS    EARLY WARNING ALERTS       ADMINISTRATIVE INTERVENTIONS  SATELLITE CROSS-VERIFICATION
+(Local Attributions)     (101 Active Bulletins)     (Longitudinal Feedback Loop)  (Sentinel-1 SAR + Sentinel-2 Optical)
                                  │
                                  ▼
               COMMAND CENTRE FRONTEND & GROUNDED AI ASSISTANT
 ```
+
+---
+
+## 🛰️ 9. Satellite Cross-Verification Engine (`/satellite-observatory`)
+- **Independent Earth-Observation Evidence Layer**: Cross-verifies contractor-reported physical progress against remotely sensed site transformation without claiming false precision.
+- **Dual-Sensor Optical & SAR Pipeline**:
+  - **Sentinel-2 L2A (10m)**: Surface reflectance, SCL cloud masking, NDVI (vegetation clearing), NDBI (built-up consolidation), NDWI, and Bare Soil Index (BSI).
+  - **Sentinel-1 C-SAR (GRD)**: All-weather day/night C-band Gamma0 radar backscatter (VV, VH, VV/VH delta) and optional interferometric coherence.
+- **Observed Site Change Index ($\text{OSC}_{100}$)**:
+  $$\text{OSC}_{100} = 100 \times (w_O \cdot O + w_S \cdot S + w_B \cdot B + w_T \cdot T)$$
+  $$\text{Discrepancy}_{\text{pp}} = \text{OSC}_{100} - P$$
+- **Dual Provider Architecture**:
+  - **Copernicus Provider**: Live CDSE STAC Discovery client with strict temporal query boundaries ($t_{\text{acquisition}} \le T_{\text{evaluation}}$).
+  - **Synthetic Demo Provider**: High-fidelity demo fixtures explicitly marked with `is_synthetic: true` and disclaimer banners.
+- **Spatial Suitability & `NOT_OBSERVABLE` Gate**: Prevents false alarms on compact building footprints below 10m Ground Sampling Distance.
+- **Interactive Evidence Studio**: Interactive Before/After layer switch (True Color RGB, False Color NIR, SAR Backscatter heatmap, Classified Change Mask) and temporal divergence tracking that directly feeds the Action Memorandum workflow.
+
+---
+
 
 ---
 
@@ -166,10 +185,10 @@ Open `http://localhost:5173` in your browser.
 ---
 
 ## 🧪 Running Automated Tests
-
+ 
 ```bash
-# Run backend pytest suite
-pytest tests/test_api.py
+# Run backend pytest suite including 10 Satellite Invariant Tests
+pytest tests/test_satellite.py tests/test_api.py
 
 # Run comprehensive all-endpoint verification script
 python tests/verify_all_endpoints.py
@@ -177,6 +196,7 @@ python tests/verify_all_endpoints.py
 # Run frontend production build test
 cd frontend && npm run build
 ```
+
 
 ---
 

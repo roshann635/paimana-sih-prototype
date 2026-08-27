@@ -13,7 +13,9 @@ import DataQualityCenter from './pages/DataQualityCenter/DataQualityCenter';
 import ModelHealth from './pages/ModelHealth/ModelHealth';
 import ReportsCenter from './pages/ReportsCenter/ReportsCenter';
 import InterventionsCenter from './pages/InterventionsCenter/InterventionsCenter';
+import SatelliteObservatory from './pages/SatelliteObservatory/SatelliteObservatory';
 import AIAssistantDrawer from './components/intelligence/AIAssistantDrawer';
+
 
 export default function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname || '/');
@@ -117,10 +119,18 @@ export default function App() {
       case '/schedule-risk':
         return <SectorAnalytics />;
 
+      case '/satellite-observatory':
+      case '/satellite':
+      case '/satellite-verification':
+      case '/earth-observation':
+      case '/copernicus':
+        return <SatelliteObservatory onSelectProject={handleSelectProject} />;
+
       case '/analytics/ministries':
       case '/ministries':
       case '/cost-risk':
         return <MinistryAnalytics onNavigate={navigate} />;
+
 
       case '/analytics/benchmarking':
       case '/benchmarking':

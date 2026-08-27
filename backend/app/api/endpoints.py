@@ -241,3 +241,9 @@ def query_assistant(
     return assistant_service.answer_query(db, query=q, project_id=pid)
 
 
+# Mount Satellite Cross-Verification Routes
+from backend.app.api.satellite_routes import router as satellite_router
+router.include_router(satellite_router)
+
+
+

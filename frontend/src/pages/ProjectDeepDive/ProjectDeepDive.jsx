@@ -8,6 +8,8 @@ import ProjectPeerBenchmark from "../../components/intelligence/ProjectPeerBench
 import StatusBadge from "../../components/common/StatusBadge";
 import TrendBadge from "../../components/common/TrendBadge";
 import InterventionModal from "../../components/common/InterventionModal";
+import SatelliteVerificationCard from "../../components/satellite/SatelliteVerificationCard";
+import SatelliteEvidenceModal from "../../components/satellite/SatelliteEvidenceModal";
 import {
   LoadingSkeleton,
   ErrorState,
@@ -32,6 +34,8 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isMemoOpen, setIsMemoOpen] = useState(false);
+  const [isSatelliteModalOpen, setIsSatelliteModalOpen] = useState(false);
+
 
   const loadProjectDeepDive = async (pid) => {
     setLoading(true);
@@ -206,23 +210,31 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
         onOpenMemo={() => setIsMemoOpen(true)}
       />
 
-      {/* 2. Digital Project Timeline & Deviation Reconstruction */}
+      {/* 2. Independent Earth Observation Evidence & Satellite Cross-Verification */}
+      <SatelliteVerificationCard
+        projectId={p.project_id}
+        projectName={p.project_name}
+        onInspectEvidence={() => setIsSatelliteModalOpen(true)}
+        onOpenMemo={() => setIsMemoOpen(true)}
+      />
+
+      {/* 3. Digital Project Timeline & Deviation Reconstruction */}
       <DigitalProjectTimeline projectId={p.project_id} />
 
-      {/* 3. Cross-Project Sector Peer Benchmarking */}
+      {/* 4. Cross-Project Sector Peer Benchmarking */}
       <ProjectPeerBenchmark projectId={p.project_id} sector={p.sector} />
 
-      {/* 4. What-If Scenario Risk Simulator */}
+      {/* 5. What-If Scenario Risk Simulator */}
       <WhatIfSimulator
         projectId={p.project_id}
         baselineSnapshot={snap}
         baselinePrediction={pred}
       />
 
-      {/* 5. Trajectory S-Curves & Risk Evolution */}
+      {/* 6. Trajectory S-Curves & Risk Evolution */}
       <TrajectoryCharts trajectory={trajectory} />
 
-      {/* 6. TreeSHAP Factor Attribution & Directives */}
+      {/* 7. TreeSHAP Factor Attribution & Directives */}
       <ShapDiagnosisCard
         attributions={explanation?.attributions || []}
         diagnosis={explanation?.diagnosis}
@@ -239,6 +251,16 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
         project={p}
         onInterventionSaved={() => loadProjectDeepDive(projectId)}
       />
+
+      {/* Earth Observation Evidence Studio Modal */}
+      <SatelliteEvidenceModal
+        isOpen={isSatelliteModalOpen}
+        onClose={() => setIsSatelliteModalOpen(false)}
+        projectId={p.project_id}
+        projectName={p.project_name}
+        onOpenMemo={() => setIsMemoOpen(true)}
+      />
     </div>
   );
 }
+

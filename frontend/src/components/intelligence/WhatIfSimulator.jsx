@@ -252,14 +252,18 @@ export default function WhatIfSimulator({
             </div>
 
             {/* Out-of-Distribution Guard Warning */}
-            {(expMultiplier > 1.30 || delayDelta > 120 || progressDelta < -20) && (
+            {(expMultiplier > 1.3 ||
+              delayDelta > 120 ||
+              progressDelta < -20) && (
               <div className="p-2 bg-[#F59E0B]/10 border border-[#F59E0B]/30 rounded text-[10px] text-[#F59E0B] font-mono flex items-center gap-1.5 mt-2">
                 <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
-                <span>⚠ Scenario parameters extend beyond empirical baseline training distribution.</span>
+                <span>
+                  ⚠ Scenario parameters extend beyond empirical baseline
+                  training distribution.
+                </span>
               </div>
             )}
           </div>
-
 
           <div className="p-2.5 bg-[#0D1E30] rounded border border-[#16324A] text-[11px] text-slate-300 flex items-start gap-1.5">
             <Sparkles className="w-3.5 h-3.5 text-[#F59E0B] shrink-0 mt-0.5" />
@@ -267,8 +271,8 @@ export default function WhatIfSimulator({
               {deltaScore > 10
                 ? "High Risk Surge: Simultaneous progress slowdown and capex burn pushes project into urgent escalation."
                 : deltaScore < -5
-                ? "Risk Mitigation: Accelerated physical progress restores earned value alignment."
-                : "Full Feature Propagation: Adjusting inputs recalculates PV, EV, AC, SV, CV, SPI, CPI, and lag vectors before XGBoost inference."}
+                  ? "Risk Mitigation: Accelerated physical progress restores earned value alignment."
+                  : "Full Feature Propagation: Adjusting inputs recalculates PV, EV, AC, SV, CV, SPI, CPI, and lag vectors before XGBoost inference."}
             </span>
           </div>
         </div>
@@ -276,4 +280,3 @@ export default function WhatIfSimulator({
     </div>
   );
 }
-

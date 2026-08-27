@@ -148,7 +148,6 @@ export const paimanaApi = {
     }
   },
 
-
   // 8. Data Quality Engine
   async getDataQuality() {
     try {
@@ -188,4 +187,26 @@ export const paimanaApi = {
       };
     }
   },
+
+  // 11. Satellite Cross-Verification & Earth Observation
+  async getProjectSatelliteVerification(projectId, options = {}) {
+    const query = new URLSearchParams();
+    if (options.evaluation_month) query.set("evaluation_month", options.evaluation_month);
+    if (options.use_live_copernicus) query.set("use_live_copernicus", "true");
+    const qs = query.toString();
+    return await fetchJson(`/projects/${projectId}/satellite${qs ? `?${qs}` : ""}`);
+  },
+
+  async getProjectSatelliteTimeline(projectId) {
+    return await fetchJson(`/projects/${projectId}/satellite/timeline`);
+  },
+
+  async getProjectSatelliteEvidence(projectId) {
+    return await fetchJson(`/projects/${projectId}/satellite/evidence`);
+  },
+
+  async getPortfolioSatelliteOverview() {
+    return await fetchJson("/satellite/portfolio-overview");
+  },
 };
+

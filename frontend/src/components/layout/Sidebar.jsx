@@ -15,6 +15,7 @@ import {
   Building2,
   Boxes,
   Bell,
+  Satellite,
 } from "lucide-react";
 
 const NAV_SECTIONS = [
@@ -36,11 +37,19 @@ const NAV_SECTIONS = [
     title: "INTELLIGENCE",
     items: [
       { path: "/analytics/portfolio", label: "Risk Analytics", icon: PieChart },
+      {
+        path: "/satellite-observatory",
+        label: "Satellite Observatory",
+        icon: Satellite,
+        badge: "EO",
+        badgeColor: "bg-[#00E5FF]/20 text-[#00E5FF] border-[#00E5FF]/40",
+      },
       { path: "/analytics/ministries", label: "Cost Risk", icon: DollarSign },
       { path: "/analytics/sectors", label: "Schedule Risk", icon: Clock },
       { path: "/analytics/benchmarking", label: "Benchmarking", icon: Scale },
     ],
   },
+
   {
     title: "OPERATIONS",
     items: [
