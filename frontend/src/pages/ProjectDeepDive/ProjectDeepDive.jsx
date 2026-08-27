@@ -70,8 +70,8 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
 
   if (loading) {
     return (
-      <div className="p-6 space-y-5 bg-[#07131F] min-h-screen">
-        <div className="h-8 bg-[#0D1E30] rounded-lg w-1/3 animate-pulse"></div>
+      <div className="p-6 space-y-5 bg-[#f4f7fb] min-h-screen">
+        <div className="h-8 bg-white border border-[#dbe3ed] rounded-lg w-1/3 animate-pulse"></div>
         <LoadingSkeleton rows={12} />
       </div>
     );
@@ -79,11 +79,60 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
 
   if (error || !project) {
     return (
-      <div className="p-6 bg-[#07131F] min-h-screen">
-        <ErrorState
-          message={error || "Project not found."}
-          onRetry={() => loadProjectDeepDive(projectId)}
-        />
+      <div className="p-6 sm:p-12 bg-[#f4f7fb] min-h-screen flex items-center justify-center">
+        <div className="max-w-2xl w-full bg-white border border-[#dbe3ed] rounded-2xl p-6 sm:p-8 space-y-6 shadow-sm text-center">
+          <div className="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-200 text-[#d97706] flex items-center justify-center mx-auto shadow-2xs">
+            <AlertTriangle className="w-7 h-7" />
+          </div>
+
+          <div className="space-y-1.5">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-[#142235]">
+              Project Not Found ({projectId || "Unknown"})
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">
+              Project identifier <code className="bg-slate-100 text-[#1668d8] font-mono px-2 py-0.5 rounded font-bold">{projectId}</code> was not matched. Real project codes follow the MoSPI format (e.g. <strong>P618427</strong>, <strong>P400161</strong>, <strong>P400005</strong>).
+            </p>
+          </div>
+
+          <div className="p-4 bg-[#f8fafc] border border-[#dbe3ed] rounded-xl text-left space-y-2.5">
+            <div className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500">
+              Quick-Jump to Verified Case Studies
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <button
+                onClick={() => onNavigate && onNavigate("/projects/P618427")}
+                className="p-3 rounded-lg border border-blue-200 bg-blue-50/50 hover:bg-blue-100/70 text-left transition-colors cursor-pointer"
+              >
+                <div className="text-xs font-bold text-[#1668d8] font-mono">P618427 (Golden Case Study)</div>
+                <div className="text-xs text-[#142235] font-bold truncate">Vadodara-Mumbai Expressway Pkg IV</div>
+                <div className="text-[11px] text-slate-500 font-mono">Reported 74% · Gap −16 pp</div>
+              </button>
+              <button
+                onClick={() => onNavigate && onNavigate("/projects/P400161")}
+                className="p-3 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-left transition-colors cursor-pointer"
+              >
+                <div className="text-xs font-bold text-slate-700 font-mono">P400161 (Significant Gap)</div>
+                <div className="text-xs text-[#142235] font-bold truncate">PP Project, Pata (Petrochemical)</div>
+                <div className="text-[11px] text-slate-500 font-mono">Reported 99% · Gap −37.6 pp</div>
+              </button>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <button
+              onClick={() => onNavigate ? onNavigate("/projects") : (onBack && onBack())}
+              className="px-4 py-2 bg-[#1668d8] hover:bg-[#0b4db3] text-white text-xs font-bold rounded-lg transition-colors shadow-xs cursor-pointer"
+            >
+              Browse All 1,630 Projects
+            </button>
+            <button
+              onClick={() => onNavigate ? onNavigate("/satellite-observatory") : (onBack && onBack())}
+              className="px-4 py-2 bg-white border border-[#dbe3ed] hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-lg transition-colors cursor-pointer"
+            >
+              Satellite Observatory
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
