@@ -184,10 +184,13 @@ Open `http://localhost:5173` in your browser.
 
 ---
 
-## 🧪 Running Automated Tests
+## 🧪 Running Automated Tests & Golden Case Study
  
 ```bash
-# Run backend pytest suite including 10 Satellite Invariant Tests
+# Run standalone Golden Case Study runner (Project P618427)
+python scripts/run_golden_case.py
+
+# Run backend pytest suite including all 30 Satellite Invariant & API Tests
 pytest tests/test_satellite.py tests/test_api.py
 
 # Run comprehensive all-endpoint verification script
@@ -197,9 +200,12 @@ python tests/verify_all_endpoints.py
 cd frontend && npm run build
 ```
 
-
 ---
 
-## 📜 Governance & Prototype Disclaimer
+## 📜 Scientific Governance & Prototype Positioning
 
-> **Disclaimer**: PAIMANA is an advanced decision-support research prototype developed for infrastructure project monitoring. Action memorandums, reference IDs, and predictive scores are generated for analytical decision-support and prototype demonstration purposes.
+- **Classification**: **Production-structured decision-support prototype** developed for central sector infrastructure monitoring (MoSPI / IPMD).
+- **Satellite Evidence Disclaimer**:
+  > *"Observed Site Change Index is an experimental multi-sensor evidence score and should not be interpreted as a direct measurement of construction completion percentage."*
+- **Action Directives**: Action memorandums, reference audit IDs, and predictive scores are generated for administrative decision-support to prioritize projects requiring human field verification.
+
