@@ -350,12 +350,14 @@ export default function SatelliteEvidenceModal({
                   Copernicus Telemetry & Provenance
                 </h5>
                 <div className="space-y-1 font-mono text-[11px] text-slate-300 mt-1.5">
-                  <div>Optical Sensor: <strong>{vf.optical_provenance?.sensor || "Sentinel-2A MSI"}</strong></div>
-                  <div>Optical Product: <strong className="text-slate-400">{vf.optical_provenance?.product_id || "S2A_MSIL2A_20260614..."}</strong></div>
-                  <div>SAR Sensor: <strong>{vf.sar_provenance?.sensor || "Sentinel-1A C-SAR"}</strong></div>
+                  <div>Verification Audit ID: <strong className="text-[#00E5FF]">{vf.verification_audit_id || "SAT-2026-000184"}</strong></div>
+                  <div>Engine / Config Version: <strong className="text-slate-200">{vf.processing_version || "sat-engine v1.0"}</strong> ({vf.config_version || "config v0.3-provisional"})</div>
+                  <div>Optical Product: <strong className="text-slate-400 truncate block max-w-sm">{vf.optical_provenance?.product_id || "S2A_MSIL2A_20260614..."}</strong></div>
+                  <div>SAR Product: <strong className="text-slate-400 truncate block max-w-sm">{vf.sar_provenance?.product_id || "S1A_IW_GRDH_20260612..."}</strong></div>
                   <div>AOI Provenance: <strong className="text-[#00E5FF]">{vf.aoi_provenance || "PAIMANA DEMO GEOMETRY"}</strong></div>
                   <div>SCL Cloud Cover: <strong>{vf.optical_provenance?.cloud_cover_percent || 8.4}%</strong> · Orbit: <strong>{vf.optical_provenance?.orbit_pass || "DESCENDING"}</strong></div>
                 </div>
+
               </div>
 
               {/* Independent Confidence Stack */}
