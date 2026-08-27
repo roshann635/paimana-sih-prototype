@@ -208,5 +208,22 @@ export const paimanaApi = {
   async getPortfolioSatelliteOverview() {
     return await fetchJson("/satellite/portfolio-overview");
   },
+
+  async triggerSatelliteVerify(projectId, payload = {}) {
+    return await fetchJson(`/projects/${projectId}/satellite/verify`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+  },
+
+  async getSatelliteAudit(projectId, verificationId) {
+    return await fetchJson(`/projects/${projectId}/satellite/audit/${verificationId}`);
+  },
+
+  async getSatelliteHealth() {
+    return await fetchJson("/satellite/health");
+  },
 };
+
 
