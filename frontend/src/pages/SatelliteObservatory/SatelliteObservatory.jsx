@@ -67,24 +67,26 @@ export default function SatelliteObservatory({ onSelectProject }) {
   });
 
   return (
-    <div className="p-6 space-y-6 bg-[#07131F] min-h-screen">
+    <div className="p-6 space-y-6 bg-[#f4f7fb] min-h-screen">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#16324A]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#dbe3ed]">
         <div>
           <div className="flex items-center gap-2">
-            <Satellite className="w-5 h-5 text-[#00E5FF]" />
-            <h1 className="text-xl lg:text-2xl font-extrabold text-white tracking-tight uppercase">
+            <div className="p-1.5 bg-[#06295B]/10 rounded-lg text-[#06295B]">
+              <Satellite className="w-5 h-5" />
+            </div>
+            <h1 className="text-xl lg:text-2xl font-extrabold text-[#142235] tracking-tight uppercase">
               National Satellite Cross-Verification Observatory
             </h1>
           </div>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-600 mt-1">
             Automated multi-temporal Earth observation (Sentinel-2 Optical & Sentinel-1 C-SAR) cross-verifying reported construction progress.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs font-mono font-bold px-3 py-1.5 bg-[#0D1E30] border border-[#16324A] text-slate-300 rounded-lg">
-            Evaluation Freshness: <strong>{s.data_freshness_month}</strong>
+          <span className="text-xs font-mono font-bold px-3 py-1.5 bg-white border border-[#dbe3ed] text-slate-700 rounded-lg shadow-2xs">
+            Evaluation Freshness: <strong className="text-[#06295B]">{s.data_freshness_month}</strong>
           </span>
         </div>
       </div>
@@ -92,67 +94,67 @@ export default function SatelliteObservatory({ onSelectProject }) {
       {/* 4 National Summary Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {/* Total Evaluated */}
-        <div className="p-4 bg-[#0D1E30] border border-[#16324A] border-t-[3px] border-t-[#00E5FF] rounded-xl shadow-command-card">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+        <div className="p-4 bg-white border border-[#dbe3ed] border-t-4 border-t-[#1668d8] rounded-xl shadow-xs">
+          <div className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-bold">
             Evaluated Projects
           </div>
-          <div className="text-2xl font-extrabold font-mono text-white my-1">
+          <div className="text-2xl font-extrabold font-mono text-[#142235] my-1">
             {s.total_projects_evaluated}
           </div>
-          <div className="text-[11px] text-[#00E5FF] font-mono font-bold">
+          <div className="text-xs text-[#1668d8] font-mono font-bold">
             {s.observable_projects_count} observable ({s.not_observable_count} not observable)
           </div>
         </div>
 
         {/* Consistent */}
-        <div className="p-4 bg-[#0D1E30] border border-[#16324A] border-t-[3px] border-t-[#10B981] rounded-xl shadow-command-card">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+        <div className="p-4 bg-white border border-[#dbe3ed] border-t-4 border-t-[#16a34a] rounded-xl shadow-xs">
+          <div className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-bold">
             Consistent Evidence
           </div>
-          <div className="text-2xl font-extrabold font-mono text-[#10B981] my-1">
+          <div className="text-2xl font-extrabold font-mono text-[#16a34a] my-1">
             {s.consistent_count}
           </div>
-          <div className="text-[11px] text-slate-400 font-mono">
+          <div className="text-xs text-slate-600 font-medium">
             Broad agreement with reported progress
           </div>
         </div>
 
         {/* Review Recommended */}
-        <div className="p-4 bg-[#0D1E30] border border-[#16324A] border-t-[3px] border-t-[#F59E0B] rounded-xl shadow-command-card">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+        <div className="p-4 bg-white border border-[#dbe3ed] border-t-4 border-t-[#d97706] rounded-xl shadow-xs">
+          <div className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-bold">
             Review Recommended
           </div>
-          <div className="text-2xl font-extrabold font-mono text-[#F59E0B] my-1">
+          <div className="text-2xl font-extrabold font-mono text-[#d97706] my-1">
             {s.review_recommended_count}
           </div>
-          <div className="text-[11px] text-amber-400 font-mono font-bold">
+          <div className="text-xs text-amber-700 font-mono font-bold">
             Gap −15 to −30 percentage points
           </div>
         </div>
 
         {/* Significant Discrepancy */}
-        <div className="p-4 bg-[#0D1E30] border border-[#16324A] border-t-[3px] border-t-[#EF4444] rounded-xl shadow-command-card">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+        <div className="p-4 bg-white border border-[#dbe3ed] border-t-4 border-t-[#dc2626] rounded-xl shadow-xs">
+          <div className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-bold">
             Significant Discrepancy
           </div>
-          <div className="text-2xl font-extrabold font-mono text-[#EF4444] my-1">
+          <div className="text-2xl font-extrabold font-mono text-[#dc2626] my-1">
             {s.significant_discrepancy_count}
           </div>
-          <div className="text-[11px] text-red-400 font-mono font-bold">
+          <div className="text-xs text-red-700 font-mono font-bold">
             Gap &lt; −30 percentage points (Audit Queue)
           </div>
         </div>
       </div>
 
       {/* High Discrepancy Investigation Priority Table */}
-      <div className="bg-[#0D1E30] border border-[#16324A] rounded-xl p-5 shadow-command-card space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#16324A]">
+      <div className="bg-white border border-[#dbe3ed] rounded-xl p-5 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#dbe3ed]">
           <div>
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-              <ShieldAlert className="w-4 h-4 text-[#F59E0B]" />
+            <h3 className="text-sm font-bold text-[#142235] uppercase tracking-wider flex items-center gap-2">
+              <ShieldAlert className="w-4 h-4 text-[#d97706]" />
               <span>Satellite Discrepancy Investigation Queue</span>
             </h3>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-500 mt-0.5">
               Projects ranked by largest gap between contractor-reported physical completion and remotely sensed site change index.
             </p>
           </div>
@@ -161,24 +163,30 @@ export default function SatelliteObservatory({ onSelectProject }) {
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => setSelectedFilter("ALL")}
-              className={`px-3 py-1 text-xs font-bold rounded-lg transition-all ${
-                selectedFilter === "ALL" ? "bg-[#00E5FF] text-[#07131F]" : "bg-[#16324A] text-slate-300 hover:text-white"
+              className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                selectedFilter === "ALL"
+                  ? "bg-[#06295B] text-white shadow-xs"
+                  : "bg-[#f4f7fb] text-slate-700 border border-[#dbe3ed] hover:bg-slate-100"
               }`}
             >
               All Signals
             </button>
             <button
               onClick={() => setSelectedFilter("SIGNIFICANT")}
-              className={`px-3 py-1 text-xs font-bold rounded-lg transition-all ${
-                selectedFilter === "SIGNIFICANT" ? "bg-[#EF4444] text-white" : "bg-[#16324A] text-slate-300 hover:text-white"
+              className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                selectedFilter === "SIGNIFICANT"
+                  ? "bg-[#dc2626] text-white shadow-xs"
+                  : "bg-[#f4f7fb] text-slate-700 border border-[#dbe3ed] hover:bg-slate-100"
               }`}
             >
               Significant Gap (&lt; −30 pp)
             </button>
             <button
               onClick={() => setSelectedFilter("REVIEW")}
-              className={`px-3 py-1 text-xs font-bold rounded-lg transition-all ${
-                selectedFilter === "REVIEW" ? "bg-[#F59E0B] text-[#07131F]" : "bg-[#16324A] text-slate-300 hover:text-white"
+              className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                selectedFilter === "REVIEW"
+                  ? "bg-[#d97706] text-white shadow-xs"
+                  : "bg-[#f4f7fb] text-slate-700 border border-[#dbe3ed] hover:bg-slate-100"
               }`}
             >
               Review Recommended
@@ -188,54 +196,62 @@ export default function SatelliteObservatory({ onSelectProject }) {
 
         {/* Table View */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs font-mono">
+          <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-[#16324A] text-slate-400 text-[10px] uppercase">
-                <th className="py-2.5 px-3">Project Code / ID</th>
-                <th className="py-2.5 px-3">Project Name & Sector</th>
-                <th className="py-2.5 px-3">State</th>
-                <th className="py-2.5 px-3">Reported Physical %</th>
-                <th className="py-2.5 px-3">Satellite Change Index</th>
-                <th className="py-2.5 px-3">Discrepancy (pp)</th>
-                <th className="py-2.5 px-3">Verification Signal</th>
-                <th className="py-2.5 px-3 text-right">Action</th>
+              <tr className="border-b border-[#dbe3ed] bg-[#f8fafc] text-slate-600 text-[10px] font-mono uppercase tracking-wider">
+                <th className="py-3 px-3.5 font-bold">Project Code / ID</th>
+                <th className="py-3 px-3.5 font-bold">Project Name & Sector</th>
+                <th className="py-3 px-3.5 font-bold">State</th>
+                <th className="py-3 px-3.5 font-bold text-right">Reported %</th>
+                <th className="py-3 px-3.5 font-bold text-right">Satellite Change</th>
+                <th className="py-3 px-3.5 font-bold text-right">Discrepancy</th>
+                <th className="py-3 px-3.5 font-bold text-center">Verification Signal</th>
+                <th className="py-3 px-3.5 font-bold text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#16324A]/60 text-slate-200">
+            <tbody className="divide-y divide-[#edf2f7] text-slate-800">
               {filteredProjects.map((p) => {
                 const isSig = p.verification_status === "SIGNIFICANT_DISCREPANCY";
                 const isRev = p.verification_status === "REVIEW_RECOMMENDED";
                 return (
-                  <tr key={p.project_id} className="hover:bg-[#16324A]/40 transition-colors">
-                    <td className="py-3 px-3 font-bold text-[#00E5FF]">{p.project_code || p.project_id}</td>
-                    <td className="py-3 px-3">
-                      <div className="font-sans font-bold text-white max-w-sm truncate">{p.project_name}</div>
-                      <div className="text-[10px] text-slate-400">{p.sector}</div>
+                  <tr key={p.project_id} className="hover:bg-[#f1f5f9] transition-colors">
+                    <td className="py-3 px-3.5 font-mono font-bold text-[#1668d8]">
+                      {p.project_code || p.project_id}
                     </td>
-                    <td className="py-3 px-3 text-slate-300">{p.state}</td>
-                    <td className="py-3 px-3 font-bold text-slate-100">{p.reported_progress_pct}%</td>
-                    <td className="py-3 px-3 text-[#00E5FF] font-bold">{p.observed_site_change_index}/100</td>
-                    <td className={`py-3 px-3 font-bold ${isSig ? "text-red-400" : isRev ? "text-amber-400" : "text-emerald-400"}`}>
+                    <td className="py-3 px-3.5">
+                      <div className="font-bold text-[#142235] max-w-sm truncate">{p.project_name}</div>
+                      <div className="text-[11px] text-slate-500">{p.sector}</div>
+                    </td>
+                    <td className="py-3 px-3.5 text-slate-700 font-medium">{p.state}</td>
+                    <td className="py-3 px-3.5 text-right font-mono font-bold text-slate-900">
+                      {p.reported_progress_pct}%
+                    </td>
+                    <td className="py-3 px-3.5 text-right font-mono font-bold text-[#06295B]">
+                      {p.observed_site_change_index}/100
+                    </td>
+                    <td className={`py-3 px-3.5 text-right font-mono font-extrabold ${
+                      isSig ? "text-[#dc2626]" : isRev ? "text-[#d97706]" : "text-[#16a34a]"
+                    }`}>
                       {p.discrepancy_pp} pp
                     </td>
-                    <td className="py-3 px-3">
-                      <span className={`px-2 py-0.5 rounded text-[10px] border ${
+                    <td className="py-3 px-3.5 text-center">
+                      <span className={`inline-block px-2.5 py-0.5 rounded text-[11px] font-bold border ${
                         isSig
-                          ? "bg-red-500/20 text-red-300 border-red-500/40 font-bold"
+                          ? "bg-red-50 text-red-700 border-red-200"
                           : isRev
-                          ? "bg-amber-500/20 text-amber-300 border-amber-500/40 font-bold"
-                          : "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+                          ? "bg-amber-50 text-amber-700 border-amber-200"
+                          : "bg-emerald-50 text-emerald-700 border-emerald-200"
                       }`}>
                         {p.verification_status.replace("_", " ")}
                       </span>
                     </td>
-                    <td className="py-3 px-3 text-right">
+                    <td className="py-3 px-3.5 text-right">
                       <button
                         onClick={() => onSelectProject && onSelectProject(p.project_id)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 bg-[#16324A] hover:bg-[#00E5FF] hover:text-[#07131F] text-slate-200 text-[11px] font-sans font-bold rounded transition-colors"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#06295B] hover:bg-[#1668d8] text-white text-xs font-bold rounded-lg transition-all shadow-2xs cursor-pointer"
                       >
                         <span>Inspect</span>
-                        <ArrowUpRight className="w-3 h-3" />
+                        <ArrowUpRight className="w-3.5 h-3.5" />
                       </button>
                     </td>
                   </tr>
@@ -247,12 +263,12 @@ export default function SatelliteObservatory({ onSelectProject }) {
       </div>
 
       {/* Sector Resolution Suitability Matrix */}
-      <div className="bg-[#0D1E30] border border-[#16324A] rounded-xl p-5 shadow-command-card space-y-4">
-        <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-          <Layers className="w-4 h-4 text-[#00E5FF]" />
+      <div className="bg-white border border-[#dbe3ed] rounded-xl p-5 shadow-xs space-y-4">
+        <h3 className="text-sm font-bold text-[#142235] uppercase tracking-wider flex items-center gap-2">
+          <Layers className="w-4 h-4 text-[#1668d8]" />
           <span>Sector Spatial Resolution Suitability Matrix (Copernicus 10m Ground Sampling Distance)</span>
         </h3>
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-slate-500">
           Scientific classification of infrastructure asset classes according to spatial observability under 10m Sentinel-2 multi-spectral and Sentinel-1 C-SAR GRD.
         </p>
 
@@ -261,21 +277,21 @@ export default function SatelliteObservatory({ onSelectProject }) {
             const isHigh = info.suitability === "HIGH";
             const isMed = info.suitability === "MEDIUM";
             return (
-              <div key={secName} className="p-3 bg-[#07131F] border border-[#16324A] rounded-lg space-y-1">
+              <div key={secName} className="p-3 bg-[#f8fafc] border border-[#dbe3ed] rounded-lg space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-white truncate">{secName}</span>
-                  <span className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded border ${
+                  <span className="text-xs font-bold text-[#142235] truncate">{secName}</span>
+                  <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border ${
                     isHigh
-                      ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+                      ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                       : isMed
-                      ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
-                      : "bg-slate-500/20 text-slate-300 border-slate-500/40"
+                      ? "bg-amber-50 text-amber-700 border-amber-200"
+                      : "bg-slate-100 text-slate-700 border-slate-300"
                   }`}>
                     {info.suitability}
                   </span>
                 </div>
-                <div className="text-[11px] font-mono text-slate-400">
-                  Total: {info.total} · Observable: {info.observable}
+                <div className="text-[11px] font-mono text-slate-500">
+                  Total: <strong className="text-slate-800">{info.total}</strong> · Observable: <strong className="text-[#1668d8]">{info.observable}</strong>
                 </div>
               </div>
             );
@@ -285,3 +301,4 @@ export default function SatelliteObservatory({ onSelectProject }) {
     </div>
   );
 }
+
