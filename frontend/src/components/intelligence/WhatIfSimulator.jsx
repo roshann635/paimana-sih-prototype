@@ -1,8 +1,20 @@
-import React, { useState } from 'react';
-import { Sliders, Play, RotateCcw, AlertTriangle, ArrowRight, TrendingUp, Sparkles } from 'lucide-react';
-import { paimanaApi } from '../../services/api/paimanaApi';
+import React, { useState } from "react";
+import {
+  Sliders,
+  Play,
+  RotateCcw,
+  AlertTriangle,
+  ArrowRight,
+  TrendingUp,
+  Sparkles,
+} from "lucide-react";
+import { paimanaApi } from "../../services/api/paimanaApi";
 
-export default function WhatIfSimulator({ projectId, baselineSnapshot = {}, baselinePrediction = {} }) {
+export default function WhatIfSimulator({
+  projectId,
+  baselineSnapshot = {},
+  baselinePrediction = {},
+}) {
   const [progressDelta, setProgressDelta] = useState(0);
   const [expMultiplier, setExpMultiplier] = useState(1.0);
   const [delayDelta, setDelayDelta] = useState(0);
@@ -16,11 +28,11 @@ export default function WhatIfSimulator({ projectId, baselineSnapshot = {}, base
       const res = await paimanaApi.simulateProjectScenario(projectId, {
         progress_delta_pct: Number(progressDelta),
         expenditure_multiplier: Number(expMultiplier),
-        delay_delta_days: Number(delayDelta)
+        delay_delta_days: Number(delayDelta),
       });
       setSimulationResult(res);
     } catch (err) {
-      console.error('Simulation failed:', err);
+      console.error("Simulation failed:", err);
     } finally {
       setLoading(false);
     }
@@ -34,8 +46,12 @@ export default function WhatIfSimulator({ projectId, baselineSnapshot = {}, base
   };
 
   const baseScore = baselinePrediction?.composite_risk_score || 75.0;
-  const simScore = simulationResult ? simulationResult.simulation?.composite_risk_score : baseScore;
-  const deltaScore = simulationResult ? simulationResult.simulation?.delta_risk_score : 0;
+  const simScore = simulationResult
+    ? simulationResult.simulation?.composite_risk_score
+    : baseScore;
+  const deltaScore = simulationResult
+    ? simulationResult.simulation?.delta_risk_score
+    : 0;
 
   return (
     <div className="bg-[#0D1E30] border border-[#16324A] rounded-xl p-5 shadow-command-card space-y-5 text-slate-200">
@@ -55,7 +71,8 @@ export default function WhatIfSimulator({ projectId, baselineSnapshot = {}, base
               </span>
             </div>
             <p className="text-[11px] text-slate-400 mt-0.5">
-              Simulate progress slowdowns, expenditure acceleration, and milestone delays to observe real-time risk shifts.
+              Simulate progress slowdowns, expenditure acceleration, and
+              milestone delays to observe real-time risk shifts.
             </p>
           </div>
         </div>
@@ -74,7 +91,7 @@ export default function WhatIfSimulator({ projectId, baselineSnapshot = {}, base
             className="px-4 py-1.5 rounded-lg bg-[#F59E0B] hover:bg-[#D97706] text-[#07131F] text-xs font-mono font-bold transition-colors flex items-center gap-1.5 shadow-gold-glow"
           >
             <Play className="w-3.5 h-3.5 fill-current" />
-            <span>{loading ? 'Simulating...' : 'Run Scenario'}</span>
+            <span>{loading ? "Simulating..." : "Run Scenario"}</span>
           </button>
         </div>
       </div>
@@ -86,8 +103,12 @@ export default function WhatIfSimulator({ projectId, baselineSnapshot = {}, base
           {/* Slider 1: Physical Progress Delta */}
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs font-mono">
-              <span className="text-slate-300 font-medium">Physical Progress Adjustment:</span>
-              <strong className={`font-bold ${progressDelta < 0 ? 'text-[#EF4444]' : progressDelta > 0 ? 'text-[#10B981]' : 'text-white'}`}>
+              <span className="text-slate-300 font-medium">
+                Physical Progress Adjustment:
+              </span>
+              <strong
+                className={`font-bold ${progressDelta < 0 ? "text-[#EF4444]" : progressDelta > 0 ? "text-[#10B981]" : "text-white"}`}
+              >
                 {progressDelta > 0 ? `+${progressDelta}%` : `${progressDelta}%`}
               </strong>
             </div>
@@ -110,9 +131,19 @@ export default function WhatIfSimulator({ projectId, baselineSnapshot = {}, base
           {/* Slider 2: Expenditure Acceleration */}
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs font-mono">
-              <span className="text-slate-300 font-medium">Expenditure Burn Multiplier:</span>
-              <strong className={`font-bold ${expMultiplier > 1.0 ? 'text-[#EF4444]' : expMultiplier < 1.0 ? 'text-[#10B981]' : 'text-white'}`}>
-                {expMultiplier.toFixed(2)}x ({expMultiplier > 1.0 ? `+${Math.round((expMultiplier - 1)*100)}% capex` : expMultiplier < 1.0 ? `${Math.round((expMultiplier - 1)*100)}% capex` : 'Nominal'})
+              <span className="text-slate-300 font-medium">
+                Expenditure Burn Multiplier:
+              </span>
+              <strong
+                className={`font-bold ${expMultiplier > 1.0 ? "text-[#EF4444]" : expMultiplier < 1.0 ? "text-[#10B981]" : "text-white"}`}
+              >
+                {expMultiplier.toFixed(2)}x (
+                {expMultiplier > 1.0
+                  ? `+${Math.round((expMultiplier - 1) * 100)}% capex`
+                  : expMultiplier < 1.0
+                    ? `${Math.round((expMultiplier - 1) * 100)}% capex`
+                    : "Nominal"}
+                )
               </strong>
             </div>
             <input
@@ -134,9 +165,15 @@ export default function WhatIfSimulator({ projectId, baselineSnapshot = {}, base
           {/* Slider 3: Milestone Delay Delta */}
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs font-mono">
-              <span className="text-slate-300 font-medium">Additional Schedule Delay:</span>
-              <strong className={`font-bold ${delayDelta > 0 ? 'text-[#EF4444]' : 'text-white'}`}>
-                {delayDelta > 0 ? `+${delayDelta} days` : '0 days (No added delay)'}
+              <span className="text-slate-300 font-medium">
+                Additional Schedule Delay:
+              </span>
+              <strong
+                className={`font-bold ${delayDelta > 0 ? "text-[#EF4444]" : "text-white"}`}
+              >
+                {delayDelta > 0
+                  ? `+${delayDelta} days`
+                  : "0 days (No added delay)"}
               </strong>
             </div>
             <input
@@ -162,7 +199,7 @@ export default function WhatIfSimulator({ projectId, baselineSnapshot = {}, base
             <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
               Projected Risk Score Shift
             </div>
-            
+
             <div className="flex items-baseline gap-3 my-2">
               <div className="text-3xl font-extrabold font-mono text-white">
                 {simScore.toFixed(1)}
@@ -170,10 +207,16 @@ export default function WhatIfSimulator({ projectId, baselineSnapshot = {}, base
               <div className="text-xs font-mono text-slate-400">/ 100</div>
 
               {deltaScore !== 0 && (
-                <div className={`text-xs font-mono font-bold px-2 py-0.5 rounded ${
-                  deltaScore > 0 ? 'bg-[#EF4444]/20 text-[#EF4444] border border-[#EF4444]/40' : 'bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/40'
-                }`}>
-                  {deltaScore > 0 ? `+${deltaScore.toFixed(1)} pts` : `${deltaScore.toFixed(1)} pts`}
+                <div
+                  className={`text-xs font-mono font-bold px-2 py-0.5 rounded ${
+                    deltaScore > 0
+                      ? "bg-[#EF4444]/20 text-[#EF4444] border border-[#EF4444]/40"
+                      : "bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/40"
+                  }`}
+                >
+                  {deltaScore > 0
+                    ? `+${deltaScore.toFixed(1)} pts`
+                    : `${deltaScore.toFixed(1)} pts`}
                 </div>
               )}
             </div>
@@ -182,31 +225,47 @@ export default function WhatIfSimulator({ projectId, baselineSnapshot = {}, base
             <div className="space-y-2 pt-2 border-t border-[#16324A] text-xs font-mono">
               <div className="flex justify-between">
                 <span className="text-slate-400">Baseline Score:</span>
-                <span className="text-white font-bold">{baseScore.toFixed(1)}/100</span>
+                <span className="text-white font-bold">
+                  {baseScore.toFixed(1)}/100
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-400">Simulated SPI:</span>
-                <span className={`font-bold ${simulationResult?.simulation?.spi < 0.85 ? 'text-[#EF4444]' : 'text-[#00E5FF]'}`}>
-                  {simulationResult ? simulationResult.simulation?.spi?.toFixed(2) : (baselineSnapshot.spi || 1.0).toFixed(2)}
+                <span
+                  className={`font-bold ${simulationResult?.simulation?.spi < 0.85 ? "text-[#EF4444]" : "text-[#00E5FF]"}`}
+                >
+                  {simulationResult
+                    ? simulationResult.simulation?.spi?.toFixed(2)
+                    : (baselineSnapshot.spi || 1.0).toFixed(2)}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-400">Simulated CPI:</span>
-                <span className={`font-bold ${simulationResult?.simulation?.cpi < 0.90 ? 'text-[#EF4444]' : 'text-[#F59E0B]'}`}>
-                  {simulationResult ? simulationResult.simulation?.cpi?.toFixed(2) : (baselineSnapshot.cpi || 1.0).toFixed(2)}
+                <span
+                  className={`font-bold ${simulationResult?.simulation?.cpi < 0.9 ? "text-[#EF4444]" : "text-[#F59E0B]"}`}
+                >
+                  {simulationResult
+                    ? simulationResult.simulation?.cpi?.toFixed(2)
+                    : (baselineSnapshot.cpi || 1.0).toFixed(2)}
                 </span>
               </div>
-            </div>
+            {/* Out-of-Distribution Guard Warning */}
+            {(expMultiplier > 1.30 || delayDelta > 120 || progressDelta < -20) && (
+              <div className="p-2 bg-[#F59E0B]/10 border border-[#F59E0B]/30 rounded text-[10px] text-[#F59E0B] font-mono flex items-center gap-1.5">
+                <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                <span>⚠ Scenario parameters extend beyond empirical baseline training distribution.</span>
+              </div>
+            )}
           </div>
 
           <div className="p-2.5 bg-[#0D1E30] rounded border border-[#16324A] text-[11px] text-slate-300 flex items-start gap-1.5">
             <Sparkles className="w-3.5 h-3.5 text-[#F59E0B] shrink-0 mt-0.5" />
             <span>
               {deltaScore > 10
-                ? 'High Risk Surge: Simultaneous progress slowdown and capex burn pushes project into urgent escalation.'
+                ? "High Risk Surge: Simultaneous progress slowdown and capex burn pushes project into urgent escalation."
                 : deltaScore < -5
-                ? 'Risk Mitigation: Accelerated physical progress restores earned value alignment.'
-                : 'Interactive scenario testing runs instantly on calibrated XGBoost inference.'}
+                ? "Risk Mitigation: Accelerated physical progress restores earned value alignment."
+                : "Full Feature Propagation: Adjusting inputs recalculates PV, EV, AC, SV, CV, SPI, CPI, and lag vectors before XGBoost inference."}
             </span>
           </div>
         </div>
@@ -214,3 +273,4 @@ export default function WhatIfSimulator({ projectId, baselineSnapshot = {}, base
     </div>
   );
 }
+
