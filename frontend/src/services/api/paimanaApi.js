@@ -9,7 +9,13 @@ import {
   mockDataQuality,
 } from "../../data/mock/mockData";
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1";
+const BASE_URL =
+  import.meta.env.VITE_API_URL ||
+  (typeof window !== "undefined" &&
+  window.location.hostname !== "localhost" &&
+  window.location.hostname !== "127.0.0.1"
+    ? "https://parakh-backend-daer.onrender.com/api/v1"
+    : "http://localhost:8000/api/v1");
 
 async function fetchJson(endpoint, options = {}) {
   try {

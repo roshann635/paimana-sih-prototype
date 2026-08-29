@@ -28,8 +28,14 @@ export default function NationalOverview({
     try {
       const [sumData, queueData, alertData] = await Promise.all([
         paimanaApi.getDashboardSummary(),
-        paimanaApi.getPriorityQueue({ limit: 5 }),
-        paimanaApi.getAlerts({ limit: 150 }),
+        paimanaApi.getPriorityQueue({ limit: 5 }).catch((err) => {
+          console.warn("Failed to load priority queue, using empty list:", err);
+          return [];
+        }),
+        paimanaApi.getAlerts({ limit: 150 }).catch((err) => {
+          console.warn("Failed to load alerts, using empty list:", err);
+          return [];
+        }),
       ]);
       setSummary(sumData);
       setPriorityProjects(queueData || []);
