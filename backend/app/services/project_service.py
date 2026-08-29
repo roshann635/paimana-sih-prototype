@@ -484,9 +484,8 @@ def simulate_project_scenario(
     Perturbs baseline feature vector and predicts updated Cost & Schedule Risk,
     EVM indices, and Simulated Composite Risk Score without modifying database records.
     """
-    import os, joblib, numpy as np, pandas as pd
+    import os, numpy as np
     from backend.app.ml.risk_engine import RiskEngine
-    from ml.features.engineer import FEATURE_COLUMNS
 
     proj = db.query(Project).filter(
         (Project.project_id == project_id) | (Project.project_code == project_id)

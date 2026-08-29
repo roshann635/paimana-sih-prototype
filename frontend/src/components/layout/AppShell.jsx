@@ -6,6 +6,8 @@ import { paimanaApi } from "../../services/api/paimanaApi";
 export default function AppShell({
   currentPath,
   onNavigate,
+  onBack,
+  canGoBack,
   children,
   onOpenAssistant,
   searchTerm,
@@ -32,6 +34,9 @@ export default function AppShell({
     <div className="min-h-screen bg-[#f4f7fb] flex flex-col font-sans text-slate-800 antialiased">
       {/* Top 2-Tier Command Centre Header */}
       <Header
+        currentPath={currentPath}
+        onBack={onBack}
+        canGoBack={canGoBack}
         latestReportMonth={latestReportMonth}
         activeAlertsCount={activeAlertsCount}
         onOpenAssistant={onOpenAssistant}

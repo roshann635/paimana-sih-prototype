@@ -98,12 +98,13 @@ def get_satellite_health():
 @router.post("/projects/{project_id}/satellite/verify", response_model=SatelliteVerificationResult)
 def trigger_project_satellite_verification(
     project_id: str,
-    payload: Dict[str, Any] = {},
+    payload: Dict[str, Any] = None,
     db: Session = Depends(get_db)
 ):
     """
     Triggers an explicit on-demand satellite cross-verification run for a project.
     """
+    payload = payload or {}
     eval_m = payload.get("evaluation_month")
     use_live = payload.get("use_live_copernicus", False)
     res = satellite_service.get_project_satellite_verification(

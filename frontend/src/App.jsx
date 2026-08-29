@@ -19,20 +19,52 @@ import AIAssistantDrawer from './components/intelligence/AIAssistantDrawer';
 
 export default function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname || '/');
+  const [historyStack, setHistoryStack] = useState(() => [window.location.pathname || '/']);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
   // Handle URL navigation
   const navigate = (path) => {
+    if (!path || path === currentPath) return;
+    setHistoryStack((prev) => {
+      if (prev[prev.length - 1] === path) return prev;
+      return [...prev, path];
+    });
     setCurrentPath(path);
-    window.history.pushState({}, '', path);
+    window.history.pushState({ path }, '', path);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Back navigation: routes to previous page in history
+  const goBack = () => {
+    if (historyStack.length > 1) {
+      const newStack = [...historyStack];
+      newStack.pop(); // remove current page
+      const prevPath = newStack[newStack.length - 1];
+      setHistoryStack(newStack);
+      setCurrentPath(prevPath);
+      window.history.pushState({ path: prevPath }, '', prevPath);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      navigate('/');
+    }
   };
 
   useEffect(() => {
     const handlePopState = () => {
-      setCurrentPath(window.location.pathname);
+      const newPath = window.location.pathname || '/';
+      setCurrentPath(newPath);
+      setHistoryStack((prev) => {
+        const idx = prev.lastIndexOf(newPath);
+        if (idx !== -1) {
+          return prev.slice(0, idx + 1);
+        }
+        return [...prev, newPath];
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -52,7 +84,7 @@ export default function App() {
       return (
         <ProjectDeepDive
           projectId={pid || selectedProjectId}
-          onBack={() => navigate('/projects')}
+          onBack={goBack}
           onNavigate={navigate}
         />
       );
@@ -180,6 +212,8 @@ export default function App() {
     <AppShell
       currentPath={currentPath}
       onNavigate={navigate}
+      onBack={goBack}
+      canGoBack={historyStack.length > 1 || currentPath !== '/'}
       onOpenAssistant={() => setIsAssistantOpen(true)}
       searchTerm={searchTerm}
       onSearchChange={(term) => {

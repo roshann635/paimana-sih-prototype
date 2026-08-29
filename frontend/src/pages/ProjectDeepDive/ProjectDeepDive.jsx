@@ -120,13 +120,20 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
 
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <button
-              onClick={() => onNavigate ? onNavigate("/projects") : (onBack && onBack())}
-              className="px-4 py-2 bg-[#1668d8] hover:bg-[#0b4db3] text-white text-xs font-bold rounded-lg transition-colors shadow-xs cursor-pointer"
+              onClick={onBack}
+              className="px-4 py-2 bg-[#1668d8] hover:bg-[#0b4db3] text-white text-xs font-bold rounded-lg transition-colors shadow-xs cursor-pointer flex items-center gap-1.5"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+              <span>Go to Previous Page</span>
+            </button>
+            <button
+              onClick={() => onNavigate && onNavigate("/projects")}
+              className="px-4 py-2 bg-white border border-[#dbe3ed] hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-lg transition-colors cursor-pointer"
             >
               Browse All 1,630 Projects
             </button>
             <button
-              onClick={() => onNavigate ? onNavigate("/satellite-observatory") : (onBack && onBack())}
+              onClick={() => onNavigate && onNavigate("/satellite-observatory")}
               className="px-4 py-2 bg-white border border-[#dbe3ed] hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-lg transition-colors cursor-pointer"
             >
               Satellite Observatory
@@ -157,8 +164,8 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
         <div className="flex items-center gap-3">
           <button
             onClick={onBack}
-            className="p-2 rounded-lg bg-[#0D1E30] border border-[#16324A] text-slate-400 hover:text-white hover:bg-[#16324A] transition-colors shadow-xs"
-            title="Return to projects list"
+            className="p-2 rounded-lg bg-[#0D1E30] border border-[#16324A] text-slate-400 hover:text-white hover:bg-[#16324A] transition-colors shadow-xs cursor-pointer"
+            title="Go back to previous page"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>

@@ -7,9 +7,76 @@ import {
   Calendar,
   ChevronDown,
   Menu,
+  ArrowLeft,
 } from "lucide-react";
 
+const PAGE_METADATA = {
+  "/": {
+    title: "National Overview",
+    subtitle: "Command Centre · High-level infrastructure portfolio health & intelligence",
+  },
+  "/overview": {
+    title: "National Overview",
+    subtitle: "Command Centre · High-level infrastructure portfolio health & intelligence",
+  },
+  "/projects": {
+    title: "All Projects",
+    subtitle: "Central sector infrastructure project registry (1,630 projects)",
+  },
+  "/priority-queue": {
+    title: "Priority Queue",
+    subtitle: "Intervention Priority Index (IPI) ranked decision queue",
+  },
+  "/map": {
+    title: "State Risk Map",
+    subtitle: "Spatial infrastructure capex exposure & risk distribution across 35 States & UTs",
+  },
+  "/analytics/portfolio": {
+    title: "Risk Analytics",
+    subtitle: "Sector-level risk distribution, schedule variance & baseline benchmarking",
+  },
+  "/satellite-observatory": {
+    title: "Satellite Observatory",
+    subtitle: "Independent Sentinel-1 SAR & Sentinel-2 Optical Earth observation verification",
+  },
+  "/analytics/ministries": {
+    title: "Cost Risk Analysis",
+    subtitle: "Ministry-wise cost escalation and capital expenditure drawdown tracking",
+  },
+  "/analytics/sectors": {
+    title: "Schedule Risk Analysis",
+    subtitle: "Sector-wise milestone delay and critical path deceleration tracking",
+  },
+  "/analytics/benchmarking": {
+    title: "Benchmarking",
+    subtitle: "Cross-sector empirical medians & comparative peer baselines",
+  },
+  "/early-warnings": {
+    title: "Early Warning Surveillance",
+    subtitle: "Real-time automated surveillance bulletins & operational drift flags",
+  },
+  "/intelligence/risk-diagnosis": {
+    title: "Interventions Center",
+    subtitle: "Executive administrative directives and audit-trailed action memos",
+  },
+  "/reports": {
+    title: "Reports & Downloads",
+    subtitle: "Comprehensive institutional dossiers and MoSPI flash report archives",
+  },
+  "/data-quality": {
+    title: "Data Quality Center",
+    subtitle: "Automated Data Quality Engine (DQE) validation and anomaly audits",
+  },
+  "/intelligence/model-health": {
+    title: "Model Governance & Health",
+    subtitle: "Out-of-time temporal ML calibration, PR-AUC and ROC-AUC benchmarks",
+  },
+};
+
 export default function Header({
+  currentPath = "/",
+  onBack,
+  canGoBack = false,
   latestReportMonth = "Jun 2026",
   activeAlertsCount = 12,
   onOpenAssistant,
@@ -17,20 +84,50 @@ export default function Header({
   searchTerm = "",
   onSearchChange,
 }) {
+  const cleanPath = (currentPath || "/").split("?")[0].toLowerCase();
+  let meta = PAGE_METADATA[cleanPath];
+  if (!meta) {
+    if (cleanPath.startsWith("/projects/")) {
+      meta = {
+        title: "Project Deep Dive",
+        subtitle: "Longitudinal diagnostics, EVM performance & evidence analysis",
+      };
+    } else {
+      meta = {
+        title: "Command Centre",
+        subtitle: "Infrastructure monitoring & intelligence",
+      };
+    }
+  }
+
+  const isNotRoot = cleanPath !== "/" && cleanPath !== "/overview" && cleanPath !== "/dashboard";
+
   return (
     <header className="bg-white border-b border-[#dbe3ed] text-[#142235] select-none">
       {/* Top Telemetry Row */}
       <div className="px-6 py-2.5 flex items-center justify-between gap-4 border-b border-[#edf1f5]">
-        {/* Title & Subtitle */}
+        {/* Title & Subtitle + Back button */}
         <div>
           <div className="flex items-center gap-3">
             <Menu className="w-4 h-4 text-[#66758a] lg:hidden" />
+            
+            {(canGoBack || isNotRoot) && onBack && (
+              <button
+                onClick={onBack}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#f4f7fb] hover:bg-[#e2eaf4] border border-[#dbe3ed] text-[#142235] hover:text-[#1668d8] text-xs font-bold transition-all shadow-2xs cursor-pointer"
+                title="Go back to previous page"
+              >
+                <ArrowLeft className="w-3.5 h-3.5 text-[#1668d8]" />
+                <span className="text-[11px] font-semibold hidden sm:inline">Back</span>
+              </button>
+            )}
+
             <div>
               <h1 className="text-base lg:text-lg font-bold tracking-tight text-[#142235]">
-                Dashboard
+                {meta.title}
               </h1>
               <p className="text-[11px] text-[#66758a] mt-0.5 font-normal">
-                Overview of infrastructure projects across India
+                {meta.subtitle}
               </p>
             </div>
           </div>
@@ -85,8 +182,8 @@ export default function Header({
               <User className="w-4 h-4" />
             </div>
             <div className="flex flex-col text-left">
-              <span className="text-xs font-bold text-white leading-tight">
-                Ankit Kumar
+              <span className="text-xs font-bold text-[#142235] leading-tight">
+                Officer
               </span>
               <span className="text-[10px] font-mono text-[#66758a]">
                 Monitoring Officer
@@ -124,7 +221,7 @@ export default function Header({
             onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
             className="w-full bg-white border border-[#dbe3ed] rounded-md pl-10 pr-9 py-1.5 text-xs text-[#142235] placeholder:text-[#8a98aa] focus:outline-none focus:border-[#1668d8] focus:ring-1 focus:ring-[#1668d8]/10 transition-all font-sans"
           />
-          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 font-mono text-[10px] text-slate-300 bg-[#0D1E30] border border-[#16324A] px-1.5 py-0.5 rounded">
+          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 font-mono text-[10px] text-[#66758a] bg-[#edf1f5] border border-[#dbe3ed] px-1.5 py-0.5 rounded">
             /
           </kbd>
         </div>
