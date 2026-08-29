@@ -20,7 +20,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
-    description="PAIMANA AI Infrastructure Decision Support & Early Warning System API",
+    description="PARAKH AI Infrastructure Decision Support & Early Warning System API",
     lifespan=lifespan
 )
 
@@ -39,7 +39,7 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 @app.get("/")
 def root():
     return {
-        "system": "PAIMANA AI Infrastructure Decision Support System",
+        "system": "PARAKH AI Infrastructure Decision Support System",
         "status": "ONLINE",
         "version": settings.VERSION,
         "docs_url": "/docs"

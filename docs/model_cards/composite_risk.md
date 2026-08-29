@@ -2,7 +2,7 @@
 
 ## Overview
 
-- **System Identifier:** `paimana-composite-ipi-engine-v1.0`
+- **System Identifier:** `parakh-composite-ipi-engine-v1.0`
 - **Purpose:** Multi-criteria risk aggregation and administrative review ranking combining calibrated machine-learning probabilities with capital exposure and urgency.
 
 ---

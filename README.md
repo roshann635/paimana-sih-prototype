@@ -1,4 +1,4 @@
-# 🏛️ PAIMANA — National Infrastructure Intelligence Command Centre
+# 🏛️ PARAKH — National Infrastructure Intelligence Command Centre
 
 > **Predictive Early Warning, Risk Forecasting, and Intervention Priority Decision-Support System for Central Sector Infrastructure Projects (MoSPI — Infrastructure and Project Monitoring Division)**
 
@@ -6,10 +6,10 @@
 
 ## 📌 Executive Summary
 
-**PAIMANA** transforms monthly infrastructure reporting data into continuous, explainable, and actionable foresight. Built on longitudinal **MoSPI Central Sector Flash Reports** ($\ge$ ₹150 Crore sanctioned cost), PAIMANA continuously digests project-month snapshots to predict cost overrun probability, schedule slippage drift, and compute the **Intervention Priority Index (IPI)** for executive review.
+**PARAKH** transforms monthly infrastructure reporting data into continuous, explainable, and actionable foresight. Built on longitudinal **MoSPI Central Sector Flash Reports** ($\ge$ ₹150 Crore sanctioned cost), PARAKH continuously digests project-month snapshots to predict cost overrun probability, schedule slippage drift, and compute the **Intervention Priority Index (IPI)** for executive review.
 
 ```
-PAIMANA / OCMS DATA ──► DATA QUALITY ENGINE (DQE) ──► LONGITUDINAL DATABASE (6,090 Snapshots)
+PARAKH / OCMS DATA ──► DATA QUALITY ENGINE (DQE) ──► LONGITUDINAL DATABASE (6,090 Snapshots)
                                                                  │
       ┌──────────────────────────────────────────────────────────┴────────────────────────┐
       ▼                                                                                   ▼
@@ -109,7 +109,7 @@ TreeSHAP EXPLANATIONS    EARLY WARNING ALERTS       ADMINISTRATIVE INTERVENTIONS
 ## 📂 Repository Structure
 
 ```
-paimana/
+parakh/
 ├── backend/
 │   └── app/
 │       ├── api/               # FastAPI endpoints & route handlers
@@ -118,7 +118,7 @@ paimana/
 │       ├── services/          # Business logic (Dashboard, Projects, Assistant)
 │       └── main.py            # FastAPI application entrypoint
 ├── data/
-│   └── paimana.db             # Normalized SQLite longitudinal database
+│   └── parakh.db              # Normalized SQLite longitudinal database
 ├── database/
 │   └── seed/                  # Seed scripts & data normalizers
 ├── frontend/

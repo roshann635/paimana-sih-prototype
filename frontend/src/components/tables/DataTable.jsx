@@ -7,7 +7,7 @@ export default function DataTable({
   onRowClick,
   title,
   subtitle,
-  exportFilename = "paimana_export.csv",
+  exportFilename = "parakh_export.csv",
   itemsPerPage = 10,
   searchable = true,
   searchPlaceholder = "Filter records...",

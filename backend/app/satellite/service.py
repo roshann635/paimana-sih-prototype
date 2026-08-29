@@ -193,7 +193,7 @@ class SatelliteService:
             [{"report_month": pt.report_month, "reported_progress_pct": pt.reported_progress_pct, "satellite_change_index": pt.satellite_change_index} for pt in timeline_pts]
         )
 
-        aoi_prov = "COPERNICUS STAC DISCOVERY" if use_live_copernicus else "PAIMANA DEMO GEOMETRY"
+        aoi_prov = "COPERNICUS STAC DISCOVERY" if use_live_copernicus else "PARAKH DEMO GEOMETRY"
         clean_num = ''.join(filter(str.isdigit, proj.project_id)) or "184"
         audit_id = f"SAT-2026-{clean_num.zfill(6)}"
         aoi_hash_str = f"sha256:{hash(proj.project_id) & 0xffffffff:08x}{hash(proj.sector) & 0xffffffff:08x}"

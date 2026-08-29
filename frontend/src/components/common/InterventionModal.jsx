@@ -9,7 +9,7 @@ export default function InterventionModal({
   onInterventionSaved,
 }) {
   const todayStr = new Date().toISOString().split("T")[0];
-  const demoRef = `PAIMANA/${project?.project_id || "PROJ"}/${todayStr}/01`;
+  const demoRef = `PARAKH/${project?.project_id || "PROJ"}/${todayStr}/01`;
 
   const [category, setCategory] = useState("INTER_MINISTERIAL_COORDINATION");
   const [assignedOfficer, setAssignedOfficer] = useState(
@@ -60,7 +60,7 @@ export default function InterventionModal({
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm">
       <div className="bg-[#0D1E30] border border-[#16324A] rounded-xl shadow-2xl max-w-lg w-full overflow-hidden animate-in fade-in zoom-in-95 duration-150 text-slate-200">
         {/* Header */}
-        <div className="paimana-modal-header p-4 border-b border-[#16324A] bg-[#0B1A2A] flex items-center justify-between">
+        <div className="parakh-modal-header p-4 border-b border-[#16324A] bg-[#0B1A2A] flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#F59E0B]/10 border border-[#F59E0B]/40 flex items-center justify-center text-[#F59E0B] shadow-gold-glow">
               <FileText className="w-4 h-4" />

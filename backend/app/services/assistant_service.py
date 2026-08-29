@@ -1,5 +1,5 @@
 """
-PAIMANA Grounded AI Decision Support Service (backend/app/services/assistant_service.py)
+PARAKH Grounded AI Decision Support Service (backend/app/services/assistant_service.py)
 Multi-domain analytical routing engine generating structured, cited intelligence
 across EVM indicators, TreeSHAP attributions, projects, sectors, states, and XGBoost models.
 """
@@ -109,7 +109,7 @@ def answer_query(db: Session, query: str, project_id: Optional[str] = None) -> D
     if any(k in q for k in ["evm", "earned value", "spi", "cpi", "schedule performance", "cost performance"]):
         return {
             "answer": (
-                "**PAIMANA Earned Value Management (EVM) Architecture**:\n\n"
+                "**PARAKH Earned Value Management (EVM) Architecture**:\n\n"
                 "• **Objective KPI Layer**: Automatically computes Planned Value ($PV$), Earned Value ($EV$), and Actual Cost ($AC$) for every project snapshot without manual input.\n"
                 "• **Performance Indices**: \n"
                 "  - **SPI (Schedule Performance Index)** = $EV / PV$ (Values < 0.85 flag significant schedule review).\n"
@@ -224,7 +224,7 @@ def answer_query(db: Session, query: str, project_id: Optional[str] = None) -> D
         time_brier = mh.get("models", {}).get("time_overrun", {}).get("brier_score", 0.0829)
         
         answer = (
-            f"**PAIMANA Predictive ML Model Health & Governance**:\n\n"
+            f"**PARAKH Predictive ML Model Health & Governance**:\n\n"
             f"• **Architecture**: Calibrated Gradient Boosted Decision Trees (XGBoost) with TreeSHAP local explainability and EVM temporal feature vectors.\n"
             f"• **Cost Overrun Classifier**: ROC-AUC **{cost_roc:.4f}**, Brier Calibration Score **{cost_brier:.4f}**\n"
             f"• **Schedule Slippage Classifier**: ROC-AUC **{time_roc:.4f}**, Brier Calibration Score **{time_brier:.4f}**\n"

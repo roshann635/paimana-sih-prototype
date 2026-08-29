@@ -1,5 +1,5 @@
 """
-PAIMANA Live Full-Stack End-to-End Test (tests/live_system_audit.py)
+PAIMANA Live Full-Stack End-to-End Test (tests/live_system_audit.py) -> PARAKH
 Tests live HTTP communication with FastAPI (http://127.0.0.1:8000) and Vite (http://127.0.0.1:5173).
 """
 
@@ -11,7 +11,7 @@ import urllib.error
 
 def test_live_servers():
     print("=" * 75)
-    print("PAIMANA LIVE FULL-STACK INTEGRATION AUDIT")
+    print("PARAKH LIVE FULL-STACK INTEGRATION AUDIT")
     print("=" * 75)
 
     # 1. Test Frontend HTTP Availability
@@ -129,7 +129,7 @@ def test_live_servers():
         ai_data = json.loads(resp_ai.read().decode('utf-8'))
         print(f"  * Confidence: {ai_data.get('confidence')*100:.0f}%")
         print(f"  * Evidence Sources: {ai_data.get('evidence_sources')}")
-        print("  [PASS] PAIMANA Grounded AI Assistant active")
+        print("  [PASS] PARAKH Grounded AI Assistant active")
     except Exception as e:
         print(f"  [FAIL] AI Assistant Error: {e}")
         return False

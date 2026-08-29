@@ -143,7 +143,7 @@ export default function Benchmarking() {
       <DataTable
         columns={columns}
         data={benchmarks}
-        exportFilename="paimana_sector_benchmarks.csv"
+        exportFilename="parakh_sector_benchmarks.csv"
         itemsPerPage={15}
         searchPlaceholder="Filter sector benchmarks..."
       />

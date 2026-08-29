@@ -1,5 +1,5 @@
 """
-PAIMANA Golden Path End-to-End Architectural Audit Script (tests/golden_path_audit.py)
+PARAKH Golden Path End-to-End Architectural Audit Script (tests/golden_path_audit.py)
 Validates the entire 10-stage progression on a real MoSPI infrastructure project:
 Raw Ingestion -> DQE -> EVM -> Features -> XGBoost -> Calibration -> TreeSHAP -> Risk & IPI -> Timeline -> What-If Simulator -> API Response.
 """
@@ -24,7 +24,7 @@ from backend.app.ml.risk_engine import RiskEngine
 
 def run_golden_path_audit():
     print("=" * 75)
-    print("PAIMANA ARCHITECTURAL & METHODOLOGICAL GOLDEN PATH AUDIT")
+    print("PARAKH ARCHITECTURAL & METHODOLOGICAL GOLDEN PATH AUDIT")
     print("=" * 75)
     
     db = SessionLocal()

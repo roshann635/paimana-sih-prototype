@@ -9,7 +9,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     model_config = ConfigDict(case_sensitive=True)
 
-    PROJECT_NAME: str = "PAIMANA AI Infrastructure Decision Support System"
+    PROJECT_NAME: str = "PARAKH AI Infrastructure Decision Support System"
     API_V1_STR: str = "/api/v1"
     VERSION: str = "1.0.0"
     

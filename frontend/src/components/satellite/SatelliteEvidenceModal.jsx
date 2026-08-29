@@ -337,7 +337,7 @@ export default function SatelliteEvidenceModal({
                   <div>Engine / Config Version: <strong className="text-slate-900">{vf.processing_version || "sat-engine v1.0"}</strong> ({vf.config_version || "config v0.3-provisional"})</div>
                   <div>Optical Product: <strong className="text-slate-600 truncate block max-w-sm">{vf.optical_provenance?.product_id || "S2A_MSIL2A_20260614..."}</strong></div>
                   <div>SAR Product: <strong className="text-slate-600 truncate block max-w-sm">{vf.sar_provenance?.product_id || "S1A_IW_GRDH_20260612..."}</strong></div>
-                  <div>AOI Provenance: <strong className="text-[#1668d8]">{vf.aoi_provenance || "PAIMANA DEMO GEOMETRY"}</strong></div>
+                  <div>AOI Provenance: <strong className="text-[#1668d8]">{vf.aoi_provenance || "PARAKH DEMO GEOMETRY"}</strong></div>
                   <div>SCL Cloud Cover: <strong>{vf.optical_provenance?.cloud_cover_percent || 8.4}%</strong> · Orbit: <strong>{vf.optical_provenance?.orbit_pass || "DESCENDING"}</strong></div>
                 </div>
               </div>
@@ -345,7 +345,7 @@ export default function SatelliteEvidenceModal({
               {/* Independent Confidence Stack */}
               <div className="pt-2.5 border-t border-[#dbe3ed] space-y-1.5">
                 <div className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider">
-                  PAIMANA Decision Confidence Stack (Independent Streams)
+                  PARAKH Decision Confidence Stack (Independent Streams)
                 </div>
                 <div className="grid grid-cols-3 gap-2 text-center font-mono">
                   <div className="p-2 bg-[#f8fafc] border border-[#dbe3ed] rounded-lg">

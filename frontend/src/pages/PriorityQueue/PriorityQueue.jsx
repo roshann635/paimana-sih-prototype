@@ -145,7 +145,7 @@ export default function PriorityQueue({ onSelectProject }) {
         columns={columns}
         data={projects}
         onRowClick={(row) => onSelectProject && onSelectProject(row.project_id)}
-        exportFilename="paimana_priority_queue.csv"
+        exportFilename="parakh_priority_queue.csv"
         itemsPerPage={15}
         searchPlaceholder="Filter priority queue..."
       />

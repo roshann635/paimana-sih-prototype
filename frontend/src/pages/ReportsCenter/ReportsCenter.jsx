@@ -61,7 +61,7 @@ export default function ReportsCenter() {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.setAttribute('href', url);
-        link.setAttribute('download', `${report.id}_paimana_export.csv`);
+        link.setAttribute('download', `${report.id}_parakh_export.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);

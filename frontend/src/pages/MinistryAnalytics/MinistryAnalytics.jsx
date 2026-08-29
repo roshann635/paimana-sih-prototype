@@ -143,7 +143,7 @@ export default function MinistryAnalytics({ onNavigate }) {
       <DataTable
         columns={columns}
         data={ministries}
-        exportFilename="paimana_ministries_analytics.csv"
+        exportFilename="parakh_ministries_analytics.csv"
         itemsPerPage={15}
         searchPlaceholder="Filter ministry..."
       />

@@ -159,7 +159,7 @@ export default function ProjectExplorer({
         columns={columns}
         data={projects}
         onRowClick={(row) => onSelectProject && onSelectProject(row.project_id)}
-        exportFilename="paimana_projects_explorer.csv"
+        exportFilename="parakh_projects_explorer.csv"
         itemsPerPage={15}
         searchPlaceholder="Search project code, name, ministry, state..."
         initialSearchTerm={searchTerm}

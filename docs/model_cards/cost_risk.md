@@ -1,4 +1,4 @@
-# Model Card: PAIMANA Cost Overrun Prediction Model
+﻿# Model Card: PARAKH Cost Overrun Prediction Model
 
 ## Model Overview
 
@@ -84,3 +84,4 @@
 1. **Public vs Authorized Feeds:** Trained on multi-year MoSPI Flash Report records. Does not incorporate real-time internal contractor ERP feeds or land acquisition court stay details unless recorded in the monthly snapshot.
 2. **Correlation vs Causation:** SHAP values represent statistical attribution and historical co-occurrence, not deterministic legal causality.
 3. **Data Quality Dependency:** Requires a clean DQE ingestion score ($\ge 80\%$) for high-confidence predictions.
+

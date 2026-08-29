@@ -9,7 +9,9 @@ from sqlalchemy.orm import sessionmaker, Session
 from backend.app.database.schema import Base
 
 # Default to SQLite local database file; automatically switches if DATABASE_URL is set
-DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../data/paimana.db"))
+PARAKH_DB = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../data/parakh.db"))
+PAIMANA_DB = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../data/paimana.db"))
+DB_PATH = PARAKH_DB if os.path.exists(PARAKH_DB) else PAIMANA_DB
 os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 
 DEFAULT_SQLITE_URL = f"sqlite:///{DB_PATH}"

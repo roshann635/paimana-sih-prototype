@@ -1,5 +1,5 @@
 """
-Master Pipeline: Ingest Real MoSPI Flash Reports, Train Models, and Populate PAIMANA DB
+Master Pipeline: Ingest Real MoSPI Flash Reports, Train Models, and Populate PARAKH DB
 (database/seed/seed_real_mospi_data.py)
 """
 
@@ -24,7 +24,7 @@ BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
-DOWNLOADS_DIR = os.getenv("PAIMANA_MOSPI_INPUT_DIR", os.path.join(BASE_DIR, "data", "raw", "mospi"))
+DOWNLOADS_DIR = os.getenv("PARAKH_MOSPI_INPUT_DIR", os.getenv("PAIMANA_MOSPI_INPUT_DIR", os.path.join(BASE_DIR, "data", "raw", "mospi")))
 DATA_DIR = os.path.join(BASE_DIR, "data")
 RAW_DIR = os.path.join(DATA_DIR, "raw")
 PROCESSED_DIR = os.path.join(DATA_DIR, "processed")
@@ -282,7 +282,7 @@ def run_real_pipeline(input_dir: str = DOWNLOADS_DIR):
     shap_engine = ShapExplainabilityEngine()
 
     # 7. Seed SQLite Database
-    print("\n--- Populating SQLite Database (data/paimana.db) with Real Projects & EVM ---")
+    print("\n--- Populating SQLite Database (data/parakh.db) with Real Projects & EVM ---")
     from backend.app.database.schema import Base
     from backend.app.database.session import engine
     Base.metadata.drop_all(bind=engine)
@@ -482,10 +482,10 @@ def run_real_pipeline(input_dir: str = DOWNLOADS_DIR):
     print("=================================================================")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Ingest MoSPI monthly flash reports into PAIMANA.")
+    parser = argparse.ArgumentParser(description="Ingest MoSPI monthly flash reports into PARAKH.")
     parser.add_argument(
         "--input-dir",
         default=DOWNLOADS_DIR,
-        help="Directory containing the source PDFs (default: PAIMANA_MOSPI_INPUT_DIR or data/raw/mospi).",
+        help="Directory containing the source PDFs (default: PARAKH_MOSPI_INPUT_DIR or data/raw/mospi).",
     )
     run_real_pipeline(parser.parse_args().input_dir)

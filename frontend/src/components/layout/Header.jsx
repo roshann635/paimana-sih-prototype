@@ -226,14 +226,14 @@ export default function Header({
           </kbd>
         </div>
 
-        {/* Right: Ask PAIMANA AI Button */}
+        {/* Right: Ask PARAKH AI Button */}
         <div>
           <button
             onClick={onOpenAssistant}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-[#1668d8] hover:bg-[#0d56b8] border border-[#1668d8] text-white font-bold text-xs transition-all"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-[#1668d8] hover:bg-[#0d56b8] border border-[#1668d8] text-white font-bold text-xs transition-all cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5 text-white" />
-            <span>Ask PAIMANA AI</span>
+            <span>Ask PARAKH AI</span>
           </button>
         </div>
       </div>

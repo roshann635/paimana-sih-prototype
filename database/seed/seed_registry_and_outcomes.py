@@ -2,7 +2,8 @@ import sqlite3
 import os
 import json
 
-db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../data/paimana.db"))
+p_db = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../data/parakh.db"))
+db_path = p_db if os.path.exists(p_db) else os.path.abspath(os.path.join(os.path.dirname(__file__), "../../data/paimana.db"))
 conn = sqlite3.connect(db_path)
 c = conn.cursor()
 

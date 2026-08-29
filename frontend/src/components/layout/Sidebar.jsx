@@ -98,7 +98,7 @@ export default function Sidebar({ currentPath = "/", onNavigate }) {
           </div>
           <div className="flex flex-col">
             <span className="font-extrabold text-base tracking-wider text-white leading-tight">
-              PAIMANA
+              PARAKH
             </span>
             <span className="text-[9px] text-blue-100/70 font-medium leading-tight">
               Infrastructure Intelligence

@@ -1,4 +1,4 @@
-# Model Card: PAIMANA Schedule Slippage & Delay Model
+﻿# Model Card: PARAKH Schedule Slippage & Delay Model
 
 ## Model Overview
 
@@ -37,3 +37,4 @@
 
 1. **Physical Velocity Decay:** 3-month rolling velocity dropping below 1.5% per month while elapsed duration $>60\%$ is the strongest non-linear signal of impending major slippage ($\text{SHAP} > +0.25$).
 2. **Expenditure-Progress Decoupling:** Continued capital drawdown without corresponding milestone progress triggers high early-warning delay probabilities.
+

@@ -37,7 +37,7 @@ class SatelliteProvenance(BaseModel):
     scene_classification_valid: bool = True
     resolution_m: float = 10.0
     aoi_coverage_percent: float = 100.0
-    source: str  # "Copernicus Data Space Ecosystem" or "PAIMANA DEMO FIXTURE"
+    source: str  # "Copernicus Data Space Ecosystem" or "PARAKH DEMO FIXTURE"
     is_synthetic: bool = False
     orbit_pass: Optional[str] = "DESCENDING"
 
@@ -130,7 +130,7 @@ class SatelliteVerificationResult(BaseModel):
     # Provenance & Confidence Stack
     optical_provenance: Optional[SatelliteProvenance] = None
     sar_provenance: Optional[SatelliteProvenance] = None
-    aoi_provenance: str = "PAIMANA DEMO GEOMETRY"
+    aoi_provenance: str = "PARAKH DEMO GEOMETRY"
     is_synthetic: bool = False
     
     # Evidence Audit Trail & Reproducibility

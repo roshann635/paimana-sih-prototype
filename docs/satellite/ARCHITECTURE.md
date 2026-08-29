@@ -1,4 +1,4 @@
-# 🛰️ PAIMANA Satellite Cross-Verification Architecture
+﻿# 🛰️ PARAKH Satellite Cross-Verification Architecture
 ## Document: `docs/satellite/ARCHITECTURE.md`
 
 ---
@@ -11,7 +11,7 @@ The Satellite Cross-Verification Engine provides an independent Earth-observatio
                               CONTRACTOR MONTHLY REPORT
                                           │
                                           ▼
-                                PAIMANA EVM SNAPSHOT
+                                 PARAKH EVM SNAPSHOT
                                           │
                 ┌─────────────────────────┴─────────────────────────┐
                 ▼                                                   ▼
@@ -84,7 +84,7 @@ The Satellite Cross-Verification Engine provides an independent Earth-observatio
                                        (First Onset Identification)
                                                     │
                                                     ▼
-                                         PAIMANA Decision Stack
+                                         PARAKH Decision Stack
                                                     │
                                     ┌───────────────┴───────────────┐
                                     ▼                               ▼
@@ -116,3 +116,4 @@ The Satellite Cross-Verification Engine provides an independent Earth-observatio
 5. **Decision Stack & Action Memorandum Integration**:
    - Maintains the three independent confidence dimensions: Data Quality ($94\%$), ML Calibration ($88\%$), and Satellite Evidence ($87\%$).
    - Generates official Site Inspection Directives with reproducible verification audit packets (`SAT-2026-000184`).
+

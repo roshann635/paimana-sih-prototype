@@ -1,5 +1,5 @@
 """
-PAIMANA Data Quality Engine (ml/preprocessing/validator.py)
+PARAKH Data Quality Engine (ml/preprocessing/validator.py)
 Validates, flags anomalies, cleans, and generates auditing metrics for raw project-month datasets.
 """
 

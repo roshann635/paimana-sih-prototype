@@ -243,7 +243,7 @@ export default function InterventionsCenter({ onSelectProject }) {
         columns={columns}
         data={interventions}
         onRowClick={(row) => onSelectProject && onSelectProject(row.project_id)}
-        exportFilename="paimana_interventions_outcomes.csv"
+        exportFilename="parakh_interventions_outcomes.csv"
         itemsPerPage={15}
         searchPlaceholder="Search intervention, project code, officer..."
       />

@@ -103,6 +103,7 @@ main .group:hover [class*="group-hover:text-white"] {
 }
 
 /* The action modal intentionally keeps a dark institutional header. */
+.parakh-modal-header [class*="text-white"],
 .paimana-modal-header [class*="text-white"] {
   color: #ffffff !important;
 }

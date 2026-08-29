@@ -2,7 +2,7 @@
 Synthetic Demonstration Provider (backend/app/satellite/providers/synthetic.py)
 Generates high-fidelity mock fixtures for system demonstration.
 IMPORTANT: All outputs from this provider are explicitly flagged with is_synthetic=True
-and source='PAIMANA DEMO FIXTURE' to preserve scientific transparency and demo integrity.
+and source='PARAKH DEMO FIXTURE' to preserve scientific transparency and demo integrity.
 """
 
 from typing import Dict, Any, List, Optional
@@ -125,7 +125,7 @@ class SyntheticDemoProvider:
                 scene_classification_valid=True,
                 resolution_m=10.0,
                 aoi_coverage_percent=100.0,
-                source="PAIMANA DEMO FIXTURE",
+                source="PARAKH DEMO FIXTURE",
                 is_synthetic=True,
                 orbit_pass="DESCENDING"
             )
@@ -140,7 +140,7 @@ class SyntheticDemoProvider:
                 scene_classification_valid=True,
                 resolution_m=10.0,
                 aoi_coverage_percent=100.0,
-                source="PAIMANA DEMO FIXTURE",
+                source="PARAKH DEMO FIXTURE",
                 is_synthetic=True,
                 orbit_pass="ASCENDING"
             )

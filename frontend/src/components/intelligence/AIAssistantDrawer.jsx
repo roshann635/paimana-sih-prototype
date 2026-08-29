@@ -14,8 +14,8 @@ export default function AIAssistantDrawer({ isOpen, onClose, onSelectProject }) 
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      text: 'Greetings. I am the **PAIMANA Decision Support Assistant**.\n\nYou may query the active database across all 1,630 central infrastructure projects, inspect TreeSHAP factor attributions, explore state-level risk concentrations, or review XGBoost model governance metrics.',
-      evidence: ['PAIMANA Master Database (1,630 Projects)', 'MoSPI Flash Reports', 'v1.0-temporal-xgb Model'],
+      text: 'Greetings. I am the **PARAKH Decision Support Assistant**.\n\nYou may query the active database across all 1,630 central infrastructure projects, inspect TreeSHAP factor attributions, explore state-level risk concentrations, or review XGBoost model governance metrics.',
+      evidence: ['PARAKH Master Database (1,630 Projects)', 'MoSPI Flash Reports', 'v1.0-temporal-xgb Model'],
       confidence: 'HIGH'
     }
   ]);
@@ -97,7 +97,7 @@ export default function AIAssistantDrawer({ isOpen, onClose, onSelectProject }) 
               <Sparkles className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-extrabold text-white tracking-wide uppercase font-mono">Ask PAIMANA AI</h3>
+              <h3 className="text-sm font-extrabold text-white tracking-wide uppercase font-mono">Ask PARAKH AI</h3>
               <p className="text-[10px] font-mono text-[#00E5FF]">Grounded Decision Intelligence Engine</p>
             </div>
           </div>

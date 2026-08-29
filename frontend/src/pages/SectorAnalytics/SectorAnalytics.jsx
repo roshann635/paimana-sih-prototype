@@ -143,7 +143,7 @@ export default function SectorAnalytics() {
       <DataTable
         columns={columns}
         data={sectors}
-        exportFilename="paimana_sectors_analytics.csv"
+        exportFilename="parakh_sectors_analytics.csv"
         itemsPerPage={15}
         searchPlaceholder="Filter sector..."
       />

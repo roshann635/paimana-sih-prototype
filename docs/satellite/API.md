@@ -1,4 +1,4 @@
-# 🔌 PAIMANA Satellite Cross-Verification API Reference
+# 🔌 PARAKH Satellite Cross-Verification API Reference
 ## Document: `docs/satellite/API.md`
 
 All satellite endpoints are mounted under `/api/v1`.
@@ -56,7 +56,7 @@ All satellite endpoints are mounted under `/api/v1`.
     "is_quality_gate_passed": true
   },
   "first_divergence_month": "2026-07",
-  "aoi_provenance": "PAIMANA DEMO GEOMETRY",
+  "aoi_provenance": "PARAKH DEMO GEOMETRY",
   "is_synthetic": true,
   "verification_audit_id": "SAT-2026-618427",
   "processing_version": "sat-engine v1.0",

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PAIMANA Golden Project Case Study Execution & Audit Runner
+PARAKH Golden Project Case Study Execution & Audit Runner
 (scripts/run_golden_case.py)
 
 Executes the complete end-to-end decision pipeline for Project P618427:
@@ -31,7 +31,7 @@ from backend.app.satellite.suitability import assess_spatial_suitability
 
 def run_golden_case_study():
     print("=" * 80)
-    print("PAIMANA DECISION-SUPPORT PLATFORM - GOLDEN CASE STUDY AUDIT")
+    print("PARAKH DECISION-SUPPORT PLATFORM - GOLDEN CASE STUDY AUDIT")
     print("Project Code: P618427 | Vadodara-Mumbai Greenfield Expressway (Pkg IV)")
     print("=" * 80)
 
@@ -110,7 +110,7 @@ def run_golden_case_study():
         print(f"    • Concordance:       Corresponds to SPI drop from 0.76 to 0.71")
 
         # 6. Decision Confidence Stack
-        print(f"\n[6] PAIMANA INDEPENDENT DECISION CONFIDENCE STACK")
+        print(f"\n[6] PARAKH INDEPENDENT DECISION CONFIDENCE STACK")
         print(f"    • Data Quality:      94%")
         print(f"    • ML Calibration:    88%")
         print(f"    • Satellite Evidence:87%")

@@ -1,4 +1,4 @@
-# 🚀 PAIMANA Satellite Subsystem Deployment & Configuration
+﻿# 🚀 PARAKH Satellite Subsystem Deployment & Configuration
 ## Document: `docs/satellite/DEPLOYMENT.md`
 
 ---
@@ -28,7 +28,7 @@ SATELLITE_REQUEST_TIMEOUT="15.0"
 
 ### 1.2 Graceful Fallback Behavior
 - If `COPERNICUS_CLIENT_ID` or `COPERNICUS_CLIENT_SECRET` are not configured:
-  The engine remains **100% operational in Demo Mode** (`is_synthetic = True`, `aoi_provenance = "PAIMANA DEMO GEOMETRY"`).
+  The engine remains **100% operational in Demo Mode** (`is_synthetic = True`, `aoi_provenance = "PARAKH DEMO GEOMETRY"`).
 - If live CDSE discovery fails or times out:
   The engine returns **`INCONCLUSIVE`** rather than fabricating fake "live" observations.
 
@@ -56,3 +56,4 @@ Sample Response:
   "temporal_lookahead_gate": "STRICT_ENFORCED (acquisition <= evaluation_month)"
 }
 ```
+

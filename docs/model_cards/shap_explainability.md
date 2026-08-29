@@ -1,8 +1,8 @@
-# Model Card: TreeSHAP Explainability & Factor Attribution
+﻿# Model Card: TreeSHAP Explainability & Factor Attribution
 
 ## System Overview
 
-- **Identifier:** `paimana-treeshap-explainer-v1.0`
+- **Identifier:** `PARAKH-treeshap-explainer-v1.0`
 - **Methodology:** TreeSHAP (Tree-based Shapley Additive Explanations) by Lundberg & Lee.
 - **Objective:** Deconstruct black-box gradient boosted tree predictions into exact additive feature risk contributions for government administrative review.
 
@@ -29,3 +29,4 @@ TreeSHAP attributions are systematically mapped to deterministic operational dir
 | **Capex Acceleration**       | Drawdown velocity $> 2.5\times$ progress rate | Initiate financial expenditure reconciliation; audit contractor interim bills against physical completion.      |
 | **Schedule Slippage**        | Target revised $> 180$ days                   | Convene Project Monitoring Committee (PMC) to evaluate schedule re-baselining and EPC contractor recovery plan. |
 | **Pending Approvals / Land** | Issue flags $\ge 1$                           | Escalate pending inter-departmental clearances to Ministry Empowered Committee / State Chief Secretary.         |
+

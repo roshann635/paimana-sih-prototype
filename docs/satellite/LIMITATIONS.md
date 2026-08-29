@@ -1,4 +1,4 @@
-# ⚠️ PAIMANA Satellite Limitations & Scientific Boundaries
+﻿# ⚠️ PARAKH Satellite Limitations & Scientific Boundaries
 ## Document: `docs/satellite/LIMITATIONS.md`
 
 ---
@@ -33,3 +33,4 @@
 
 3. **No Autonomous Fraud Accusation**:
    - Discrepancies generate a **Verification Signal** for administrative inspection, not a determination of contractor culpability.
+

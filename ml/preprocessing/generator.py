@@ -1,5 +1,5 @@
 """
-PAIMANA Dataset Generator (ml/preprocessing/generator.py)
+PARAKH Dataset Generator (ml/preprocessing/generator.py)
 Generates high-fidelity national infrastructure projects with realistic monthly trajectories
 (healthy, deteriorating, severely delayed, cost escalating, recovered) adhering to MoSPI / OCMS data schemas.
 """

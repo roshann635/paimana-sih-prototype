@@ -1,5 +1,5 @@
 /**
- * PAIMANA API Service Layer (src/services/api/paimanaApi.js)
+ * PARAKH API Service Layer (src/services/api/paimanaApi.js / parakhApi.js)
  * Provides centralized data fetching methods with automatic fallback to mock cache.
  */
 
@@ -33,7 +33,7 @@ async function fetchJson(endpoint, options = {}) {
   }
 }
 
-export const paimanaApi = {
+export const parakhApi = {
   // 1. Dashboard Summary & State Analytics
   async getDashboardSummary() {
     try {
@@ -225,5 +225,7 @@ export const paimanaApi = {
     return await fetchJson("/satellite/health");
   },
 };
+
+export const paimanaApi = parakhApi;
 
 

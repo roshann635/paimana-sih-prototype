@@ -150,7 +150,7 @@ def test_invariant_7_tiny_aoi_not_observable():
 def test_invariant_8_synthetic_provenance():
     prov = SyntheticDemoProvider.get_synthetic_provenance("optical", "2026-06")
     assert prov.is_synthetic is True
-    assert prov.source == "PAIMANA DEMO FIXTURE"
+    assert prov.source == "PARAKH DEMO FIXTURE"
 
 
 # Test 9: Invariant 9 — Copernicus STAC discovery preserves CDSE metadata
@@ -260,7 +260,7 @@ def test_test_28_provenance_and_disclaimer_integrity():
     sat_data = sat_resp.json()
     
     assert sat_data["is_synthetic"] is True
-    assert sat_data["aoi_provenance"] == "PAIMANA DEMO GEOMETRY"
+    assert sat_data["aoi_provenance"] == "PARAKH DEMO GEOMETRY"
     assert "experimental multi-sensor evidence score" in sat_data["disclaimer"]
 
 

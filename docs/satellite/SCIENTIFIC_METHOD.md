@@ -1,11 +1,11 @@
-# 🔬 PAIMANA Satellite Cross-Verification Scientific Methodology
+﻿# 🔬 PARAKH Satellite Cross-Verification Scientific Methodology
 ## Document: `docs/satellite/SCIENTIFIC_METHOD.md`
 
 ---
 
 ## 1. Scientific Principles & Institutional Defensibility
 
-The fundamental principle governing PAIMANA Earth-observation intelligence is:
+The fundamental principle governing PARAKH Earth-observation intelligence is:
 > **Satellite cross-verification produces an independent evidence signal of physical site transformation; it does not measure true construction completion percentage.**
 
 ### 1.1 Non-Negotiable Disclaimers
@@ -65,3 +65,4 @@ $$\text{Confidence} = 0.30 \cdot Q_{\text{AOI}} + 0.25 \cdot Q_{\text{Optical}} 
 - If both sensors are unusable ($Q_{\text{Optical}} < 20$ and $Q_{\text{SAR}} < 20$): Status is set to **`INCONCLUSIVE`**.
 - If AOI is sub-resolution ($\text{Width} < 15\text{m}$ or $\text{Area} < 0.5\text{km}^2$): Status is set to **`NOT_OBSERVABLE`**.
 - If optical is clouded ($\text{SCL} > 40\%$) but SAR is high-quality: System executes **SAR-primary fallback** with degraded optical weighting.
+

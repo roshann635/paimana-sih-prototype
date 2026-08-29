@@ -1,5 +1,5 @@
 """
-PAIMANA Trajectory & Earned Value Management (EVM) Feature Engineering
+PARAKH Trajectory & Earned Value Management (EVM) Feature Engineering
 (ml/features/engineer.py)
 
 Combines Earned Value Management indicators (PV, EV, AC, SV, CV, SPI, CPI)

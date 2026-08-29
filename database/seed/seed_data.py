@@ -32,7 +32,7 @@ from backend.app.database.schema import (
 
 def run_seed_pipeline(n_projects: int = 2000):
     print("=" * 70)
-    print("PAIMANA AI DECISION SUPPORT SYSTEM - SEED & ML PIPELINE")
+    print("PARAKH AI DECISION SUPPORT SYSTEM - SEED & ML PIPELINE")
     print("=" * 70)
     
     # 1. Generate Synthetic & Historical Dataset
@@ -284,7 +284,7 @@ def run_seed_pipeline(n_projects: int = 2000):
     print(f"Total Projects: {len(clean_projects)}")
     print(f"Total Snapshots: {len(portfolio_df)}")
     print(f"Active Alerts: {len(alert_records)}")
-    print(f"Database File: data/paimana.db")
+    print(f"Database File: data/parakh.db")
     print("=" * 70)
 
 if __name__ == "__main__":
