@@ -78,7 +78,7 @@ export default function ReportsCenter() {
   };
 
   return (
-    <div className="p-6 space-y-5 bg-[#07131F] min-h-screen">
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-5 bg-[#07131F] min-h-screen">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#16324A]">
         <div>
@@ -103,11 +103,11 @@ export default function ReportsCenter() {
       </div>
 
       {/* Reports Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-5">
         {REPORT_TYPES.map((rep) => (
           <div
             key={rep.id}
-            className="bg-[#0D1E30] border border-[#16324A] rounded-xl p-6 shadow-command-card flex flex-col justify-between space-y-4 hover:border-[#1E4260] transition-all"
+            className="bg-[#0D1E30] border border-[#16324A] rounded-xl p-4 sm:p-6 shadow-command-card flex flex-col justify-between space-y-4 hover:border-[#1E4260] transition-all"
           >
             <div>
               <div className="flex items-center justify-between text-xs text-slate-400 pb-2 border-b border-[#16324A]">

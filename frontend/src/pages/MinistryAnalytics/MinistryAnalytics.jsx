@@ -127,7 +127,7 @@ export default function MinistryAnalytics({ onNavigate }) {
   if (error) return <ErrorState message={error} />;
 
   return (
-    <div className="p-6 space-y-5 bg-[#07131F] min-h-screen">
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-5 bg-[#07131F] min-h-screen">
       <div className="flex items-center gap-2 pb-3 border-b border-[#16324A]">
         <Building2 className="w-5 h-5 text-[#F59E0B]" />
         <div>

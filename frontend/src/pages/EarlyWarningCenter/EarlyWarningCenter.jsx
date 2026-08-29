@@ -34,7 +34,7 @@ export default function EarlyWarningCenter({ onSelectProject }) {
   const warningCount = alerts.filter(a => a.severity === 'WARNING').length;
 
   return (
-    <div className="p-6 space-y-5 bg-[#07131F] min-h-screen">
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-5 bg-[#07131F] min-h-screen">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#16324A]">
         <div>
@@ -64,7 +64,7 @@ export default function EarlyWarningCenter({ onSelectProject }) {
       </div>
 
       {/* Summary KPI Strip */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         <div className="p-5 bg-[#0D1E30] border border-[#16324A] rounded-xl shadow-command-card flex items-center justify-between">
           <div>
             <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">Active Bulletins</div>

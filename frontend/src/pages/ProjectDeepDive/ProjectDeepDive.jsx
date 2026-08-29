@@ -158,28 +158,28 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
       : 0;
 
   return (
-    <div className="p-6 space-y-6 bg-[#07131F] min-h-screen">
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6 bg-[#07131F] min-h-screen">
       {/* Top Navigation & Action Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#16324A]">
-        <div className="flex items-center gap-3">
+        <div className="flex items-start sm:items-center gap-3">
           <button
             onClick={onBack}
-            className="p-2 rounded-lg bg-[#0D1E30] border border-[#16324A] text-slate-400 hover:text-white hover:bg-[#16324A] transition-colors shadow-xs cursor-pointer"
+            className="p-2 rounded-lg bg-[#0D1E30] border border-[#16324A] text-slate-400 hover:text-white hover:bg-[#16324A] transition-colors shadow-xs cursor-pointer shrink-0 mt-1 sm:mt-0"
             title="Go back to previous page"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center gap-2 mb-0.5">
               <span className="font-mono text-xs font-bold text-[#00E5FF] bg-[#0D1E30] px-2 py-0.5 rounded border border-[#16324A]">
                 {p.project_code || p.project_id}
               </span>
               <StatusBadge level={pred.risk_level || "CRITICAL"} size="sm" />
             </div>
-            <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+            <h1 className="text-lg sm:text-2xl font-extrabold text-white tracking-tight break-words">
               {p.project_name}
             </h1>
-            <div className="text-xs text-slate-400 mt-0.5">
+            <div className="text-xs text-slate-400 mt-0.5 break-words">
               {p.ministry} · {p.sector} · State:{" "}
               <strong className="text-slate-200">
                 {p.state || "Multi-State"}
@@ -193,10 +193,10 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
         </div>
 
         {/* Action Button: Record Administrative Action Memo */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={() => setIsMemoOpen(true)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#F59E0B] hover:bg-[#D97706] text-[#07131F] text-xs font-bold rounded-lg transition-colors shadow-gold-glow"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-[#F59E0B] hover:bg-[#D97706] text-[#07131F] text-xs font-bold rounded-lg transition-colors shadow-gold-glow cursor-pointer"
           >
             <FileCheck className="w-4 h-4" />
             <span>Create Action Memorandum</span>
@@ -205,7 +205,7 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
       </div>
 
       {/* 4 Core Command Metric Blocks */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <div className="p-4 bg-[#0D1E30] border border-[#16324A] border-t-[3px] border-t-[#F97316] rounded-xl shadow-command-card flex flex-col justify-between">
           <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
             Cost Overrun Risk

@@ -75,7 +75,7 @@ export default function DataTable({
     <div className="bg-[#0D1E30] border border-[#16324A] rounded-xl shadow-command-card overflow-hidden">
       {/* Table Controls Header */}
       {(title || searchable) && (
-        <div className="p-4 border-b border-[#16324A] flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0B1A2A]">
+        <div className="p-3 sm:p-4 border-b border-[#16324A] flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0B1A2A]">
           <div>
             {title && (
               <h3 className="text-sm font-extrabold text-white tracking-wide uppercase font-mono">
@@ -89,9 +89,9 @@ export default function DataTable({
             )}
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             {searchable && (
-              <div className="relative w-64">
+              <div className="relative flex-1 sm:w-64">
                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 w-3.5 h-3.5" />
                 <input
                   type="text"
@@ -109,7 +109,7 @@ export default function DataTable({
 
             <button
               onClick={handleExportCSV}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#07131F] hover:bg-[#11263C] text-slate-200 text-xs font-mono font-bold rounded-lg border border-[#16324A] transition-colors shadow-xs"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#07131F] hover:bg-[#11263C] text-slate-200 text-xs font-mono font-bold rounded-lg border border-[#16324A] transition-colors shadow-xs shrink-0 cursor-pointer"
               title="Download CSV"
             >
               <Download className="w-3.5 h-3.5 text-slate-400" />
@@ -119,9 +119,9 @@ export default function DataTable({
         </div>
       )}
 
-      {/* Table Data */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-left text-xs border-collapse">
+      {/* Table Data with Horizontal Scroll Guarantee */}
+      <div className="overflow-x-auto w-full">
+        <table className="w-full text-left text-xs border-collapse min-w-[640px]">
           <thead>
             <tr className="bg-[#07131F] text-slate-400 border-b border-[#16324A] text-[10px] font-mono uppercase tracking-wider">
               {columns.map((col, idx) => (

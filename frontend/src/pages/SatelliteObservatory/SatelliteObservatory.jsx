@@ -69,7 +69,7 @@ export default function SatelliteObservatory({ onSelectProject }) {
   });
 
   return (
-    <div className="p-6 space-y-6 bg-[#f4f7fb] min-h-screen">
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6 bg-[#f4f7fb] min-h-screen">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#dbe3ed]">
         <div>
@@ -94,7 +94,7 @@ export default function SatelliteObservatory({ onSelectProject }) {
       </div>
 
       {/* 4 National Summary Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Total Evaluated */}
         <div className="p-4 bg-white border border-[#dbe3ed] border-t-4 border-t-[#1668d8] rounded-xl shadow-xs">
           <div className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-bold">
@@ -149,7 +149,7 @@ export default function SatelliteObservatory({ onSelectProject }) {
       </div>
 
       {/* High Discrepancy Investigation Priority Table */}
-      <div className="bg-white border border-[#dbe3ed] rounded-xl p-5 shadow-xs space-y-4">
+      <div className="bg-white border border-[#dbe3ed] rounded-xl p-3 sm:p-5 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#dbe3ed]">
           <div>
             <h3 className="text-sm font-bold text-[#142235] uppercase tracking-wider flex items-center gap-2">
@@ -162,7 +162,7 @@ export default function SatelliteObservatory({ onSelectProject }) {
           </div>
 
           {/* Filter Pills */}
-          <div className="flex items-center gap-1.5">
+          <div className="flex flex-wrap items-center gap-1.5">
             <button
               onClick={() => setSelectedFilter("ALL")}
               className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
@@ -197,8 +197,8 @@ export default function SatelliteObservatory({ onSelectProject }) {
         </div>
 
         {/* Table View */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-left text-xs border-collapse min-w-[700px]">
             <thead>
               <tr className="border-b border-[#dbe3ed] bg-[#f8fafc] text-slate-600 text-[10px] font-mono uppercase tracking-wider">
                 <th className="py-3 px-3.5 font-bold">Project Code / ID</th>

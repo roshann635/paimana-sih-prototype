@@ -109,7 +109,7 @@ export default function PriorityQueue({ onSelectProject }) {
   if (error && projects.length === 0) return <ErrorState message={error} onRetry={loadPriorityQueue} />;
 
   return (
-    <div className="p-6 space-y-5 bg-[#07131F] min-h-screen">
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-5 bg-[#07131F] min-h-screen">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#16324A]">
         <div>
@@ -125,7 +125,7 @@ export default function PriorityQueue({ onSelectProject }) {
         </div>
 
         {/* Filter Controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <select
             value={riskFilter}
             onChange={(e) => setRiskFilter(e.target.value)}

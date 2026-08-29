@@ -16,6 +16,7 @@ import {
   Boxes,
   Bell,
   Satellite,
+  X,
 } from "lucide-react";
 
 const NAV_SECTIONS = [
@@ -81,29 +82,47 @@ const NAV_SECTIONS = [
   },
 ];
 
-export default function Sidebar({ currentPath = "/", onNavigate }) {
+export default function Sidebar({
+  currentPath = "/",
+  onNavigate,
+  isMobileMenuOpen = false,
+  onCloseMobileMenu,
+}) {
   const isOverview = currentPath === "/";
 
-  return (
-    <aside className="w-[184px] bg-[#06295b] text-white flex flex-col justify-between shrink-0 min-h-screen select-none">
+  const renderNavContent = (isMobile = false) => (
+    <>
       {/* Top Section */}
-      <div className="py-4 px-2.5 space-y-4 overflow-y-auto">
+      <div className="py-4 px-2.5 space-y-4 overflow-y-auto flex-1">
         {/* Brand Header with Indian Emblem */}
-        <div className="flex items-center gap-2 px-2 pb-2 border-b border-white/10">
-          {/* Gold Emblem Badge */}
-          <div className="w-8 h-8 rounded bg-white/10 border border-white/20 flex items-center justify-center text-white shrink-0">
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-              <path d="M12 2L15 8H9L12 2ZM12 6L13.5 9H10.5L12 6ZM5 9L8 10V14L5 15V9ZM19 9V15L16 14V10L19 9ZM12 11L14 13V17L12 18L10 17V13L12 11ZM7 16L10 18.5V21L7 19V16ZM17 16V19L14 21V18.5L17 16Z" />
-            </svg>
+        <div className="flex items-center justify-between px-2 pb-2 border-b border-white/10">
+          <div className="flex items-center gap-2">
+            {/* Gold Emblem Badge */}
+            <div className="w-8 h-8 rounded bg-white/10 border border-white/20 flex items-center justify-center text-white shrink-0">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                <path d="M12 2L15 8H9L12 2ZM12 6L13.5 9H10.5L12 6ZM5 9L8 10V14L5 15V9ZM19 9V15L16 14V10L19 9ZM12 11L14 13V17L12 18L10 17V13L12 11ZM7 16L10 18.5V21L7 19V16ZM17 16V19L14 21V18.5L17 16Z" />
+              </svg>
+            </div>
+            <div className="flex flex-col">
+              <span className="font-extrabold text-base tracking-wider text-white leading-tight">
+                PARAKH
+              </span>
+              <span className="text-[9px] text-blue-100/70 font-medium leading-tight">
+                Infrastructure Intelligence
+              </span>
+            </div>
           </div>
-          <div className="flex flex-col">
-            <span className="font-extrabold text-base tracking-wider text-white leading-tight">
-              PARAKH
-            </span>
-            <span className="text-[9px] text-blue-100/70 font-medium leading-tight">
-              Infrastructure Intelligence
-            </span>
-          </div>
+
+          {/* Close button for mobile drawer */}
+          {isMobile && (
+            <button
+              onClick={onCloseMobileMenu}
+              className="p-1 rounded-md text-blue-200 hover:text-white hover:bg-white/10"
+              aria-label="Close navigation"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
         </div>
 
         {/* Overview Active Button */}
@@ -190,6 +209,32 @@ export default function Sidebar({ currentPath = "/", onNavigate }) {
           </span>
         </div>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* 1. Desktop Static Sidebar (lg: and above) */}
+      <aside className="hidden lg:flex w-[184px] bg-[#06295b] text-white flex-col justify-between shrink-0 min-h-screen select-none border-r border-white/10">
+        {renderNavContent(false)}
+      </aside>
+
+      {/* 2. Mobile & Tablet Slide-Over Drawer (< lg) */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden flex">
+          {/* Dark Backdrop Overlay */}
+          <div
+            onClick={onCloseMobileMenu}
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+            aria-hidden="true"
+          />
+
+          {/* Sliding Drawer Container */}
+          <aside className="relative w-72 max-w-[80vw] bg-[#06295b] text-white flex flex-col justify-between select-none shadow-2xl z-10 animate-in slide-in-from-left duration-200 h-full">
+            {renderNavContent(true)}
+          </aside>
+        </div>
+      )}
+    </>
   );
 }

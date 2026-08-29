@@ -15,6 +15,7 @@ export default function AppShell({
 }) {
   const [latestReportMonth, setLatestReportMonth] = useState("Jun 2026");
   const [activeAlertsCount, setActiveAlertsCount] = useState(12);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     paimanaApi
@@ -30,8 +31,13 @@ export default function AppShell({
       });
   }, []);
 
+  const handleNavigate = (path) => {
+    setIsMobileMenuOpen(false);
+    if (onNavigate) onNavigate(path);
+  };
+
   return (
-    <div className="min-h-screen bg-[#f4f7fb] flex flex-col font-sans text-slate-800 antialiased">
+    <div className="min-h-screen bg-[#f4f7fb] flex flex-col font-sans text-slate-800 antialiased overflow-x-hidden">
       {/* Top 2-Tier Command Centre Header */}
       <Header
         currentPath={currentPath}
@@ -40,19 +46,25 @@ export default function AppShell({
         latestReportMonth={latestReportMonth}
         activeAlertsCount={activeAlertsCount}
         onOpenAssistant={onOpenAssistant}
-        onOpenAlerts={() => onNavigate && onNavigate("/early-warnings")}
+        onOpenAlerts={() => handleNavigate("/early-warnings")}
         searchTerm={searchTerm}
         onSearchChange={onSearchChange}
+        onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
       />
 
       {/* Main Workspace Layout */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Sidebar */}
-        <Sidebar currentPath={currentPath} onNavigate={onNavigate} />
+      <div className="flex-1 flex overflow-hidden relative">
+        {/* Sidebar (Desktop Static + Mobile Slide-over Drawer) */}
+        <Sidebar
+          currentPath={currentPath}
+          onNavigate={handleNavigate}
+          isMobileMenuOpen={isMobileMenuOpen}
+          onCloseMobileMenu={() => setIsMobileMenuOpen(false)}
+        />
 
         {/* Dynamic Page Content Viewport */}
-        <main className="flex-1 overflow-y-auto bg-[#f4f7fb]">
-          <div className="w-full">{children}</div>
+        <main className="flex-1 overflow-y-auto overflow-x-hidden bg-[#f4f7fb] w-full min-w-0">
+          <div className="w-full min-w-0">{children}</div>
         </main>
       </div>
     </div>

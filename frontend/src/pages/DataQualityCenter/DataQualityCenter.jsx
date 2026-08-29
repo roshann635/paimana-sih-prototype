@@ -75,7 +75,7 @@ export default function DataQualityCenter() {
   ];
 
   return (
-    <div className="p-6 space-y-5 bg-[#07131F] min-h-screen">
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-5 bg-[#07131F] min-h-screen">
       {/* Header */}
       <div className="flex items-center gap-2.5 pb-3 border-b border-[#16324A]">
         <Database className="w-5 h-5 text-[#00E5FF]" />
@@ -91,8 +91,8 @@ export default function DataQualityCenter() {
       </div>
 
       {/* DQE Score KPI Header */}
-      <div className="bg-[#0D1E30] border border-[#16324A] rounded-xl p-6 shadow-command-card">
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 items-center">
+      <div className="bg-[#0D1E30] border border-[#16324A] rounded-xl p-4 sm:p-6 shadow-command-card">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-center">
           <div className="sm:border-r border-[#16324A] pr-4">
             <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
               Overall Quality Score

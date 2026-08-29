@@ -196,8 +196,8 @@ export default function IndiaMap({ onSelectState, selectedStateId = 'MH' }) {
           </svg>
         </div>
 
-        {/* Sleek Floating State Dossier Overlay (Placed Top-Right to Avoid Covering Southern India) */}
-        <div className="absolute right-1 top-1 w-52 bg-[#07131F]/90 border border-[#16324A] rounded-lg p-2.5 shadow-2xl backdrop-blur-md z-10 space-y-1.5 text-xs pointer-events-none sm:pointer-events-auto">
+        {/* Sleek Floating State Dossier Overlay (Visible on sm and up) */}
+        <div className="hidden sm:block absolute right-1 top-1 w-48 lg:w-52 bg-[#07131F]/90 border border-[#16324A] rounded-lg p-2.5 shadow-2xl backdrop-blur-md z-10 space-y-1.5 text-xs pointer-events-auto">
           <div className="flex items-center justify-between pb-1 border-b border-[#16324A]">
             <span className="font-bold text-white text-xs truncate max-w-[130px]">
               {activeState?.name || 'Maharashtra'}
@@ -235,6 +235,21 @@ export default function IndiaMap({ onSelectState, selectedStateId = 'MH' }) {
               <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] ml-0.5"></span>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Mobile Compact Dossier (Rendered Below Map on Mobile) */}
+      <div className="sm:hidden p-2.5 bg-[#07131F] border border-[#16324A] rounded-lg text-xs space-y-1 font-mono">
+        <div className="flex items-center justify-between border-b border-[#16324A] pb-1">
+          <span className="font-bold text-white text-xs">
+            {activeState?.name || 'Maharashtra'} ({activeState?.id})
+          </span>
+          <span className="text-[#00E5FF] font-bold">{activeState?.capex}</span>
+        </div>
+        <div className="grid grid-cols-3 gap-1 text-[10px] text-slate-300 pt-0.5 text-center">
+          <div>Projects: <strong className="text-white">{activeState?.count}</strong></div>
+          <div>Avg Prog: <strong className="text-white">{activeState?.avgProgress}%</strong></div>
+          <div>Health: <strong className="text-[#10B981]">{activeState?.portfolio_health}/100</strong></div>
         </div>
       </div>
 

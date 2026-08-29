@@ -40,7 +40,7 @@ export default function ModelHealth() {
     time.recall != null ? (1 - Number(time.recall)) * 100 : null;
 
   return (
-    <div className="p-6 space-y-5 bg-[#07131F] min-h-screen">
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-5 bg-[#07131F] min-h-screen">
       {/* Header */}
       <div className="flex items-center gap-2.5 pb-3 border-b border-[#16324A]">
         <Activity className="w-5 h-5 text-[#F59E0B]" />
@@ -56,7 +56,7 @@ export default function ModelHealth() {
       </div>
 
       {/* Governance & Metadata Banner */}
-      <div className="bg-[#0D1E30] border border-[#16324A] rounded-xl p-5 shadow-command-card grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
+      <div className="bg-[#0D1E30] border border-[#16324A] rounded-xl p-3 sm:p-5 shadow-command-card grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
         <div>
           <span className="text-[10px] uppercase font-bold text-slate-400 font-mono">
             Model Artifact Version

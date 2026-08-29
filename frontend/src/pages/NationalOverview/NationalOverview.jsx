@@ -56,8 +56,8 @@ export default function NationalOverview({
 
   if (loading) {
     return (
-      <div className="space-y-4 p-5 bg-[#07131F] min-h-screen">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="space-y-3 sm:space-y-4 p-3 sm:p-5 bg-[#07131F] min-h-screen">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
@@ -72,7 +72,7 @@ export default function NationalOverview({
 
   if (error) {
     return (
-      <div className="p-5 bg-[#07131F] min-h-screen">
+      <div className="p-3 sm:p-5 bg-[#07131F] min-h-screen">
         <ErrorState message={error} onRetry={loadDashboardData} />
       </div>
     );
@@ -104,9 +104,9 @@ export default function NationalOverview({
     : 63;
 
   return (
-    <div className="p-5 space-y-4 bg-[#07131F] min-h-screen">
+    <div className="p-3 sm:p-5 space-y-3 sm:space-y-4 bg-[#07131F] min-h-screen">
       {/* 1. Top 4 Real KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <KPICard
           type="portfolio"
           title="Monitored Portfolio"

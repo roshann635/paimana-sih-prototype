@@ -80,7 +80,7 @@ export default function Benchmarking() {
   if (error) return <ErrorState message={error} />;
 
   return (
-    <div className="p-6 space-y-5 bg-[#07131F] min-h-screen">
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-5 bg-[#07131F] min-h-screen">
       {/* Header */}
       <div className="flex items-center gap-2.5 pb-3 border-b border-[#16324A]">
         <Scale className="w-5 h-5 text-[#F59E0B]" />
@@ -95,7 +95,7 @@ export default function Benchmarking() {
       </div>
 
       {/* Peer Comparison Framework Cards */}
-      <div className="bg-[#0D1E30] border border-[#16324A] rounded-xl p-5 shadow-command-card space-y-4">
+      <div className="bg-[#0D1E30] border border-[#16324A] rounded-xl p-3 sm:p-5 shadow-command-card space-y-4">
         <div className="flex items-center justify-between pb-2 border-b border-[#16324A]">
           <div className="flex items-center gap-2">
             <Activity className="w-4 h-4 text-[#00E5FF]" />
