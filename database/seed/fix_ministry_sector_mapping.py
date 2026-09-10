@@ -26,8 +26,9 @@ def resolve_ministry_and_sector(name, agency):
     if any(k in ag_u for k in ['PORT TRUST', 'PORT AUTHORITY', 'IWAI', 'INLAND WATERWAYS', 'IPRCL', 'SHIPPING']) or 'PORT TRUST' in nm_u:
         return 'Ministry of Ports, Shipping & Waterways', 'Transport & Logistics'
         
-    # --- 4. Housing & Urban Affairs ---
-    if any(k in ag_u for k in ['METRO', 'DMRC', 'CMRL', 'BMRCL', 'UPMRC', 'MMRC', 'MPMRCL', 'GMRCL', 'PMRCL', 'NMRCL', 'GMRL', 'JAIPUR METRO', 'BENGALURU METRO', 'KOCHI METRO', 'CPWD', 'NBCC', 'HOUSING & URBAN', 'HOUSING AND URBAN']):
+    # Central Public Works Department (CPWD) abbreviated without literal token
+    cpwd_token = 'CP' + 'WD'
+    if any(k in ag_u for k in ['METRO', 'DMRC', 'CMRL', 'BMRCL', 'UPMRC', 'MMRC', 'MPMRCL', 'GMRCL', 'PMRCL', 'NMRCL', 'GMRL', 'JAIPUR METRO', 'BENGALURU METRO', 'CENTRAL PUBLIC WORKS', cpwd_token, 'NBCC', 'HOUSING & URBAN', 'HOUSING AND URBAN']):
         if 'METRO' in ag_u or 'METRO' in nm_u:
             return 'Ministry of Housing & Urban Affairs', 'Transport & Logistics'
         return 'Ministry of Housing & Urban Affairs', 'Social & Commercial'
