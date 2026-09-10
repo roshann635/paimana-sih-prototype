@@ -381,10 +381,10 @@ def generate_synthetic_dataset(
                 "physical_progress_pct": round(min(100.0, max(0.0, curr_progress)), 2),
                 "delay_days": int(curr_delay_days),
                 "current_end_date": revised_end_dt.strftime("%Y-%m-%d"),
-                "issue_procurement": procurement_issue,
-                "issue_land": land_issue,
-                "issue_contractor": contractor_issue,
-                "issue_approval": approval_issue,
+                "issue_procurement_inferred": procurement_issue,
+                "issue_land_inferred": land_issue,
+                "issue_contractor_inferred": contractor_issue,
+                "issue_approval_inferred": approval_issue,
                 "status": "Ongoing" if curr_progress < 95.0 else "Nearing Completion"
             }
             

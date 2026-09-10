@@ -27,24 +27,19 @@ def get_projects(
     limit: int = 50,
     offset: int = 0
 ) -> Dict[str, Any]:
-    # Subquery for latest report_month per project
-    sub_month = db.query(
-        ProjectSnapshot.project_id,
-        func.max(ProjectSnapshot.report_month).label("max_month")
-    ).group_by(ProjectSnapshot.project_id).subquery()
+    # Fast index query on latest reporting month (replaces slow 23k Cartesian subquery scan)
+    max_month_val = db.query(func.max(ProjectSnapshot.report_month)).scalar() or "2026-07"
     
     query = db.query(
         Project, ProjectSnapshot, RiskPrediction
     ).join(
-        sub_month, Project.project_id == sub_month.c.project_id
-    ).join(
-        ProjectSnapshot,
-        (ProjectSnapshot.project_id == Project.project_id) &
-        (ProjectSnapshot.report_month == sub_month.c.max_month)
+        ProjectSnapshot, Project.project_id == ProjectSnapshot.project_id
     ).join(
         RiskPrediction,
-        (RiskPrediction.project_id == Project.project_id) &
-        (RiskPrediction.report_month == sub_month.c.max_month)
+        (RiskPrediction.project_id == ProjectSnapshot.project_id) &
+        (RiskPrediction.report_month == ProjectSnapshot.report_month)
+    ).filter(
+        ProjectSnapshot.report_month == max_month_val
     )
     
     # Filters

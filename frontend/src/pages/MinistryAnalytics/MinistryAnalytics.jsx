@@ -17,7 +17,7 @@ export default function MinistryAnalytics({ onNavigate }) {
         const grouped = {};
 
         items.forEach(p => {
-          const m = p.ministry || 'Ministry of Infrastructure';
+          const m = p.ministry || 'Ministry of Road Transport & Highways';
           if (!grouped[m]) {
             grouped[m] = {
               ministry: m,
@@ -34,7 +34,7 @@ export default function MinistryAnalytics({ onNavigate }) {
           grouped[m].revised_cost += (p.revised_cost || p.original_cost || 0);
           grouped[m].total_progress += (p.physical_progress_pct || 0);
           grouped[m].total_delay += (p.delay_days || 0);
-          if (p.risk_level === 'RED' || p.risk_level === 'CRITICAL') {
+          if (p.risk_level === 'RED' || p.risk_level === 'ORANGE' || p.risk_level === 'CRITICAL' || (p.composite_risk_score && p.composite_risk_score >= 60)) {
             grouped[m].critical_count += 1;
           }
         });
@@ -103,7 +103,7 @@ export default function MinistryAnalytics({ onNavigate }) {
     },
     {
       key: 'avg_progress',
-      header: 'Avg Progress',
+      header: 'Mean Physical Progress*',
       align: 'right',
       render: (val) => (
         <span className="font-mono font-bold text-[#00E5FF]">
@@ -113,7 +113,7 @@ export default function MinistryAnalytics({ onNavigate }) {
     },
     {
       key: 'critical_count',
-      header: 'Critical Flags',
+      header: 'High Risk / Critical Flags',
       align: 'center',
       render: (val) => (
         <span className={`px-2 py-0.5 rounded font-mono font-bold text-xs ${val > 0 ? 'bg-[#EF4444]/20 text-[#EF4444] border border-[#EF4444]/40' : 'text-slate-400'}`}>
@@ -128,6 +128,23 @@ export default function MinistryAnalytics({ onNavigate }) {
 
   return (
     <div className="p-3 sm:p-6 space-y-4 sm:space-y-5 bg-[#07131F] min-h-screen">
+      {/* Top Provenance Banner */}
+      <div className="flex flex-wrap items-center justify-between gap-2 px-3.5 py-1.5 bg-[#0D1E30] border border-[#16324A] rounded-lg text-xs">
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">Data Provenance:</span>
+          <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-sky-950/80 text-sky-300 border border-sky-600/40">
+            🏛️ Official MoSPI Portfolios (17 Central Ministries)
+          </span>
+          <span className="text-slate-500">•</span>
+          <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-cyan-950/80 text-[#00E5FF] border border-[#00E5FF]/40">
+            ⚡ PARAKH Risk Analytics
+          </span>
+        </div>
+        <div className="text-[10.5px] font-mono text-slate-400">
+          Source: MoSPI Flash Report July 2026 (1,775 Ongoing Projects)
+        </div>
+      </div>
+
       <div className="flex items-center gap-2 pb-3 border-b border-[#16324A]">
         <Building2 className="w-5 h-5 text-[#F59E0B]" />
         <div>
@@ -144,9 +161,15 @@ export default function MinistryAnalytics({ onNavigate }) {
         columns={columns}
         data={ministries}
         exportFilename="parakh_ministries_analytics.csv"
-        itemsPerPage={15}
+        itemsPerPage={17}
         searchPlaceholder="Filter ministry..."
       />
+
+      {/* Methodology Note */}
+      <div className="p-3 bg-[#0D1E30] border border-[#16324A] rounded-lg text-[11px] font-mono text-slate-400 space-y-1">
+        <div><strong className="text-slate-300">* Note on Physical Progress Accounting:</strong> Mean reported physical progress is calculated as the project-level arithmetic average. Official MoSPI Flash Reports summarize progress by milestone distribution (e.g. ~38% of projects exceed 80% physical progress).</div>
+        <div><strong className="text-slate-300">** High Risk / Critical Flags:</strong> Projects classified in RED/ORANGE risk tiers or exhibiting Composite Risk Score ≥ 60/100 under PARAKH predictive models.</div>
+      </div>
     </div>
   );
 }

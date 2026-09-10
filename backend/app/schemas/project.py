@@ -178,6 +178,9 @@ class DashboardSummary(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     total_projects: int
+    active_portfolio_count: Optional[int] = 1775
+    april_2026_portfolio_count: Optional[int] = 1981
+    longitudinal_universe_count: Optional[int] = 2733
     total_original_cost_cr: float
     total_revised_cost_cr: float
     total_cost_escalation_cr: float

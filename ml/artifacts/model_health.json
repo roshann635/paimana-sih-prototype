@@ -1,187 +1,205 @@
 {
-  "model_version": "v1.0-temporal-xgb",
-  "last_evaluated": "2026-04-30",
-  "validation_strategy": "Out-of-Time Temporal Split (Train <= 2025-06, Test > 2025-06)",
-  "data_freshness": "April 2026",
-  "missing_data_pct": 1.2,
+  "model_version": "v2.0-temporal-hardened",
+  "last_evaluated": "2026-09-10T21:45:57",
+  "validation_strategy": "Out-of-Time Temporal Split (Train <= 2026-02, Test > 2026-02)",
+  "train_samples": 11291,
+  "test_samples": 5405,
   "cost_model": {
     "model_name": "XGBoost Classifier",
     "target_name": "Cost Overrun",
-    "pr_auc": 0.4524,
-    "roc_auc": 0.8754,
-    "brier_score": 0.0336,
-    "precision": 0.6364,
-    "recall": 0.2658,
-    "f1_score": 0.375,
-    "top_20_recall": 0.6962,
-    "total_samples": 1694,
-    "positive_samples": 79,
+    "pr_auc": 0.0492,
+    "roc_auc": 0.7795,
+    "brier_score": 0.0317,
+    "precision": 0.072,
+    "recall": 0.1047,
+    "f1_score": 0.0853,
+    "top_20_recall": 0.5698,
+    "total_samples": 5405,
+    "positive_samples": 86,
     "calibration": [
       {
         "bin": "0-20%",
-        "predicted_prob": 0.0102,
-        "empirical_prob": 0.0258,
-        "count": 1628
+        "predicted_prob": 0.0393,
+        "empirical_prob": 0.0125,
+        "count": 4898
       },
       {
         "bin": "20-40%",
-        "predicted_prob": 0.2925,
-        "empirical_prob": 0.5,
-        "count": 24
+        "predicted_prob": 0.2822,
+        "empirical_prob": 0.0455,
+        "count": 308
       },
       {
         "bin": "40-60%",
-        "predicted_prob": 0.4896,
-        "empirical_prob": 0.5882,
-        "count": 17
+        "predicted_prob": 0.4777,
+        "empirical_prob": 0.0427,
+        "count": 117
       },
       {
         "bin": "60-80%",
-        "predicted_prob": 0.7102,
-        "empirical_prob": 0.3571,
-        "count": 14
+        "predicted_prob": 0.6881,
+        "empirical_prob": 0.0577,
+        "count": 52
       },
       {
         "bin": "80-100%",
-        "predicted_prob": 0.8785,
-        "empirical_prob": 0.9091,
-        "count": 11
+        "predicted_prob": 0.8833,
+        "empirical_prob": 0.1,
+        "count": 30
       }
     ]
   },
   "time_model": {
     "model_name": "XGBoost Classifier",
     "target_name": "Time Overrun",
-    "pr_auc": 0.3746,
-    "roc_auc": 0.8495,
-    "brier_score": 0.0829,
-    "precision": 0.4696,
-    "recall": 0.3017,
-    "f1_score": 0.3673,
-    "top_20_recall": 0.6369,
-    "total_samples": 1694,
-    "positive_samples": 179,
+    "pr_auc": 0.608,
+    "roc_auc": 0.8262,
+    "brier_score": 0.1555,
+    "precision": 0.5556,
+    "recall": 0.6925,
+    "f1_score": 0.6165,
+    "top_20_recall": 0.4936,
+    "total_samples": 5405,
+    "positive_samples": 1408,
     "calibration": [
       {
         "bin": "0-20%",
-        "predicted_prob": 0.0309,
-        "empirical_prob": 0.0529,
-        "count": 1398
+        "predicted_prob": 0.0852,
+        "empirical_prob": 0.0639,
+        "count": 2315
       },
       {
         "bin": "20-40%",
-        "predicted_prob": 0.2822,
-        "empirical_prob": 0.2808,
-        "count": 146
+        "predicted_prob": 0.286,
+        "empirical_prob": 0.1857,
+        "count": 1034
       },
       {
         "bin": "40-60%",
-        "predicted_prob": 0.4913,
-        "empirical_prob": 0.2982,
-        "count": 57
+        "predicted_prob": 0.4909,
+        "empirical_prob": 0.3243,
+        "count": 515
       },
       {
         "bin": "60-80%",
-        "predicted_prob": 0.698,
-        "empirical_prob": 0.4828,
-        "count": 58
+        "predicted_prob": 0.7161,
+        "empirical_prob": 0.5132,
+        "count": 945
       },
       {
         "bin": "80-100%",
-        "predicted_prob": 0.88,
-        "empirical_prob": 0.5429,
-        "count": 35
+        "predicted_prob": 0.852,
+        "empirical_prob": 0.698,
+        "count": 596
       }
     ]
+  },
+  "cost_regressor": {
+    "model_name": "XGBoost Regressor",
+    "target_name": "Cost Escalation %",
+    "mae": 0.781,
+    "rmse": 3.0468,
+    "r2": -0.11,
+    "mape": 230.45,
+    "total_samples": 5405
+  },
+  "time_regressor": {
+    "model_name": "XGBoost Regressor",
+    "target_name": "Delay Delta Days",
+    "mae": 65.8386,
+    "rmse": 127.9224,
+    "r2": -0.3115,
+    "mape": 69.74,
+    "total_samples": 5405
   },
   "baseline_comparison": {
     "baseline_cost": {
       "model_name": "Logistic Regression",
       "target_name": "Cost Overrun",
-      "pr_auc": 0.2055,
-      "roc_auc": 0.8347,
-      "brier_score": 0.0718,
-      "precision": 0.2754,
-      "recall": 0.5823,
-      "f1_score": 0.374,
-      "top_20_recall": 0.7089,
-      "total_samples": 1694,
-      "positive_samples": 79,
+      "pr_auc": 0.0545,
+      "roc_auc": 0.7363,
+      "brier_score": 0.0162,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "top_20_recall": 0.5,
+      "total_samples": 5405,
+      "positive_samples": 86,
       "calibration": [
         {
           "bin": "0-20%",
-          "predicted_prob": 0.0276,
-          "empirical_prob": 0.0174,
-          "count": 1380
+          "predicted_prob": 0.0141,
+          "empirical_prob": 0.0153,
+          "count": 5377
         },
         {
           "bin": "20-40%",
-          "predicted_prob": 0.2814,
-          "empirical_prob": 0.0609,
-          "count": 115
+          "predicted_prob": 0.2496,
+          "empirical_prob": 0.1818,
+          "count": 22
         },
         {
           "bin": "40-60%",
-          "predicted_prob": 0.4838,
-          "empirical_prob": 0.1458,
-          "count": 48
+          "predicted_prob": 0.5097,
+          "empirical_prob": 0.0,
+          "count": 1
         },
         {
           "bin": "60-80%",
-          "predicted_prob": 0.6991,
-          "empirical_prob": 0.2949,
-          "count": 78
+          "predicted_prob": 0.6001,
+          "empirical_prob": 0.0,
+          "count": 1
         },
         {
           "bin": "80-100%",
-          "predicted_prob": 0.8805,
-          "empirical_prob": 0.2466,
-          "count": 73
+          "predicted_prob": 0.9401,
+          "empirical_prob": 0.0,
+          "count": 4
         }
       ]
     },
     "baseline_time": {
       "model_name": "Logistic Regression",
       "target_name": "Time Overrun",
-      "pr_auc": 0.2487,
-      "roc_auc": 0.7724,
-      "brier_score": 0.0889,
-      "precision": 0.2069,
-      "recall": 0.0335,
-      "f1_score": 0.0577,
-      "top_20_recall": 0.5084,
-      "total_samples": 1694,
-      "positive_samples": 179,
+      "pr_auc": 0.526,
+      "roc_auc": 0.8081,
+      "brier_score": 0.1498,
+      "precision": 0.5924,
+      "recall": 0.3438,
+      "f1_score": 0.4351,
+      "top_20_recall": 0.4489,
+      "total_samples": 5405,
+      "positive_samples": 1408,
       "calibration": [
         {
           "bin": "0-20%",
-          "predicted_prob": 0.0506,
-          "empirical_prob": 0.0763,
-          "count": 1468
+          "predicted_prob": 0.0713,
+          "empirical_prob": 0.0639,
+          "count": 2472
         },
         {
           "bin": "20-40%",
-          "predicted_prob": 0.2761,
-          "empirical_prob": 0.3118,
-          "count": 170
+          "predicted_prob": 0.2938,
+          "empirical_prob": 0.2856,
+          "count": 1411
         },
         {
           "bin": "40-60%",
-          "predicted_prob": 0.473,
-          "empirical_prob": 0.2955,
-          "count": 44
+          "predicted_prob": 0.4884,
+          "empirical_prob": 0.5597,
+          "count": 1197
         },
         {
           "bin": "60-80%",
-          "predicted_prob": 0.6647,
-          "empirical_prob": 0.0833,
-          "count": 12
+          "predicted_prob": 0.6638,
+          "empirical_prob": 0.55,
+          "count": 320
         },
         {
           "bin": "80-100%",
-          "predicted_prob": 0.9,
-          "empirical_prob": 0.9,
-          "count": 0
+          "predicted_prob": 0.8348,
+          "empirical_prob": 0.2,
+          "count": 5
         }
       ]
     }

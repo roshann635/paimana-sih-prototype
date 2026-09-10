@@ -149,7 +149,7 @@ export default function ProjectExplorer({
         <div className="flex items-center gap-2 font-mono text-xs text-slate-300 bg-[#0D1E30] px-3.5 py-1.5 rounded-lg border border-[#16324A]">
           <span>Total Projects:</span>
           <strong className="text-white font-bold">
-            {totalCount ? totalCount.toLocaleString() : "1,630"}
+            {totalCount ? totalCount.toLocaleString() : "2,733"}
           </strong>
         </div>
       </div>

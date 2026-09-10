@@ -17,7 +17,7 @@ export default function SectorAnalytics() {
         const grouped = {};
 
         items.forEach(p => {
-          const s = p.sector || 'General Infrastructure';
+          const s = p.sector || 'Transport & Logistics';
           if (!grouped[s]) {
             grouped[s] = {
               sector: s,
@@ -34,7 +34,7 @@ export default function SectorAnalytics() {
           grouped[s].revised_cost += (p.revised_cost || p.original_cost || 0);
           grouped[s].total_progress += (p.physical_progress_pct || 0);
           grouped[s].total_delay += (p.delay_days || 0);
-          if (p.risk_level === 'RED' || p.risk_level === 'CRITICAL') {
+          if (p.risk_level === 'RED' || p.risk_level === 'ORANGE' || p.risk_level === 'CRITICAL' || (p.composite_risk_score && p.composite_risk_score >= 60)) {
             grouped[s].critical_count += 1;
           }
         });
@@ -103,7 +103,7 @@ export default function SectorAnalytics() {
     },
     {
       key: 'avg_progress',
-      header: 'Avg Progress',
+      header: 'Mean Physical Progress*',
       align: 'right',
       render: (val) => (
         <span className="font-mono font-bold text-[#00E5FF]">
@@ -113,7 +113,7 @@ export default function SectorAnalytics() {
     },
     {
       key: 'critical_count',
-      header: 'Critical Flags',
+      header: 'High Risk / Critical Flags',
       align: 'center',
       render: (val) => (
         <span className={`px-2 py-0.5 rounded font-mono font-bold text-xs ${val > 0 ? 'bg-[#EF4444]/20 text-[#EF4444] border border-[#EF4444]/40' : 'text-slate-400'}`}>
@@ -128,6 +128,23 @@ export default function SectorAnalytics() {
 
   return (
     <div className="p-3 sm:p-6 space-y-4 sm:space-y-5 bg-[#07131F] min-h-screen">
+      {/* Top Provenance Banner */}
+      <div className="flex flex-wrap items-center justify-between gap-2 px-3.5 py-1.5 bg-[#0D1E30] border border-[#16324A] rounded-lg text-xs">
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">Classification Basis:</span>
+          <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-sky-950/80 text-sky-300 border border-sky-600/40">
+            🏛️ DEA Harmonized Master List (6 Macro Sectors)
+          </span>
+          <span className="text-slate-500">•</span>
+          <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-cyan-950/80 text-[#00E5FF] border border-[#00E5FF]/40">
+            ⚡ PARAKH Risk Analytics
+          </span>
+        </div>
+        <div className="text-[10.5px] font-mono text-slate-400">
+          Source: MoSPI July 2026 PAIMANA Sector Distribution (1,775 Ongoing Projects)
+        </div>
+      </div>
+
       <div className="flex items-center gap-2 pb-3 border-b border-[#16324A]">
         <Boxes className="w-5 h-5 text-[#00E5FF]" />
         <div>
@@ -135,7 +152,7 @@ export default function SectorAnalytics() {
             Sector Performance & Risk Distribution
           </h1>
           <p className="text-xs text-slate-400 mt-0.5">
-            Macro sector-wise analysis across Highways, Railways, Petroleum, Power, Coal, Urban, and Ports.
+            DEA Harmonized Master List sector analysis across Transport & Logistics, Energy, Water & Sanitation, Communication, Social & Commercial, and Others.
           </p>
         </div>
       </div>
@@ -144,9 +161,15 @@ export default function SectorAnalytics() {
         columns={columns}
         data={sectors}
         exportFilename="parakh_sectors_analytics.csv"
-        itemsPerPage={15}
+        itemsPerPage={10}
         searchPlaceholder="Filter sector..."
       />
+
+      {/* Methodology Note */}
+      <div className="p-3 bg-[#0D1E30] border border-[#16324A] rounded-lg text-[11px] font-mono text-slate-400 space-y-1">
+        <div><strong className="text-slate-300">* Note on Physical Progress Accounting:</strong> Mean reported physical progress is calculated as the project-level arithmetic average. Official MoSPI Flash Reports summarize progress by milestone distribution (e.g. ~38% of projects exceed 80% physical progress).</div>
+        <div><strong className="text-slate-300">** High Risk / Critical Flags:</strong> Projects classified in RED/ORANGE risk tiers or exhibiting Composite Risk Score ≥ 60/100 under PARAKH predictive models.</div>
+      </div>
     </div>
   );
 }

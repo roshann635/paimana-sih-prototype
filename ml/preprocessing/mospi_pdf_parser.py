@@ -128,10 +128,11 @@ def parse_mospi_pdf(pdf_path: str, report_month: str) -> pd.DataFrame:
                         "cumulative_expenditure": min(rev_cost * 1.5, expenditure),
                         "physical_progress_pct": float(progress_pct),
                         "delay_days": delay_days,
-                        "issue_procurement": 1 if (delay_days > 60 and progress_pct < 50) else 0,
-                        "issue_land": 1 if (delay_days > 180 and progress_pct < 30) else 0,
-                        "issue_contractor": 1 if (delay_days > 90 and expenditure > orig_cost * 0.4 and progress_pct < 40) else 0,
-                        "issue_approval": 1 if (delay_days > 120 and progress_pct < 20) else 0,
+                        # Heuristically inferred — NOT observed from source data
+                        "issue_procurement_inferred": 1 if (delay_days > 60 and progress_pct < 50) else 0,
+                        "issue_land_inferred": 1 if (delay_days > 180 and progress_pct < 30) else 0,
+                        "issue_contractor_inferred": 1 if (delay_days > 90 and expenditure > orig_cost * 0.4 and progress_pct < 40) else 0,
+                        "issue_approval_inferred": 1 if (delay_days > 120 and progress_pct < 20) else 0,
                         "status": "COMPLETED" if progress_pct >= 100 else "ONGOING"
                     })
                     

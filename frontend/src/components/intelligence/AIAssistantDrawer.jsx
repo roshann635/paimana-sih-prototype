@@ -14,8 +14,8 @@ export default function AIAssistantDrawer({ isOpen, onClose, onSelectProject }) 
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      text: 'Greetings. I am the **PARAKH Decision Support Assistant**.\n\nYou may query the active database across all 1,630 central infrastructure projects, inspect TreeSHAP factor attributions, explore state-level risk concentrations, or review XGBoost model governance metrics.',
-      evidence: ['PARAKH Master Database (1,630 Projects)', 'MoSPI Flash Reports', 'v1.0-temporal-xgb Model'],
+      text: 'Greetings. I am the **PARAKH Decision Support Assistant**.\n\nYou may query the active database across all 2,733 unique central infrastructure projects (1,775 active July 2026 / 1,981 April 2026 baseline), inspect TreeSHAP factor attributions, explore state-level risk concentrations, or review XGBoost model governance metrics.',
+      evidence: ['PARAKH Master Database (2,733 Longitudinal Universe · 1,775 Active)', '16 MoSPI Flash Reports (Apr 2025 – Jul 2026)', 'v1.0-temporal-xgb Model'],
       confidence: 'HIGH'
     }
   ]);

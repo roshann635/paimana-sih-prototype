@@ -68,9 +68,14 @@ export default function ShapDiagnosisCard({
 
       {/* Narrative Administrative Diagnosis Memo */}
       <div className="p-4 bg-[#07131F] border border-[#16324A] rounded-lg shadow-xs space-y-1.5">
-        <div className="text-[11px] font-mono font-extrabold uppercase tracking-wider text-[#00E5FF] flex items-center gap-1.5">
-          <Info className="w-3.5 h-3.5 text-[#00E5FF]" />
-          <span>Administrative Diagnosis Memorandum</span>
+        <div className="flex items-center justify-between text-[11px] font-mono font-extrabold uppercase tracking-wider text-[#00E5FF]">
+          <div className="flex items-center gap-1.5">
+            <Info className="w-3.5 h-3.5 text-[#00E5FF]" />
+            <span>Administrative Diagnosis Memorandum</span>
+          </div>
+          <span className="text-[9.5px] px-2 py-0.5 rounded bg-cyan-950/80 text-[#00E5FF] border border-[#00E5FF]/40 font-mono font-bold">
+            ⚡ PARAKH Derived (TreeSHAP)
+          </span>
         </div>
         <p className="text-xs leading-relaxed text-slate-200 font-sans">
           {diagnosis || (

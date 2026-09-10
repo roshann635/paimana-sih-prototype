@@ -63,6 +63,11 @@ def run_seed_pipeline(n_projects: int = 2000):
     time_probs = time_model.predict_proba(X_all)[:, 1]
     
     portfolio_df = RiskEngine.evaluate_portfolio(features_df, cost_probs, time_probs)
+    # Fix column name mismatch: evaluate_portfolio creates pred_cost_prob/pred_time_prob
+    portfolio_df = portfolio_df.rename(columns={
+        "pred_cost_prob": "cost_risk_probability",
+        "pred_time_prob": "time_risk_probability"
+    })
     portfolio_df.to_csv("data/processed/portfolio_evaluated.csv", index=False)
     
     # 6. Initialize SHAP Explainer
@@ -119,10 +124,10 @@ def run_seed_pipeline(n_projects: int = 2000):
             physical_progress_pct=float(row["physical_progress_pct"]),
             delay_days=int(row.get("delay_days", 0)),
             current_end_date=str(row["current_end_date"])[:10],
-            issue_procurement=int(row.get("issue_procurement", 0)),
-            issue_land=int(row.get("issue_land", 0)),
-            issue_contractor=int(row.get("issue_contractor", 0)),
-            issue_approval=int(row.get("issue_approval", 0)),
+            issue_procurement=int(row.get("issue_procurement_inferred", row.get("issue_procurement", 0))),
+            issue_land=int(row.get("issue_land_inferred", row.get("issue_land", 0))),
+            issue_contractor=int(row.get("issue_contractor_inferred", row.get("issue_contractor", 0))),
+            issue_approval=int(row.get("issue_approval_inferred", row.get("issue_approval", 0))),
             status=str(row.get("status", "Ongoing"))
         )
         snapshot_records.append(s)
@@ -139,7 +144,7 @@ def run_seed_pipeline(n_projects: int = 2000):
             ipi_score=float(row["ipi_score"]),
             ipi_rank=int(row.get("ipi_rank", 0)),
             trend_direction=str(row["trend_direction"]),
-            model_version="v1.0-temporal-xgb"
+            model_version="v2.0-temporal-hardened"
         )
         prediction_records.append(pred)
         

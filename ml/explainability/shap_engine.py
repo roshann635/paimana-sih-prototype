@@ -128,7 +128,7 @@ class ShapExplainabilityEngine:
             clauses.append(f"physical progress lags planned progress by {abs(prog_gap):.1f}% points")
             
         if stag_months >= 3:
-            clauses.append(f"physical progress is stagnant for {int(stag_months)} consecutive months ({vel_3m:.1f}%/mo)")
+            clauses.append(f"physical progress has remained effectively flat since May 2026 ({vel_3m:.1f}%/mo)")
         elif vel_3m < 1.0 and not any("SPI" in c for c in clauses):
             clauses.append(f"progress velocity has slowed sharply to {vel_3m:.1f}%/month")
             
@@ -136,9 +136,9 @@ class ShapExplainabilityEngine:
         if slip_days > 120:
             slip_months = int(round(slip_days / 30.4))
             if slip_delta_3m > 30:
-                clauses.append(f"schedule delay expanded to {slip_months} months (+{int(slip_delta_3m)} days in last quarter)")
+                clauses.append(f"observed schedule drift expanded to {slip_months} months (+{int(slip_delta_3m)} days in last quarter)")
             else:
-                clauses.append(f"cumulative delay has reached {slip_months} months")
+                clauses.append(f"observed cumulative schedule drift has reached {slip_months} months")
                 
         # 5. Expenditure Outpacing
         if exp_ratio > 1.4 and cpi >= 0.90:
@@ -148,14 +148,14 @@ class ShapExplainabilityEngine:
             
         # 6. Active Execution Issues
         issues = []
-        if row.get("issue_contractor", 0) == 1:
-            issues.append("contractor performance constraints")
-        if row.get("issue_land", 0) == 1:
-            issues.append("pending land acquisition clearances")
-        if row.get("issue_approval", 0) == 1:
-            issues.append("regulatory/statutory approval bottlenecks")
-        if row.get("issue_procurement", 0) == 1:
-            issues.append("equipment procurement delays")
+        if row.get("issue_contractor_inferred", row.get("issue_contractor", 0)) == 1:
+            issues.append("contractor performance constraints (inferred)")
+        if row.get("issue_land_inferred", row.get("issue_land", 0)) == 1:
+            issues.append("pending land acquisition clearances (inferred)")
+        if row.get("issue_approval_inferred", row.get("issue_approval", 0)) == 1:
+            issues.append("regulatory/statutory approval bottlenecks (inferred)")
+        if row.get("issue_procurement_inferred", row.get("issue_procurement", 0)) == 1:
+            issues.append("equipment procurement delays (inferred)")
             
         if issues:
             clauses.append(f"active critical path impediments include {', '.join(issues)}")
@@ -194,19 +194,19 @@ class ShapExplainabilityEngine:
                 "action": "Evaluate deployment of supplementary construction packages and parallel work fronts to break physical milestone stagnation."
             })
             
-        if row.get("issue_contractor", 0) == 1:
+        if row.get("issue_contractor_inferred", row.get("issue_contractor", 0)) == 1:
             checklist.append({
                 "type": "Contractor Review",
                 "action": "Audit contractor cash flow, mobilization of plant/machinery, and key vendor commitments."
             })
             
-        if row.get("issue_land", 0) == 1:
+        if row.get("issue_land_inferred", row.get("issue_land", 0)) == 1:
             checklist.append({
                 "type": "Land & RoW Escalation",
                 "action": "Escalate unhanded encumbrance-free stretches to State Nodal Officer / District Collectorate for expedited joint measurement."
             })
             
-        if row.get("issue_approval", 0) == 1:
+        if row.get("issue_approval_inferred", row.get("issue_approval", 0)) == 1:
             checklist.append({
                 "type": "Inter-Agency Coordination",
                 "action": "Trigger inter-ministerial coordination meeting on PM GatiShakti portal for pending environmental, forest, or railway safety approvals."

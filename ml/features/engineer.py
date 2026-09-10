@@ -12,7 +12,7 @@ import numpy as np
 from typing import Tuple, List, Dict
 
 FEATURE_COLUMNS = [
-    # 1. EVM Core Metrics
+    # 1. EVM Core Metrics (PAIMANA-derived: uses revised cost baseline)
     "pv",
     "ev",
     "ac",
@@ -60,26 +60,29 @@ FEATURE_COLUMNS = [
     "progress_to_time_ratio",
 
     # 5. Issue Load & Scale
-    "issue_procurement",
-    "issue_land",
-    "issue_contractor",
-    "issue_approval",
+    # NOTE: issue_*_inferred columns are heuristically derived from
+    # delay/progress thresholds, NOT observed from source data.
+    "issue_procurement_inferred",
+    "issue_land_inferred",
+    "issue_contractor_inferred",
+    "issue_approval_inferred",
     "issue_count",
     "issue_persistence_3m",
     "log_original_cost",
     "log_revised_cost",
     "cost_band_idx",
-    "sector_encoded",
-    "ministry_encoded"
+    # NOTE: sector_encoded/ministry_encoded REMOVED — frequency encoding
+    # computed over full dataset leaks test-period distribution into training.
+    # Use proper train-only encoding or one-hot if needed.
 ]
 
 FEATURE_DISPLAY_NAMES = {
-    "spi": "Schedule Performance Index (SPI)",
-    "cpi": "Cost Performance Index (CPI)",
-    "sv": "Schedule Variance (SV in ₹ Cr)",
-    "cv": "Cost Variance (CV in ₹ Cr)",
-    "progress_gap": "Physical vs Planned Progress Gap",
-    "critical_ratio": "EVM Critical Ratio (SPI × CPI)",
+    "spi": "Schedule Performance Index (SPI) — linear planned-progress proxy",
+    "cpi": "Cost Performance Index (CPI) — PAIMANA-derived",
+    "sv": "Schedule Variance (SV in ₹ Cr) — PAIMANA-derived",
+    "cv": "Cost Variance (CV in ₹ Cr) — PAIMANA-derived",
+    "progress_gap": "Physical vs Linear Planned Progress Gap",
+    "critical_ratio": "EVM Critical Ratio (SPI × CPI) — PAIMANA-derived",
     "spi_declining": "3-Month Declining SPI Trend",
     "cpi_declining": "3-Month Declining CPI Trend",
     "spi_change_1m": "1-Month SPI Delta",
@@ -90,8 +93,8 @@ FEATURE_DISPLAY_NAMES = {
     "cpi_3m_avg": "3-Month Rolling Average CPI",
     "evm_schedule_warning": "EVM Schedule Review Flag (SPI < 0.85)",
     "evm_cost_warning": "EVM Cost Review Flag (CPI < 0.90)",
-    "pv": "Planned Value (PV)",
-    "ev": "Earned Value (EV)",
+    "pv": "Planned Value (PV) — PAIMANA-derived, revised cost baseline",
+    "ev": "Earned Value (EV) — PAIMANA-derived, revised cost baseline",
     "ac": "Actual Cost (AC)",
     "progress_velocity_3m": "3-Month Progress Velocity",
     "schedule_slip_days": "Cumulative Schedule Slippage",
@@ -100,15 +103,20 @@ FEATURE_DISPLAY_NAMES = {
     "expenditure_to_progress_ratio": "Expenditure vs Progress Disparity",
     "cost_growth_3m": "3-Month Cost Growth Rate",
     "progress_to_time_ratio": "S-Curve Progress/Time Ratio",
-    "issue_count": "Active Multi-Issue Count",
-    "issue_persistence_3m": "Persistent Issue Load",
+    "issue_count": "Active Multi-Issue Count (Inferred)",
+    "issue_persistence_3m": "Persistent Issue Load (Inferred)",
+    "issue_procurement_inferred": "Procurement Issue Indicator (Heuristic)",
+    "issue_land_inferred": "Land Acquisition Issue Indicator (Heuristic)",
+    "issue_contractor_inferred": "Contractor Issue Indicator (Heuristic)",
+    "issue_approval_inferred": "Approval Issue Indicator (Heuristic)",
     "cost_overrun_pct": "Current Cost Overrun %",
     "elapsed_duration_pct": "Elapsed Project Lifetime %",
     "expenditure_acceleration": "Expenditure Acceleration",
     "progress_velocity_1m": "1-Month Progress Velocity",
     "cost_growth_1m": "1-Month Cost Escalation Rate",
     "expenditure_pct": "Budget Utilization %",
-    "log_revised_cost": "Project Capital Exposure"
+    "log_revised_cost": "Project Capital Exposure",
+    "planned_progress_pct": "Linear Planned Progress Proxy (elapsed % of duration)"
 }
 
 # Configurable illustrative thresholds (per MoSPI / SIH guidelines)
@@ -140,7 +148,10 @@ def compute_features(
         how="left"
     )
     
-    # Sort chronologically
+    merged = merged.sort_values(by=["project_id", "report_month"]).reset_index(drop=True)
+    
+    # Ensure report_month is zero-padded YYYY-MM for correct chronological sorting
+    merged["report_month"] = pd.to_datetime(merged["report_month"]).dt.strftime("%Y-%m")
     merged = merged.sort_values(by=["project_id", "report_month"]).reset_index(drop=True)
     
     # Convert dates
@@ -258,10 +269,17 @@ def compute_features(
     merged["progress_velocity_6m"] = ((merged["physical_progress_pct"] - merged["prog_6m_ago"]) / 6.0).clip(lower=-2.0, upper=25.0)
     
     # Progress Stagnation (Consecutive months with velocity < 0.3%)
-    is_stagnant = (merged["progress_velocity_1m"] < 0.3).astype(int)
-    merged["progress_stagnation_months"] = is_stagnant.groupby(
-        (is_stagnant != is_stagnant.groupby(merged["project_id"]).shift()).cumsum()
-    ).cumsum() * is_stagnant
+    # Explicitly scoped per project_id to prevent cross-project run inheritance
+    def _stagnation_run(group):
+        stagnant = (group["progress_velocity_1m"] < 0.3).astype(int)
+        runs = stagnant.ne(stagnant.shift()).cumsum()
+        return stagnant.groupby(runs).cumsum() * stagnant
+
+    merged["progress_stagnation_months"] = (
+        merged.groupby("project_id", group_keys=False)
+        .apply(lambda g: _stagnation_run(g))
+        .reset_index(level=0, drop=True)
+    )
     
     merged["progress_to_time_ratio"] = merged["physical_progress_pct"] / merged["elapsed_duration_pct"].clip(lower=1.0)
     merged["expenditure_to_progress_ratio"] = merged["expenditure_pct"] / merged["physical_progress_pct"].clip(lower=1.0)
@@ -269,13 +287,24 @@ def compute_features(
     # ----------------------------------------------------
     # 5. Issue Loads & Project Scale
     # ----------------------------------------------------
-    merged["issue_procurement"] = merged["issue_procurement"].fillna(0).astype(int)
-    merged["issue_land"] = merged["issue_land"].fillna(0).astype(int)
-    merged["issue_contractor"] = merged["issue_contractor"].fillna(0).astype(int)
-    merged["issue_approval"] = merged["issue_approval"].fillna(0).astype(int)
+    # Rename issue columns to *_inferred if they exist without suffix
+    issue_rename = {
+        "issue_procurement": "issue_procurement_inferred",
+        "issue_land": "issue_land_inferred",
+        "issue_contractor": "issue_contractor_inferred",
+        "issue_approval": "issue_approval_inferred",
+    }
+    for old_name, new_name in issue_rename.items():
+        if old_name in merged.columns and new_name not in merged.columns:
+            merged = merged.rename(columns={old_name: new_name})
+    
+    merged["issue_procurement_inferred"] = merged["issue_procurement_inferred"].fillna(0).astype(int)
+    merged["issue_land_inferred"] = merged["issue_land_inferred"].fillna(0).astype(int)
+    merged["issue_contractor_inferred"] = merged["issue_contractor_inferred"].fillna(0).astype(int)
+    merged["issue_approval_inferred"] = merged["issue_approval_inferred"].fillna(0).astype(int)
     merged["issue_count"] = (
-        merged["issue_procurement"] + merged["issue_land"] +
-        merged["issue_contractor"] + merged["issue_approval"]
+        merged["issue_procurement_inferred"] + merged["issue_land_inferred"] +
+        merged["issue_contractor_inferred"] + merged["issue_approval_inferred"]
     )
     
     merged["issue_persistence_3m"] = merged.groupby("project_id")["issue_count"].transform(
@@ -317,7 +346,24 @@ def compute_features(
     merged["target_time_overrun"] = (delay_delta_future >= 45).astype(int)
     merged["target_delay_delta_days"] = delay_delta_future.fillna(0.0)
     
-    merged["has_future_target"] = future_revised_cost.notna().astype(int)
+    merged["has_future_target"] = (
+        future_revised_cost.notna()
+        & future_delay_days.notna()
+    ).astype(int)
+    
+    # Preserve raw targets for audit before winsorization
+    merged["target_cost_escalation_raw"] = cost_escalation_future_pct.fillna(0.0)
+    merged["target_delay_delta_raw"] = delay_delta_future.fillna(0.0)
+    
+    # Winsorize regression targets at 1st/99th percentiles to prevent
+    # extreme outliers (e.g. +350,000% cost escalation) from dominating regressors
+    labeled_mask = merged["has_future_target"] == 1
+    for col in ["target_cost_escalation_pct", "target_delay_delta_days"]:
+        vals = merged.loc[labeled_mask, col]
+        if len(vals) > 0:
+            p1, p99 = vals.quantile(0.01), vals.quantile(0.99)
+            merged.loc[labeled_mask, col] = vals.clip(lower=p1, upper=p99)
+    
     merged = merged.drop(columns=["_report_period"])
     
     return merged

@@ -115,10 +115,10 @@ export default function DataQualityCenter() {
             <div className="text-2xl font-extrabold font-mono text-white mt-1">
               {report.total_snapshots
                 ? report.total_snapshots.toLocaleString()
-                : "6,787"}
+                : "23,503"}
             </div>
             <div className="text-[11px] text-slate-400 mt-0.5">
-              Across 1,630 central projects
+              {report.total_projects ? `Across ${report.total_projects.toLocaleString()} central projects` : "Across 2,733 unique projects (16-month panel)"}
             </div>
           </div>
 

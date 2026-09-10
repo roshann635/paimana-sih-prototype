@@ -107,3 +107,40 @@ main .group:hover [class*="group-hover:text-white"] {
 .paimana-modal-header [class*="text-white"] {
   color: #ffffff !important;
 }
+
+/* Institutional Dark Popover for Provenance Tooltips */
+.kpi-provenance-popover {
+  background-color: #0b192c !important;
+  color: #e2e8f0 !important;
+  border: 1px solid #1e3a5f !important;
+  box-shadow: 0 16px 36px rgba(4, 15, 30, 0.5) !important;
+  border-radius: 8px !important;
+}
+.kpi-provenance-popover * {
+  color: #cbd5e1;
+}
+.kpi-provenance-popover .popover-title {
+  color: #f8fafc !important;
+  border-bottom: 1px solid #1e3a5f !important;
+  font-weight: 700 !important;
+}
+.kpi-provenance-popover strong.cyan-val {
+  color: #38bdf8 !important;
+  font-weight: 700;
+}
+.kpi-provenance-popover strong.amber-val {
+  color: #fbbf24 !important;
+  font-weight: 700;
+}
+.kpi-provenance-popover strong.slate-val {
+  color: #94a3b8 !important;
+  font-weight: 700;
+}
+.kpi-provenance-popover strong.red-val {
+  color: #f87171 !important;
+  font-weight: 700;
+}
+.kpi-provenance-popover strong.emerald-val {
+  color: #34d399 !important;
+  font-weight: 700;
+}

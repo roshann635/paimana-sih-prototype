@@ -52,6 +52,7 @@ yarn-error.log*
 *.db-shm
 scratch/
 .system_generated/
+data/raw/raw_snapshots_extracted.json
 
 # OS & IDE
 .DS_Store

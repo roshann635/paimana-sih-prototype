@@ -6,30 +6,30 @@ const REPORT_TYPES = [
   {
     id: 'portfolio_executive',
     title: 'National Infrastructure Executive Portfolio Briefing',
-    desc: 'Comprehensive summary of 1,630 central projects, total capex commitments, and overall cost overrun distribution.',
-    records: '1,630 Projects',
-    cycle: 'June 2026 Cycle'
+    desc: 'Comprehensive summary of 2,733 unique central projects (1,775 active July 2026 / 1,981 April 2026 baseline), total capex commitments, and overall cost overrun distribution.',
+    records: '2,733 Universe (1,775 Active)',
+    cycle: 'July 2026 Cycle'
   },
   {
     id: 'critical_watchlist',
     title: 'High-Risk & Critical Intervention Dossier',
     desc: 'Detailed breakdown of projects in Critical Review tier with accumulated slippage and root-cause TreeSHAP attributions.',
     records: '38 Critical Projects',
-    cycle: 'June 2026 Cycle'
+    cycle: 'July 2026 Cycle'
   },
   {
     id: 'ministry_dossier',
     title: 'Inter-Ministerial Capex & Milestone Performance Report',
     desc: 'Comparative evaluation across Road Transport, Railways, Petroleum, Power, Coal, and Urban Development.',
     records: '17+ Ministries',
-    cycle: 'June 2026 Cycle'
+    cycle: 'July 2026 Cycle'
   },
   {
     id: 'sector_baseline',
     title: 'Sector Empirical Peer Baselines & Velocity Matrix',
     desc: 'Median progress velocities, cost escalation baselines, and peer deviation thresholds across 22+ sectors.',
     records: '25 Sectors',
-    cycle: 'June 2026 Cycle'
+    cycle: 'July 2026 Cycle'
   }
 ];
 

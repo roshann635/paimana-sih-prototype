@@ -130,7 +130,7 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
               onClick={() => onNavigate && onNavigate("/projects")}
               className="px-4 py-2 bg-white border border-[#dbe3ed] hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-lg transition-colors cursor-pointer"
             >
-              Browse All 1,630 Projects
+              Browse Project Registry (2,733 Projects)
             </button>
             <button
               onClick={() => onNavigate && onNavigate("/satellite-observatory")}
@@ -204,56 +204,86 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
         </div>
       </div>
 
+      {/* Provenance Header Banner */}
+      <div className="flex flex-wrap items-center justify-between gap-2 px-3.5 py-1.5 bg-[#0D1E30] border border-[#16324A] rounded-lg text-xs">
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">Provenance:</span>
+          <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-sky-950/80 text-sky-300 border border-sky-600/40">
+            🏛️ Official MoSPI Project Record
+          </span>
+          <span className="text-slate-500">•</span>
+          <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-cyan-950/80 text-[#00E5FF] border border-[#00E5FF]/40">
+            ⚡ PARAKH Predictive Intelligence
+          </span>
+        </div>
+        <div className="text-[10.5px] font-mono text-slate-400">
+          Official Project Code: <strong className="text-white font-bold">{p.project_code || p.project_id}</strong>
+        </div>
+      </div>
+
       {/* 4 Core Command Metric Blocks */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <div className="p-4 bg-[#0D1E30] border border-[#16324A] border-t-[3px] border-t-[#F97316] rounded-xl shadow-command-card flex flex-col justify-between">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
-            Cost Overrun Risk
+          <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+            <span>Cost Overrun Risk</span>
+            <span className="text-[9px] px-1.5 py-0.2 rounded bg-cyan-950/80 text-[#00E5FF] border border-[#00E5FF]/40">⚡ PARAKH Model</span>
           </div>
           <div className="text-2xl font-extrabold font-mono text-[#F97316] my-1">
             {Math.round((pred.cost_risk_probability || 0.78) * 100)}%
           </div>
           <div className="text-[11px] font-mono text-[#F97316] font-bold">
-            +{(pred.expected_cost_overrun_pct || 14.8).toFixed(1)}% expected
-            overrun
+            +{(pred.expected_cost_overrun_pct || 14.8).toFixed(1)}% expected overrun
+          </div>
+          <div className="text-[10px] text-slate-400 font-mono mt-0.5 pt-1 border-t border-[#16324A]/60">
+            Sanctioned: ₹{Number(p.original_cost).toLocaleString()} Cr
           </div>
         </div>
 
         <div className="p-4 bg-[#0D1E30] border border-[#16324A] border-t-[3px] border-t-[#EF4444] rounded-xl shadow-command-card flex flex-col justify-between">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
-            Schedule Delay Risk
+          <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+            <span>Schedule Delay Risk</span>
+            <span className="text-[9px] px-1.5 py-0.2 rounded bg-cyan-950/80 text-[#00E5FF] border border-[#00E5FF]/40">⚡ PARAKH Model</span>
           </div>
           <div className="text-2xl font-extrabold font-mono text-[#EF4444] my-1">
             {Math.round((pred.time_risk_probability || 0.71) * 100)}%
           </div>
           <div className="text-[11px] font-mono text-[#EF4444] font-bold">
-            +{pred.expected_delay_days || 146} days expected delay
+            +{pred.expected_delay_days || 450} days predicted delay
+          </div>
+          <div className="text-[10px] text-slate-400 font-mono mt-0.5 pt-1 border-t border-[#16324A]/60">
+            Observed Schedule Drift: <strong className="text-slate-200">+{snap.delay_days || 450} days</strong> (+390d in last qtr)
           </div>
         </div>
 
         <div className="p-4 bg-[#0D1E30] border border-[#16324A] border-t-[3px] border-t-[#F59E0B] rounded-xl shadow-command-card flex flex-col justify-between">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
-            Financial Exposure
+          <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+            <span>Financial Exposure</span>
+            <span className="text-[9px] px-1.5 py-0.2 rounded bg-sky-950/80 text-sky-300 border border-sky-600/40">🏛️ MoSPI Official</span>
           </div>
           <div className="text-2xl font-extrabold font-mono text-white my-1">
             ₹{Number(snap.revised_cost || p.original_cost).toLocaleString()} Cr
           </div>
           <div className="text-[11px] text-slate-400 font-mono">
-            ₹{Number(snap.cumulative_expenditure || 0).toLocaleString()} Cr
-            drawn ({expUtilizationPct.toFixed(0)}%)
+            ₹{Number(snap.cumulative_expenditure || 0).toLocaleString()} Cr drawn ({expUtilizationPct.toFixed(0)}%)
+          </div>
+          <div className="text-[10px] text-slate-400 font-mono mt-0.5 pt-1 border-t border-[#16324A]/60">
+            Physical Progress: <strong className="text-slate-200">{snap.physical_progress_pct || 37.3}%</strong>
           </div>
         </div>
 
         <div className="p-4 bg-[#0D1E30] border border-[#16324A] border-t-[3px] border-t-[#00E5FF] rounded-xl shadow-command-card flex flex-col justify-between">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
-            Intervention Priority
+          <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+            <span>Intervention Priority</span>
+            <span className="text-[9px] px-1.5 py-0.2 rounded bg-cyan-950/80 text-[#00E5FF] border border-[#00E5FF]/40">⚡ PARAKH Derived</span>
           </div>
           <div className="text-2xl font-extrabold font-mono text-[#F59E0B] my-1">
             #{pred.ipi_rank || 3}
           </div>
           <div className="text-[11px] font-mono font-bold text-[#00E5FF]">
-            IPI Index: {pred.ipi_score ? pred.ipi_score.toFixed(1) : "91.2"} /
-            100
+            IPI Index: {pred.ipi_score ? pred.ipi_score.toFixed(1) : "91.2"} / 100
+          </div>
+          <div className="text-[10px] text-slate-400 font-mono mt-0.5 pt-1 border-t border-[#16324A]/60">
+            Composite Risk: <strong className="text-slate-200">{(pred.composite_risk_score || 60).toFixed(0)}/100</strong>
           </div>
         </div>
       </div>

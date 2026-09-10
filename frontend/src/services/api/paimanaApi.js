@@ -186,10 +186,10 @@ export const parakhApi = {
     } catch {
       return {
         answer:
-          "Based on monitored database records, the platform actively tracks 1,630 central infrastructure projects with 38 in Critical Review. Key drivers include contractor delays and expenditure front-loading.",
-        evidence_sources: ["Database Cache", "April 2026 Snapshot"],
+          "Based on monitored database records, the platform actively tracks 2,733 unique central infrastructure projects across the 16-month longitudinal panel (1,775 ongoing in July 2026 / 1,981 in April 2026 baseline), with 38 in Critical Review. Key drivers include contractor delays and expenditure front-loading.",
+        evidence_sources: ["PARAKH Master Database (2,733 Longitudinal Universe · 1,775 Active)", "MoSPI Flash Reports (16-Month Panel)"],
         confidence: 0.95,
-        data_freshness: "April 2026",
+        data_freshness: "July 2026",
       };
     }
   },

@@ -77,12 +77,11 @@ export default function EVMPerformanceCard({
                 Objective EVM Performance Layer
               </h3>
               <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/30">
-                Earned Value Analytics
+                ⚡ PARAKH Derived
               </span>
             </div>
             <p className="text-[11px] text-slate-400 mt-0.5">
-              Automated Earned Value Management baseline and performance indices
-              per MoSPI guidelines.
+              Automated Earned Value Management baseline and performance indices calculated per MoSPI guidelines.
             </p>
           </div>
         </div>
@@ -161,7 +160,7 @@ export default function EVMPerformanceCard({
         {/* PV: Planned Value */}
         <div className="p-3 bg-[#07131F] rounded-lg border border-[#16324A]">
           <div className="text-[10px] font-mono text-slate-400 uppercase font-bold">
-            Planned Value (PV)
+            PV — Modelled Planned Value
           </div>
           <div className="text-lg font-mono font-bold text-white mt-1">
             ₹
@@ -169,7 +168,7 @@ export default function EVMPerformanceCard({
             Cr
           </div>
           <div className="text-[10px] text-slate-500 font-mono">
-            Budgeted work scheduled
+            Schedule-derived baseline*
           </div>
         </div>
 
@@ -299,6 +298,14 @@ export default function EVMPerformanceCard({
             Physical vs Planned
           </div>
         </div>
+      </div>
+
+      {/* EVM Planned Value Methodology Note */}
+      <div className="px-3.5 py-2 bg-[#07131F] border border-[#16324A]/80 rounded-lg text-[10.5px] font-mono text-slate-400 flex items-start gap-2">
+        <span className="text-[#00E5FF] font-bold shrink-0">* Methodology Note:</span>
+        <span className="leading-relaxed">
+          Planned-value (PV) curve is reconstructed from published project baseline dates and revised completion targets because monthly contractor baseline curves are not publicly disclosed in MoSPI Flash Reports.
+        </span>
       </div>
 
       {/* 4. AI Early Warning Synthesis Callout Box */}

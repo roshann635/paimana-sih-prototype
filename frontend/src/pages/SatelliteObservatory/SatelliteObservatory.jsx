@@ -86,10 +86,28 @@ export default function SatelliteObservatory({ onSelectProject }) {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="inline-flex items-center gap-1.5 text-xs font-mono font-bold px-3 py-1.5 bg-amber-50 border border-amber-300 text-amber-900 rounded-lg shadow-2xs">
+            <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+            SYNTHETIC / DEMO FIXTURE DATA
+          </span>
           <span className="text-xs font-mono font-bold px-3 py-1.5 bg-white border border-[#dbe3ed] text-slate-700 rounded-lg shadow-2xs">
             Evaluation Freshness: <strong className="text-[#1668d8]">{s.data_freshness_month}</strong>
           </span>
+        </div>
+      </div>
+
+      {/* Demo & Synthetic Provenance Notice */}
+      <div className="p-3.5 bg-amber-50/80 border border-amber-300/80 rounded-xl flex items-start gap-3 shadow-2xs">
+        <Sparkles className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+        <div className="text-xs text-amber-950 space-y-0.5">
+          <div className="font-bold flex items-center gap-2">
+            <span>SYNTHETIC / DEMONSTRATION FIXTURE PIPELINE</span>
+            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-amber-200/60 border border-amber-300 text-amber-900">Research Prototype</span>
+          </div>
+          <p className="text-amber-900 leading-relaxed">
+            Satellite verification pipeline demonstrated using synthetic fixture data calibrated to match observed project characteristics. The observed multi-sensor change index demonstrates automated SAR/optical verification workflow; live Copernicus Sentinel-1/2 STAC API connector is currently in sandbox staging.
+          </p>
         </div>
       </div>
 

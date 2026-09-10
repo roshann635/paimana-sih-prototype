@@ -98,31 +98,24 @@ export default function SatelliteVerificationCard({
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-sm font-bold text-[#142235] uppercase tracking-wider">
-                Satellite Cross-Verification
+                Satellite Cross-Verification — DEMO
               </h3>
               <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded border ${statusBadgeColor}`}>
                 {d.verification_status.replace("_", " ")}
               </span>
             </div>
             <p className="text-xs text-slate-500">
-              Independent Earth Observation Evidence (Sentinel-2 Optical + Sentinel-1 SAR)
+              Satellite verification pipeline demonstrated using synthetic fixture data.
             </p>
           </div>
         </div>
 
         {/* Provenance Mode Toggle / Tag */}
         <div className="flex items-center gap-2">
-          {d.is_synthetic ? (
-            <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold px-2.5 py-1 bg-amber-50 border border-amber-200 text-amber-800 rounded">
-              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-              DEMO / SYNTHETIC FIXTURE
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold px-2.5 py-1 bg-blue-50 border border-blue-200 text-blue-800 rounded">
-              <Radio className="w-3.5 h-3.5 text-blue-600" />
-              COPERNICUS OBSERVATION
-            </span>
-          )}
+          <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold px-2.5 py-1 bg-amber-50 border border-amber-300 text-amber-900 rounded">
+            <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+            SYNTHETIC / DEMONSTRATION DATA
+          </span>
 
           <button
             onClick={() => setUseLiveCopernicus(!useLiveCopernicus)}
@@ -194,7 +187,7 @@ export default function SatelliteVerificationCard({
           <div className="flex items-center justify-between text-xs text-slate-700 font-bold">
             <span>MULTI-SENSOR EVIDENCE STREAMS</span>
             <span className="font-mono text-[10px] text-slate-500 font-normal">
-              Acquisitions: Sentinel-2 L2A ({d.optical_provenance?.acquisition_datetime?.slice(0, 10)}) · Sentinel-1 GRD ({d.sar_provenance?.acquisition_datetime?.slice(0, 10)})
+              Pipeline Demo: Sentinel-2 L2A Fixture ({d.optical_provenance?.acquisition_datetime?.slice(0, 10) || '2026-07-14'}) · Sentinel-1 GRD Fixture ({d.sar_provenance?.acquisition_datetime?.slice(0, 10) || '2026-07-12'})
             </span>
           </div>
 

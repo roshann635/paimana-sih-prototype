@@ -21,7 +21,7 @@ const PAGE_METADATA = {
   },
   "/projects": {
     title: "All Projects",
-    subtitle: "Central sector infrastructure project registry (1,630 projects)",
+    subtitle: "Central sector infrastructure project registry (2,733 longitudinal universe · 1,775 active)",
   },
   "/priority-queue": {
     title: "Priority Queue",
@@ -141,6 +141,13 @@ export default function Header({
 
         {/* Right: Status Telemetry & User Controls */}
         <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+          {/* Data Provenance Indicator */}
+          <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 bg-[#f1f5f9] border border-[#dbe3ed] rounded-md text-[10.5px] font-mono">
+            <span className="text-[#06295B] font-bold">🏛️ MoSPI Data</span>
+            <span className="text-slate-400">|</span>
+            <span className="text-[#1668d8] font-bold">⚡ PARAKH Intelligence</span>
+          </div>
+
           {/* Data Through */}
           <div className="hidden md:flex items-center gap-2">
             <Calendar className="w-3.5 h-3.5 text-[#66758a]" />

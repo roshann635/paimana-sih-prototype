@@ -9,6 +9,8 @@ import re
 import glob
 import json
 import joblib
+import hashlib
+import collections
 import pdfplumber
 import argparse
 import pandas as pd
@@ -24,7 +26,7 @@ BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
-DOWNLOADS_DIR = os.getenv("PARAKH_MOSPI_INPUT_DIR", os.getenv("PAIMANA_MOSPI_INPUT_DIR", os.path.join(BASE_DIR, "data", "raw", "mospi")))
+DOWNLOADS_DIR = os.getenv("PARAKH_MOSPI_INPUT_DIR", os.getenv("PAIMANA_MOSPI_INPUT_DIR", os.path.join(os.path.expanduser("~"), "Downloads")))
 DATA_DIR = os.path.join(BASE_DIR, "data")
 RAW_DIR = os.path.join(DATA_DIR, "raw")
 PROCESSED_DIR = os.path.join(DATA_DIR, "processed")
@@ -46,6 +48,7 @@ from backend.app.database.schema import (
 )
 
 MONTH_MAPPING = [
+    # 2025 reports
     ("FRApril2025.pdf", "2025-04"),
     ("FR_May2025.pdf", "2025-05"),
     ("FR_JUNE_2025.pdf", "2025-06"),
@@ -55,110 +58,211 @@ MONTH_MAPPING = [
     ("FlashReport_October_2025.pdf", "2025-10"),
     ("FlashReport_November_2025.pdf", "2025-11"),
     ("FlashReport_December_2025.pdf", "2025-12"),
+    # 2026 reports
+    ("FlashReport_January_2026.pdf", "2026-01"),
+    ("FlashReport_February_2026.pdf", "2026-02"),
+    ("FlashReport_March_2026.pdf", "2026-03"),
+    ("FlashReport_April2026.pdf", "2026-04"),
+    ("FlashReport_May2026.pdf", "2026-05"),
+    ("FlashReport_June_2026.pdf", "2026-06"),
+    ("FlashReport_July_2026.pdf", "2026-07"),
 ]
 
 def parse_single_pdf(pdf_path: str, report_month: str) -> list:
-    """Parses a single MoSPI Flash Report PDF and returns list of snapshot dicts."""
+    """Parses a single MoSPI Flash Report PDF and returns list of raw snapshot dicts."""
     print(f"📖 Parsing {os.path.basename(pdf_path)} [{report_month}]...")
     snapshots = []
     current_sector = "General Infrastructure"
+    current_state = "Multi-State"
     
     with pdfplumber.open(pdf_path) as pdf:
-        for page in pdf.pages:
-            tables = page.extract_tables()
-            for table in tables:
-                if not table or len(table) < 2:
-                    continue
-                    
-                for row in table:
-                    if not row or len(row) < 5:
-                        continue
-                    if row[0] and ('Sl.No' in str(row[0]) or 'S.NO' in str(row[0])):
-                        continue
-                        
-                    # Sector header row
-                    if (not row[0] or str(row[0]).strip() == '') and row[1] and str(row[1]).strip():
-                        possible_sec = str(row[1]).strip()
-                        if len(possible_sec) > 2 and '\n' not in possible_sec and not any(c.isdigit() for c in possible_sec):
-                            current_sector = possible_sec
-                            continue
+        # Step 1: Locate Master Ongoing Projects Table Start Page
+        start_page = -1
+        master_table_name = ""
+        for p_idx in range(min(70, len(pdf.pages))):
+            txt = pdf.pages[p_idx].extract_text() or ""
+            for line in txt.split("\n")[:5]:
+                line_clean = line.strip().lower()
+                if ("all ongoing projects" in line_clean or "ongoing projects as of" in line_clean) and "north" not in line_clean:
+                    start_page = p_idx
+                    master_table_name = line.strip()
+                    break
+            if start_page >= 0:
+                break
+                
+        if start_page == -1:
+            print(f"  ⚠️ Master ongoing table not found in {os.path.basename(pdf_path)}")
+            return []
 
-                    sl_no_str = str(row[0]).strip() if row[0] else ""
-                    if not sl_no_str.isdigit():
+        active_cols = {
+            "sl": -1, "proj": -1, "state": -1, "sector": -1,
+            "appr": -1, "doc": -1, "cost": -1, "exp": -1, "prog": -1
+        }
+        found_sls = []
+
+        # Step 2: Parse strictly the master ongoing table stream
+        for p_idx in range(start_page, len(pdf.pages)):
+            txt = pdf.pages[p_idx].extract_text() or ""
+            first_lines = [l.strip().lower() for l in txt.split("\n")[:4] if l.strip()]
+            
+            # Stop condition: appendix or non-project tables
+            if p_idx > start_page:
+                if any("appendix" in l or "abbreviations" in l for l in first_lines):
+                    break
+                if any(re.search(r'table[:\s-]+[789]', l) for l in first_lines) and "ongoing projects as of" not in " ".join(first_lines):
+                    break
+
+            tbls = pdf.pages[p_idx].extract_tables()
+            for table in tbls:
+                if not table:
+                    continue
+
+                # Check for header row in top rows
+                header_row_idx = -1
+                for r_idx in range(min(5, len(table))):
+                    h_clean = [str(c).replace('\n', ' ').strip().lower() if c else '' for c in table[r_idx]]
+                    if any('sl' in h or 's.no' in h for h in h_clean):
+                        header_row_idx = r_idx
+                        new_cols = {
+                            "sl": -1, "proj": -1, "state": -1, "sector": -1,
+                            "appr": -1, "doc": -1, "cost": -1, "exp": -1, "prog": -1
+                        }
+                        for idx, h in enumerate(h_clean):
+                            if new_cols["sl"] == -1 and ("sl" in h or "s.no" in h): new_cols["sl"] = idx
+                            elif new_cols["proj"] == -1 and "project" in h and "count" not in h: new_cols["proj"] = idx
+                            elif new_cols["state"] == -1 and "state" in h: new_cols["state"] = idx
+                            elif new_cols["sector"] == -1 and "sector" in h: new_cols["sector"] = idx
+                            elif new_cols["appr"] == -1 and ("approval" in h or "start date" in h): new_cols["appr"] = idx
+                            elif new_cols["doc"] == -1 and ("doc" in h or "commissioning" in h or "completion" in h or "target" in h): new_cols["doc"] = idx
+                            elif new_cols["cost"] == -1 and "cost" in h: new_cols["cost"] = idx
+                            elif new_cols["exp"] == -1 and ("expenditure" in h or "exp" in h): new_cols["exp"] = idx
+                            elif new_cols["prog"] == -1 and ("progress" in h or "physical" in h): new_cols["prog"] = idx
+                        if new_cols["sl"] >= 0 and new_cols["proj"] >= 0:
+                            active_cols = new_cols
+                        break
+
+                start_r = header_row_idx + 1 if header_row_idx >= 0 else 0
+                for row in table[start_r:]:
+                    if not row:
                         continue
-                        
-                    col_proj = str(row[1]).strip() if len(row) > 1 and row[1] else ""
-                    col_state = str(row[2]).strip() if len(row) > 2 and row[2] else "Multi-State"
-                    col_appr = str(row[3]).strip() if len(row) > 3 and row[3] else ""
-                    col_doc = str(row[4]).strip() if len(row) > 4 and row[4] else ""
-                    col_cost = str(row[5]).strip() if len(row) > 5 and row[5] else ""
-                    col_exp = str(row[6]).strip() if len(row) > 6 and row[6] else "0"
-                    col_prog = str(row[7]).strip() if len(row) > 7 and row[7] else "0"
-                    
+
+                    # Find serial number matching sequence
+                    found_col = -1
+                    found_val = -1
+                    for c_idx in range(min(4, len(row))):
+                        val_str = str(row[c_idx] or "").strip()
+                        if val_str.isdigit():
+                            ival = int(val_str)
+                            if 1 <= ival <= 3000:
+                                if not found_sls and ival == 1:
+                                    found_col = c_idx
+                                    found_val = ival
+                                    break
+                                elif found_sls and ival == found_sls[-1] + 1:
+                                    found_col = c_idx
+                                    found_val = ival
+                                    break
+
+                    if found_val == -1:
+                        continue
+
+                    found_sls.append(found_val)
+                    shift = found_col - active_cols["sl"] if active_cols["sl"] >= 0 else 0
+
+                    def get_cell(key):
+                        idx = active_cols.get(key, -1)
+                        if idx >= 0:
+                            shifted = idx + shift
+                            if 0 <= shifted < len(row):
+                                return str(row[shifted] or "").strip()
+                        return ""
+
+                    col_proj = get_cell("proj")
+                    raw_state = get_cell("state")
+                    if raw_state:
+                        current_state = raw_state.replace("\n", ", ")
+                    col_state = current_state
+
+                    raw_sector = get_cell("sector")
+                    if raw_sector:
+                        current_sector = raw_sector.replace("\n", " ")
+                    col_sector = current_sector
+
+                    col_appr = get_cell("appr")
+                    col_doc = get_cell("doc")
+                    col_cost = get_cell("cost")
+                    col_exp = get_cell("exp")
+                    col_prog = get_cell("prog")
+
+                    # Project name
                     proj_lines = [l.strip() for l in col_proj.split("\n") if l.strip()]
-                    proj_name = proj_lines[0] if len(proj_lines) > 0 else f"Project {sl_no_str}"
+                    proj_name = proj_lines[0] if proj_lines else f"Project {found_val}"
+
+                    # Canonical identification tokens
+                    ocms_m = re.search(r'\b([A-Z]\d{6,8})\b', col_proj)
+                    ocms_code = ocms_m.group(1) if ocms_m else ""
+                    
+                    num_m = re.search(r'\((\d{5,8})\)', col_proj)
+                    num_code = num_m.group(1) if num_m else ""
+                    
                     agency = "Implementing Agency"
-                    proj_code = ""
-                    
                     for pl in proj_lines[1:]:
-                        code_m = re.search(r'\((\d{4,8})\)', pl)
-                        if code_m:
-                            proj_code = code_m.group(1)
-                        elif pl.startswith("(") and pl.endswith(")"):
-                            agency = pl.strip("()")
-                        else:
-                            if agency == "Implementing Agency":
-                                proj_name += " " + pl
-                                
-                    if not proj_code:
-                        slug = re.sub(r'[^A-Za-z0-9]', '', proj_name)[:12].upper()
-                        proj_code = f"MOSPI_{slug}"
-                        
-                    project_id = f"P{proj_code}"
-                    
-                    # Costs
-                    cost_matches = re.findall(r'[\d,.]+', col_cost.replace(',', ''))
+                        if pl.startswith("(") and pl.endswith(")"):
+                            inner = pl.strip("()")
+                            if not re.search(r'^[A-Z]?\d+$', inner):
+                                agency = inner
+                                break
+
+                    # Financial numbers
+                    cost_matches = [c for c in re.findall(r'\d+(?:\.\d+)?', col_cost.replace(',', ''))]
                     orig_cost = float(cost_matches[0]) if len(cost_matches) > 0 else 150.0
                     rev_cost = float(cost_matches[1]) if len(cost_matches) > 1 else orig_cost
                     
                     # Expenditure
-                    exp_matches = re.findall(r'[\d,.]+', col_exp.replace(',', ''))
+                    exp_matches = [c for c in re.findall(r'\d+(?:\.\d+)?', col_exp.replace(',', ''))]
                     expenditure = float(exp_matches[0]) if len(exp_matches) > 0 else 0.0
                     
                     # Progress %
-                    prog_matches = re.findall(r'\d+', col_prog)
+                    prog_matches = [c for c in re.findall(r'\d+(?:\.\d+)?', col_prog)]
                     progress_pct = min(100.0, max(0.0, float(prog_matches[0]))) if len(prog_matches) > 0 else 0.0
                     
                     # Dates
-                    dates_appr = re.findall(r'\d{2}/\d{4}', col_appr)
+                    dates_appr = re.findall(r'\d{1,2}[/-]\d{4}', col_appr)
                     start_date = dates_appr[0] if dates_appr else "01/2020"
                     
-                    dates_doc = re.findall(r'\d{2}/\d{4}', col_doc)
+                    dates_doc = re.findall(r'\d{1,2}[/-]\d{4}', col_doc)
                     orig_doc = dates_doc[0] if len(dates_doc) > 0 else "12/2025"
                     rev_doc = dates_doc[1] if len(dates_doc) > 1 else orig_doc
                     
-                    # Delay
+                    # Delay days
                     delay_days = 0
                     if orig_doc != rev_doc:
                         try:
-                            om, oy = int(orig_doc.split('/')[0]), int(orig_doc.split('/')[1])
-                            rm, ry = int(rev_doc.split('/')[0]), int(rev_doc.split('/')[1])
-                            month_diff = (ry - oy) * 12 + (rm - om)
-                            delay_days = max(0, month_diff * 30)
+                            def _parse_my(d_str):
+                                m = re.search(r'(\d{1,2})[/-](\d{4})', d_str)
+                                return (int(m.group(1)), int(m.group(2))) if m else (1, 2025)
+                            om, oy = _parse_my(orig_doc)
+                            rm, ry = _parse_my(rev_doc)
+                            diff_m = (ry - oy) * 12 + (rm - om)
+                            delay_days = max(0, diff_m * 30)
                         except Exception:
                             delay_days = 0
-                            
-                    ministry = current_sector
+
+                    ministry = col_sector
                     if not ministry.startswith("Ministry") and not ministry.startswith("Department"):
-                        ministry = f"Ministry of {current_sector}"
+                        ministry = f"Ministry of {col_sector}"
                         
+                    clean_slug = re.sub(r'[^A-Za-z0-9]', '', proj_name)[:16].upper()
+
                     snapshots.append({
-                        "project_id": project_id,
-                        "project_code": str(proj_code),
+                        "raw_sl": found_val,
+                        "ocms_code": ocms_code,
+                        "num_code": num_code,
+                        "name_slug": clean_slug,
                         "project_name": proj_name,
                         "ministry": ministry,
-                        "sector": current_sector,
-                        "state": col_state.replace("\n", ", "),
+                        "sector": col_sector,
+                        "state": col_state,
                         "implementing_agency": agency,
                         "report_month": report_month,
                         "original_start_date": start_date,
@@ -169,36 +273,54 @@ def parse_single_pdf(pdf_path: str, report_month: str) -> list:
                         "cumulative_expenditure": min(rev_cost * 1.5, expenditure),
                         "physical_progress_pct": progress_pct,
                         "delay_days": delay_days,
-                        "issue_procurement": 1 if (delay_days > 60 and progress_pct < 50) else 0,
-                        "issue_land": 1 if (delay_days > 180 and progress_pct < 30) else 0,
-                        "issue_contractor": 1 if (delay_days > 90 and expenditure > orig_cost * 0.4 and progress_pct < 40) else 0,
-                        "issue_approval": 1 if (delay_days > 120 and progress_pct < 20) else 0,
+                        # Heuristically inferred — NOT observed from source data
+                        "issue_procurement_inferred": 1 if (delay_days > 60 and progress_pct < 50) else 0,
+                        "issue_land_inferred": 1 if (delay_days > 180 and progress_pct < 30) else 0,
+                        "issue_contractor_inferred": 1 if (delay_days > 90 and expenditure > orig_cost * 0.4 and progress_pct < 40) else 0,
+                        "issue_approval_inferred": 1 if (delay_days > 120 and progress_pct < 20) else 0,
                         "status": "COMPLETED" if progress_pct >= 100 else "ONGOING"
                     })
+
+    max_sl = max(found_sls) if found_sls else 0
+    diff = len(snapshots) - max_sl
+    print(f"  ✅ Extracted: {len(snapshots):,d} projects | Max Sl.No: {max_sl:,d} | Difference: {diff}")
     return snapshots
 
 def run_real_pipeline(input_dir: str = DOWNLOADS_DIR):
     print("=================================================================")
-    print("🚀 INGESTING REAL MOSPI MONTHLY FLASH REPORTS (APRIL - DEC 2025)")
+    print("🚀 INGESTING REAL MOSPI MONTHLY FLASH REPORTS (APR 2025 - JUL 2026)")
     print("=================================================================")
     
     input_dir = os.path.abspath(input_dir)
-    all_snapshots = []
+    raw_snapshots = []
     missing_files = []
-    for filename, month in MONTH_MAPPING:
-        full_path = os.path.join(input_dir, filename)
-        if os.path.exists(full_path):
-            snaps = parse_single_pdf(full_path, month)
-            all_snapshots.extend(snaps)
-            print(f"  ✓ Extracted {len(snaps)} snapshots for {month}")
-        else:
-            missing_files.append(filename)
-            print(f"  ⚠ File not found: {full_path}")
+    cache_path = os.path.join(RAW_DIR, "raw_snapshots_extracted.json")
+
+    if os.path.exists(cache_path) and os.path.getsize(cache_path) > 1000000:
+        print(f"  ✓ Loading 16-report extracted snapshots from cache: {cache_path}...")
+        with open(cache_path, "r", encoding="utf-8") as f:
+            raw_snapshots = json.load(f)
+        print(f"  ✓ Loaded {len(raw_snapshots)} raw snapshots from cache.")
+    else:
+        for filename, month in MONTH_MAPPING:
+            full_path = os.path.join(input_dir, filename)
+            if os.path.exists(full_path):
+                snaps = parse_single_pdf(full_path, month)
+                raw_snapshots.extend(snaps)
+                max_sl = max((r["raw_sl"] for r in snaps), default=0)
+                print(f"  ✓ Extracted {len(snaps)} snapshots for {month} (max Sl.No = {max_sl})")
+            else:
+                missing_files.append(filename)
+                print(f"  ⚠ File not found: {full_path}")
+        if len(raw_snapshots) > 0:
+            with open(cache_path, "w", encoding="utf-8") as f:
+                json.dump(raw_snapshots, f)
+            print(f"  ✓ Cached {len(raw_snapshots)} raw snapshots to {cache_path}.")
             
     clean_proj_path = os.path.join(PROCESSED_DIR, "clean_projects.csv")
     clean_snap_path = os.path.join(PROCESSED_DIR, "clean_snapshots.csv")
     
-    if not all_snapshots:
+    if not raw_snapshots:
         if os.path.exists(clean_proj_path) and os.path.exists(clean_snap_path):
             print("  ℹ PDFs not found, but processed datasets exist. Using clean_projects.csv and clean_snapshots.csv...")
             clean_projects = pd.read_csv(clean_proj_path)
@@ -214,8 +336,100 @@ def run_real_pipeline(input_dir: str = DOWNLOADS_DIR):
         if missing_files:
             print(f"  ⚠ Missing {len(missing_files)} monthly report(s); continuing with available source files.")
             
-        df_raw = pd.DataFrame(all_snapshots)
+        print("\n--- Multi-Level Project Identity Resolution & Provenance ---")
+        # Step 1: Detect unique 1-to-1 OCMS codes vs 1-to-many umbrella OCMS codes
+        ocms_to_nums = collections.defaultdict(set)
+        for r in raw_snapshots:
+            if r["ocms_code"] and r["num_code"]:
+                ocms_to_nums[r["ocms_code"]].add(r["num_code"])
+                
+        single_ocms_to_num = {o: list(nums)[0] for o, nums in ocms_to_nums.items() if len(nums) == 1}
+        print(f"  ✓ Identified {len(single_ocms_to_num)} 1-to-1 OCMS-to-Numeric project bridges.")
+        print(f"  ✓ Identified {len(ocms_to_nums) - len(single_ocms_to_num)} umbrella OCMS package codes.")
+
+        # Step 2: Build cross-month composite dictionary from modern reports with numeric codes
+        tuple_to_nums = collections.defaultdict(set)
+        name_to_nums = collections.defaultdict(set)
+        for r in raw_snapshots:
+            if r["num_code"]:
+                norm_name = re.sub(r'[^a-z0-9]', '', r['project_name'].lower())
+                norm_state = re.sub(r'[^a-z0-9]', '', r['state'].lower())
+                if norm_name:
+                    tuple_to_nums[(norm_name, norm_state)].add(r["num_code"])
+                    name_to_nums[norm_name].add(r["num_code"])
+
+        unique_tuple_map = {k: list(v)[0] for k, v in tuple_to_nums.items() if len(v) == 1}
+        unique_name_map = {k: list(v)[0] for k, v in name_to_nums.items() if len(v) == 1}
+
+        # Step 3: Assign Canonical Project ID with Multi-Level Hierarchy
+        for r in raw_snapshots:
+            norm_name = re.sub(r'[^a-z0-9]', '', r['project_name'].lower())
+            norm_state = re.sub(r'[^a-z0-9]', '', r['state'].lower())
+            norm_sector = re.sub(r'[^a-z0-9]', '', r['sector'].lower())
+            
+            # Level 1: Exact Numeric Code (Primary key in modern MoSPI reports)
+            if r["num_code"]:
+                r["candidate_id"] = f"NUM_{r['num_code']}"
+                r["project_code"] = str(r["num_code"])
+                r["match_method"] = "EXACT_NUMERIC_CODE"
+                r["match_confidence"] = 1.0
+            # Level 2: 1-to-1 OCMS code mapped to unique Numeric Code
+            elif r["ocms_code"] and r["ocms_code"] in single_ocms_to_num:
+                linked_num = single_ocms_to_num[r["ocms_code"]]
+                r["candidate_id"] = f"NUM_{linked_num}"
+                r["project_code"] = str(linked_num)
+                r["match_method"] = "OCMS_TO_NUM_BRIDGE"
+                r["match_confidence"] = 0.98
+            # Level 3: Unambiguous Name + State cross-month match against numeric code
+            elif (norm_name, norm_state) in unique_tuple_map:
+                matched_num = unique_tuple_map[(norm_name, norm_state)]
+                r["candidate_id"] = f"NUM_{matched_num}"
+                r["project_code"] = str(matched_num)
+                r["match_method"] = "NAME_STATE_CROSS_MONTH"
+                r["match_confidence"] = 0.92
+            # Level 4: Unambiguous Name cross-month match
+            elif norm_name in unique_name_map:
+                matched_num = unique_name_map[norm_name]
+                r["candidate_id"] = f"NUM_{matched_num}"
+                r["project_code"] = str(matched_num)
+                r["match_method"] = "NAME_CROSS_MONTH"
+                r["match_confidence"] = 0.88
+            # Level 5: OCMS code with no unique numeric code (legacy individual or umbrella)
+            elif r["ocms_code"]:
+                r["candidate_id"] = f"OCMS_{r['ocms_code']}"
+                r["project_code"] = str(r["ocms_code"])
+                r["match_method"] = "EXACT_OCMS_CODE"
+                r["match_confidence"] = 0.85
+            # Level 6: Deterministic composite hash for completed legacy projects
+            else:
+                comp_str = f"{norm_name}_{norm_state}_{norm_sector}_{r.get('implementing_agency', '')}"
+                h = hashlib.sha256(comp_str.encode()).hexdigest()[:12].upper()
+                r["candidate_id"] = f"LEGACY_{h}"
+                r["project_code"] = f"LEG_{h}"
+                r["match_method"] = "LEGACY_COMPOSITE_HASH"
+                r["match_confidence"] = 0.80
+
+        # Step 4: Strict Same-Month Disambiguation (Guarantees zero dropped projects per month)
+        month_id_counts = collections.defaultdict(lambda: collections.defaultdict(int))
+        for r in raw_snapshots:
+            month_id_counts[r["report_month"]][r["candidate_id"]] += 1
+            
+        for r in raw_snapshots:
+            m = r["report_month"]
+            cid = r["candidate_id"]
+            if month_id_counts[m][cid] > 1:
+                r["project_id"] = f"P_{cid}_SL{r['raw_sl']}"
+                r["match_method"] = f"{r['match_method']}_DISAMBIGUATED"
+                r["match_confidence"] = round(r["match_confidence"] * 0.95, 2)
+            else:
+                r["project_id"] = f"P_{cid}"
+
+        df_raw = pd.DataFrame(raw_snapshots)
+        df_raw = df_raw.drop_duplicates(subset=["project_id", "report_month"], keep="last").reset_index(drop=True)
+        
         print(f"\n📊 Total Real Snapshots Extracted: {len(df_raw)} across {df_raw['project_id'].nunique()} unique projects.")
+        print(f"   Reporting Period: {df_raw['report_month'].min()} → {df_raw['report_month'].max()} ({df_raw['report_month'].nunique()} months)")
+        print(f"   Average Entity Match Confidence: {df_raw['match_confidence'].mean():.2%}")
         
         # Save raw CSV
         df_raw.to_csv(os.path.join(RAW_DIR, "project_snapshots.csv"), index=False)
@@ -229,7 +443,8 @@ def run_real_pipeline(input_dir: str = DOWNLOADS_DIR):
         )
         df_projects_master = df_projects[[
             "project_id", "project_code", "project_name", "ministry", "sector", "state",
-            "implementing_agency", "original_cost", "original_start_date", "original_end_date", "archetype"
+            "implementing_agency", "original_cost", "original_start_date", "original_end_date",
+            "archetype", "match_method", "match_confidence"
         ]]
         df_projects_master.to_csv(os.path.join(RAW_DIR, "projects_master.csv"), index=False)
         print(f"✅ Saved Projects Master: {len(df_projects_master)} projects.")
@@ -241,7 +456,6 @@ def run_real_pipeline(input_dir: str = DOWNLOADS_DIR):
             df_projects_master, df_raw
         )
 
-    
     clean_projects.to_csv(os.path.join(PROCESSED_DIR, "clean_projects.csv"), index=False)
     clean_snapshots.to_csv(os.path.join(PROCESSED_DIR, "clean_snapshots.csv"), index=False)
     with open(os.path.join(PROCESSED_DIR, "dqe_report.json"), "w") as f:
@@ -261,7 +475,7 @@ def run_real_pipeline(input_dir: str = DOWNLOADS_DIR):
     train_risk_models(
         features_csv=os.path.join(PROCESSED_DIR, "features_matrix.csv"),
         artifacts_dir=ARTIFACTS_DIR,
-        split_month="2025-08"
+        split_month="2026-02"
     )
 
     # 5. Load Trained Models & Evaluate Portfolio
@@ -274,6 +488,12 @@ def run_real_pipeline(input_dir: str = DOWNLOADS_DIR):
     time_probs = time_model.predict_proba(X_all)[:, 1]
     
     portfolio_df = RiskEngine.evaluate_portfolio(features_df, cost_probs, time_probs)
+    # Fix column name mismatch: evaluate_portfolio creates pred_cost_prob/pred_time_prob
+    # but DB schema expects cost_risk_probability/time_risk_probability
+    portfolio_df = portfolio_df.rename(columns={
+        "pred_cost_prob": "cost_risk_probability",
+        "pred_time_prob": "time_risk_probability"
+    })
     portfolio_df.to_csv(os.path.join(PROCESSED_DIR, "portfolio_evaluated.csv"), index=False)
     print(f"✅ Evaluated {len(portfolio_df)} real snapshots with composite risk and IPI scores.")
 
@@ -342,10 +562,10 @@ def run_real_pipeline(input_dir: str = DOWNLOADS_DIR):
                 critical_ratio=float(row.get("critical_ratio", 1.0)),
                 delay_days=int(row["delay_days"]),
                 current_end_date=str(row["current_end_date"])[:10],
-                issue_procurement=int(row.get("issue_procurement", 0)),
-                issue_land=int(row.get("issue_land", 0)),
-                issue_contractor=int(row.get("issue_contractor", 0)),
-                issue_approval=int(row.get("issue_approval", 0)),
+                issue_procurement=int(row.get("issue_procurement_inferred", row.get("issue_procurement", 0))),
+                issue_land=int(row.get("issue_land_inferred", row.get("issue_land", 0))),
+                issue_contractor=int(row.get("issue_contractor_inferred", row.get("issue_contractor", 0))),
+                issue_approval=int(row.get("issue_approval_inferred", row.get("issue_approval", 0))),
                 status=str(row.get("status", "ONGOING"))
             )
             snapshot_records.append(s)
@@ -373,7 +593,7 @@ def run_real_pipeline(input_dir: str = DOWNLOADS_DIR):
                 ipi_score=float(row.get("ipi_score", 30.0)),
                 ipi_rank=int(row.get("ipi_rank", 0)),
                 trend_direction=str(row.get("trend_direction", "stable")),
-                model_version="v1.0-temporal-xgb"
+                model_version="v2.0-temporal-hardened"
             )
             prediction_records.append(pred)
         db.bulk_save_objects(prediction_records)
