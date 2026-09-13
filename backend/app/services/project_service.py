@@ -200,7 +200,14 @@ def get_project_by_id(db: Session, project_id: str) -> Optional[ProjectDetail]:
         latest_prediction=RiskPredictionSchema.model_validate(latest_pred) if latest_pred else None
     )
 
+def _resolve_canonical_id(db: Session, project_id: str) -> str:
+    detail = get_project_by_id(db, project_id)
+    if detail:
+        return detail.project_id
+    return project_id
+
 def get_project_trajectory(db: Session, project_id: str) -> List[TrajectoryPoint]:
+    canonical_id = _resolve_canonical_id(db, project_id)
     snaps = db.query(
         ProjectSnapshot, RiskPrediction.composite_risk_score
     ).outerjoin(
@@ -208,7 +215,7 @@ def get_project_trajectory(db: Session, project_id: str) -> List[TrajectoryPoint
         (RiskPrediction.project_id == ProjectSnapshot.project_id) &
         (RiskPrediction.report_month == ProjectSnapshot.report_month)
     ).filter(
-        ProjectSnapshot.project_id == project_id
+        ProjectSnapshot.project_id == canonical_id
     ).order_by(asc(ProjectSnapshot.report_month)).all()
     
     trajectory = []
@@ -232,13 +239,14 @@ def get_project_trajectory(db: Session, project_id: str) -> List[TrajectoryPoint
     return trajectory
 
 def get_project_explanation(db: Session, project_id: str) -> Dict[str, Any]:
+    canonical_id = _resolve_canonical_id(db, project_id)
     exps = db.query(RiskExplanation).filter(
-        RiskExplanation.project_id == project_id
+        RiskExplanation.project_id == canonical_id
     ).order_by(asc(RiskExplanation.rank)).all()
     
     if not exps:
         snap = db.query(ProjectSnapshot).filter(
-            ProjectSnapshot.project_id == project_id
+            ProjectSnapshot.project_id == canonical_id
         ).order_by(desc(ProjectSnapshot.report_month)).first()
         
         if snap:
@@ -313,8 +321,9 @@ def get_project_explanation(db: Session, project_id: str) -> Dict[str, Any]:
     }
 
 def get_project_recommendations(db: Session, project_id: str) -> List[Dict[str, str]]:
+    canonical_id = _resolve_canonical_id(db, project_id)
     snap = db.query(ProjectSnapshot).filter(
-        ProjectSnapshot.project_id == project_id
+        ProjectSnapshot.project_id == canonical_id
     ).order_by(desc(ProjectSnapshot.report_month)).first()
     
     if not snap:
@@ -408,7 +417,8 @@ def create_intervention(db: Session, inv_in: InterventionCreate) -> Intervention
 def get_interventions(db: Session, project_id: Optional[str] = None) -> List[InterventionResponse]:
     q = db.query(Intervention)
     if project_id:
-        q = q.filter(Intervention.project_id == project_id)
+        canonical_id = _resolve_canonical_id(db, project_id)
+        q = q.filter(Intervention.project_id == canonical_id)
     invs = q.order_by(desc(Intervention.id)).all()
     return [InterventionResponse.model_validate(i) for i in invs]
 
@@ -417,8 +427,9 @@ def get_project_timeline(db: Session, project_id: str) -> Dict[str, Any]:
     Constructs the Digital Project Timeline:
     Sanction -> Start -> Intermediate Snapshots -> First Deviation Point -> Current Status -> Completion Target.
     """
+    canonical_id = _resolve_canonical_id(db, project_id)
     proj = db.query(Project).filter(
-        (Project.project_id == project_id) | (Project.project_code == project_id)
+        (Project.project_id == canonical_id) | (Project.project_code == canonical_id)
     ).first()
     if not proj:
         return {}

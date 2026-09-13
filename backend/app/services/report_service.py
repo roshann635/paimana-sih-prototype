@@ -33,13 +33,19 @@ except ImportError:
     HAS_REPORTLAB = False
 
 
+from backend.app.services.project_service import get_project_by_id
+
 class ReportService:
     """Generates minute-detail executive PDF reports for PARAKH Decision Support System."""
 
     def generate_project_pdf(self, db: Session, project_id: str) -> Optional[bytes]:
         """Generates a comprehensive, minute-detail single-project PDF executive report."""
+        proj_detail = get_project_by_id(db, project_id)
+        if not proj_detail:
+            return None
+            
         proj = db.query(Project).filter(
-            (Project.project_id == project_id) | (Project.project_code == project_id)
+            Project.project_id == proj_detail.project_id
         ).first()
         if not proj:
             return None
