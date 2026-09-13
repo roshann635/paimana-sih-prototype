@@ -64,15 +64,32 @@ def get_projects(
     
     # Sorting
     if sort_by == "ipi_score":
-        query = query.order_by(desc(RiskPrediction.ipi_score) if order == "desc" else asc(RiskPrediction.ipi_score))
+        query = query.order_by(
+            desc(RiskPrediction.ipi_score) if order == "desc" else asc(RiskPrediction.ipi_score),
+            desc(RiskPrediction.composite_risk_score),
+            desc(ProjectSnapshot.revised_cost)
+        )
     elif sort_by == "composite_risk_score":
-        query = query.order_by(desc(RiskPrediction.composite_risk_score) if order == "desc" else asc(RiskPrediction.composite_risk_score))
+        query = query.order_by(
+            desc(RiskPrediction.composite_risk_score) if order == "desc" else asc(RiskPrediction.composite_risk_score),
+            desc(RiskPrediction.ipi_score),
+            desc(ProjectSnapshot.revised_cost)
+        )
     elif sort_by == "revised_cost":
-        query = query.order_by(desc(ProjectSnapshot.revised_cost) if order == "desc" else asc(ProjectSnapshot.revised_cost))
+        query = query.order_by(
+            desc(ProjectSnapshot.revised_cost) if order == "desc" else asc(ProjectSnapshot.revised_cost),
+            desc(RiskPrediction.ipi_score)
+        )
     elif sort_by == "delay_days":
-        query = query.order_by(desc(ProjectSnapshot.delay_days) if order == "desc" else asc(ProjectSnapshot.delay_days))
+        query = query.order_by(
+            desc(ProjectSnapshot.delay_days) if order == "desc" else asc(ProjectSnapshot.delay_days),
+            desc(RiskPrediction.ipi_score)
+        )
     else:  # default ipi_rank
-        query = query.order_by(asc(RiskPrediction.ipi_rank) if order == "asc" else desc(RiskPrediction.ipi_rank))
+        query = query.order_by(
+            asc(RiskPrediction.ipi_rank) if order == "asc" else desc(RiskPrediction.ipi_rank),
+            desc(RiskPrediction.composite_risk_score)
+        )
         
     results = query.offset(offset).limit(limit).all()
     

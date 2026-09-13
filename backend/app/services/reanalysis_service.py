@@ -158,8 +158,8 @@ class ReanalysisService:
             sat_map = {}
             for pid in features_df["project_id"].unique():
                 res = satellite_service.get_project_satellite_verification(db, str(pid))
-                if res and res.discrepancy_pp is not None:
-                    sat_map[pid] = res.discrepancy_pp
+                if res and getattr(res, "progress_discrepancy_pp", None) is not None:
+                    sat_map[pid] = res.progress_discrepancy_pp
             features_df["satellite_discrepancy_pp"] = features_df["project_id"].map(sat_map).fillna(0.0)
         except Exception as e:
             logger.warning(f"Could not load satellite discrepancies during re-analysis: {e}")

@@ -136,23 +136,25 @@ class RiskEngine:
         Intervention Priority Index (IPI):
         IPI = Risk * ExposureFactor * CriticalityFactor * DeteriorationMultiplier
         """
-        # Exposure factor: log scale of capex (50 Cr -> 0.75, 50,000 Cr -> 1.35)
-        log_cost = math.log10(max(50.0, revised_cost_cr))
-        exposure_factor = (log_cost / 4.7) * 0.4 + 0.7  # ~0.8 to 1.35
+        # Exposure factor: log scale of capex (50 Cr -> 0.70, 50,000 Cr -> 1.10)
+        log_cost = math.log10(max(10.0, revised_cost_cr))
+        exposure_factor = 0.70 + (min(5.0, max(1.0, log_cost)) - 1.0) * 0.10  # 0.70 to 1.10
         
-        # Schedule criticality factor
-        criticality_factor = 1.0 + min(0.3, max(0.0, delay_days / 730.0))
+        # Schedule criticality factor (0 to 1800 days delay -> 0.90 to 1.15)
+        criticality_factor = 0.90 + min(0.25, max(0.0, delay_days / 3650.0))
         
         # Deterioration multiplier
         if trend_direction == "deteriorating":
-            det_multiplier = 1.25
+            det_multiplier = 1.15
         elif trend_direction == "improving":
-            det_multiplier = 0.85
+            det_multiplier = 0.90
         else:
             det_multiplier = 1.0
             
-        ipi = composite_risk * exposure_factor * criticality_factor * det_multiplier
-        return round(float(np.clip(ipi, 0.0, 100.0)), 1)
+        raw_ipi = composite_risk * exposure_factor * criticality_factor * det_multiplier
+        # Continuous logistic curve scaling to 0-100 to prevent clipping saturation at 100.0
+        scaled_ipi = 100.0 / (1.0 + math.exp(-0.05 * (raw_ipi - 45.0)))
+        return round(float(scaled_ipi), 1)
 
     @classmethod
     def evaluate_portfolio(
