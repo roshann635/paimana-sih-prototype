@@ -23,7 +23,11 @@ def get_dashboard_summary(db: Session, force_refresh: bool = False) -> Dashboard
     if not force_refresh and _DASHBOARD_CACHE["summary_data"] is not None and (now - _DASHBOARD_CACHE["summary_time"] < 30.0):
         return _DASHBOARD_CACHE["summary_data"]
 
-    max_month_val = db.query(func.max(ProjectSnapshot.report_month)).scalar() or "2026-07"
+    month_counts = db.query(
+        ProjectSnapshot.report_month, func.count(ProjectSnapshot.id)
+    ).group_by(ProjectSnapshot.report_month).all()
+    valid_months = [m for m, c in month_counts if c >= 100]
+    max_month_val = max(valid_months) if valid_months else (db.query(func.max(ProjectSnapshot.report_month)).scalar() or "2026-07")
     
     # Fast index query: filter directly on latest reporting month (avoids slow 23k Cartesian subquery join)
     latest_data = db.query(
