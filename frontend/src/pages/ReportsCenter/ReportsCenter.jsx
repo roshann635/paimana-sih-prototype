@@ -93,13 +93,24 @@ export default function ReportsCenter() {
           </p>
         </div>
 
-        <button
-          onClick={handlePrintBriefing}
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#0D1E30] hover:bg-[#16324A] border border-[#16324A] rounded-lg text-xs font-bold text-white transition-colors shadow-xs"
-        >
-          <Printer className="w-3.5 h-3.5 text-slate-400" />
-          <span>Print Executive Dossier</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <a
+            href={paimanaApi.getPortfolioPDFUrl()}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 rounded-lg text-xs font-bold text-slate-950 transition-all shadow-md"
+          >
+            <Download className="w-3.5 h-3.5 text-slate-950" />
+            <span>Download Portfolio PDF</span>
+          </a>
+          <button
+            onClick={handlePrintBriefing}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#0D1E30] hover:bg-[#16324A] border border-[#16324A] rounded-lg text-xs font-bold text-white transition-colors shadow-xs"
+          >
+            <Printer className="w-3.5 h-3.5 text-slate-400" />
+            <span>Print Executive Dossier</span>
+          </button>
+        </div>
       </div>
 
       {/* Reports Grid */}
@@ -123,15 +134,23 @@ export default function ReportsCenter() {
               </p>
             </div>
 
-            <div className="pt-3 border-t border-[#16324A] flex items-center justify-between">
-              <span className="text-[10px] font-mono text-slate-400">CSV Export Ready</span>
+            <div className="pt-3 border-t border-[#16324A] flex items-center justify-between gap-2">
+              <a
+                href={rep.id === 'critical_watchlist' ? paimanaApi.getProjectPDFUrl('P_NUM_400275') : paimanaApi.getPortfolioPDFUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-[#00E5FF] hover:underline"
+              >
+                <FileText className="w-3 h-3" />
+                <span>PDF Document</span>
+              </a>
               <button
                 onClick={() => handleDownloadCSV(rep)}
                 disabled={downloadingId === rep.id}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#07131F] hover:bg-[#11263C] text-white text-xs font-mono font-bold rounded-lg border border-[#16324A] transition-colors shadow-xs"
               >
                 <Download className="w-3.5 h-3.5 text-[#F59E0B]" />
-                <span>{downloadingId === rep.id ? 'Generating...' : 'Export Dataset'}</span>
+                <span>{downloadingId === rep.id ? 'Generating...' : 'Export Dataset CSV'}</span>
               </button>
             </div>
           </div>

@@ -92,6 +92,25 @@ export default function InterventionsCenter({ onSelectProject }) {
   const [interventions, setInterventions] = useState(SAMPLE_INTERVENTIONS);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchInterventions() {
+      setLoading(true);
+      try {
+        const data = await paimanaApi.getInterventions();
+        if (isMounted && Array.isArray(data) && data.length > 0) {
+          setInterventions(data);
+        }
+      } catch (err) {
+        console.warn("Failed to fetch live interventions, using sample dataset:", err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    }
+    fetchInterventions();
+    return () => { isMounted = false; };
+  }, []);
+
   const columns = [
     {
       key: "project_id",
