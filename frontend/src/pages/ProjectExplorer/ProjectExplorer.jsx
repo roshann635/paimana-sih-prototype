@@ -6,7 +6,7 @@ import {
   ErrorState,
 } from "../../components/common/FeedbackStates";
 import { paimanaApi } from "../../services/api/paimanaApi";
-import { Layers } from "lucide-react";
+import { Layers, FileText } from "lucide-react";
 
 export default function ProjectExplorer({
   onSelectProject,
@@ -122,6 +122,24 @@ export default function ProjectExplorer({
       header: "Status",
       align: "center",
       render: (val) => <StatusBadge level={val || "NORMAL"} size="sm" />,
+    },
+    {
+      key: "actions",
+      header: "PDF Report",
+      align: "center",
+      render: (_, row) => (
+        <a
+          href={paimanaApi.getProjectPDFUrl(row.project_id)}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          title={`Download PDF Dossier for ${row.project_name}`}
+          className="inline-flex items-center gap-1 px-2.5 py-1 bg-[#0D1E30] hover:bg-[#16324A] text-[#00E5FF] border border-[#16324A] hover:border-[#00E5FF] rounded text-[11px] font-mono font-bold transition-all shadow-xs"
+        >
+          <FileText className="w-3.5 h-3.5 text-[#00E5FF]" />
+          <span>PDF</span>
+        </a>
+      ),
     },
   ];
 
