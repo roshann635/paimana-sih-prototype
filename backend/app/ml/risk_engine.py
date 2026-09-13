@@ -76,10 +76,18 @@ class RiskEngine:
         physical_progress_pct: float = 50.0,
         planned_progress_pct: float = None,
         spi_declining: int = 0,
-        cpi_declining: int = 0
+        cpi_declining: int = 0,
+        satellite_discrepancy_pp: float = 0.0
     ) -> Tuple[float, str]:
         """
         Base Risk = 0.30 * CostRisk + 0.30 * TimeRisk + 0.20 * EVMStrain + 0.10 * Deterioration + 0.10 * Urgency
+        
+        Satellite Adjustment:
+            If satellite cross-verification shows observed change < reported progress by >15pp,
+            the risk score is elevated:
+            - Discrepancy -15pp to -30pp: 1.10x multiplier (moderate concern)
+            - Discrepancy < -30pp:        1.20x multiplier (significant discrepancy)
+        
         Returns (score: 0-100, level: GREEN|AMBER|ORANGE|RED)
         """
         evm_strain = cls.compute_evm_strain(spi, cpi)
@@ -98,6 +106,13 @@ class RiskEngine:
         )
         
         score = round(float(np.clip(base_risk * 100.0, 0.0, 100.0)), 1)
+        
+        # Satellite Cross-Verification Risk Adjustment
+        # D_pp = OSC_100 - P: negative means observed < reported (potential overstatement)
+        if satellite_discrepancy_pp < -30.0:
+            score = round(min(100.0, score * 1.20), 1)
+        elif satellite_discrepancy_pp < -15.0:
+            score = round(min(100.0, score * 1.10), 1)
         
         if score < 25.0:
             level = "GREEN"

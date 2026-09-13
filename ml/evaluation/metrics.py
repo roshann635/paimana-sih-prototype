@@ -159,7 +159,6 @@ def save_model_health_report(
     
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(health, f, indent=2)
-        json.dump(health, f, indent=2)
         
     print(f"Model health report saved to: {output_path}")
     return health

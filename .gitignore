@@ -63,3 +63,4 @@ Thumbs.db
 *.swo
 .agents/
 frontend/.pytest_cache/
+check_domains.py

@@ -6,7 +6,7 @@
 
 ## 📌 Executive Summary
 
-**PARAKH** transforms monthly infrastructure reporting data into continuous, explainable, and actionable foresight. Built on longitudinal **MoSPI Central Sector Flash Reports** ($\ge$ ₹150 Crore sanctioned cost), PARAKH continuously digests project-month snapshots to predict cost overrun probability, schedule slippage drift, and compute the **Intervention Priority Index (IPI)** for executive review.
+**PARAKH** transforms monthly infrastructure reporting data into continuous, explainable, and actionable foresight. Built on longitudinal **MoSPI Central Sector Flash Reports** ($\ge$ ₹150 Crore sanctioned cost), PARAKH digests project-month snapshots to predict cost overrun probability, schedule slippage drift, and compute the **Intervention Priority Index (IPI)** for executive review.
 
 ```
 PARAKH / OCMS DATA ──► DATA QUALITY ENGINE (DQE) ──► LONGITUDINAL DATABASE (6,090 Snapshots)
@@ -18,12 +18,12 @@ COST OVERRUN MODEL (XGBoost)                                                SCHE
       │                                                                                   │
       └──────────────────────────┬────────────────────────────────────────────────────────┘
                                  ▼
-                     COMPOSITE RISK ENGINE & IPI
+                     COMPOSITE RISK ENGINE & IPI (with Satellite Discrepancy Escalation)
                                  │
-     ┌───────────────────────────┼───────────────────────────┬───────────────────────────┐
-     ▼                           ▼                           ▼                           ▼
-TreeSHAP EXPLANATIONS    EARLY WARNING ALERTS       ADMINISTRATIVE INTERVENTIONS  SATELLITE CROSS-VERIFICATION
-(Local Attributions)     (101 Active Bulletins)     (Longitudinal Feedback Loop)  (Sentinel-1 SAR + Sentinel-2 Optical)
+     ┌───────────────────────────┼───────────────────────────┬───────────────────────────┬───────────────────────────┐
+     ▼                           ▼                           ▼                           ▼                           ▼
+TreeSHAP EXPLANATIONS    EARLY WARNING ALERTS       MONTHLY RE-ANALYSIS API      EXECUTIVE PDF REPORTS       SATELLITE CROSS-VERIFICATION
+(Local Attributions)     (101 Active Bulletins)     (Automated Feedback Loop)    (Downloadable Briefings)    (Sentinel-1/2 Demo Fixtures)
                                  │
                                  ▼
               COMMAND CENTRE FRONTEND & GROUNDED AI ASSISTANT
@@ -31,7 +31,7 @@ TreeSHAP EXPLANATIONS    EARLY WARNING ALERTS       ADMINISTRATIVE INTERVENTIONS
 
 ---
 
-## 🛰️ 9. Satellite Cross-Verification Engine (`/satellite-observatory`)
+## 🛰️ Satellite Cross-Verification Engine (`/satellite-observatory`)
 - **Independent Earth-Observation Evidence Layer**: Cross-verifies contractor-reported physical progress against remotely sensed site transformation without claiming false precision.
 - **Dual-Sensor Optical & SAR Pipeline**:
   - **Sentinel-2 L2A (10m)**: Surface reflectance, SCL cloud masking, NDVI (vegetation clearing), NDBI (built-up consolidation), NDWI, and Bare Soil Index (BSI).
@@ -39,9 +39,10 @@ TreeSHAP EXPLANATIONS    EARLY WARNING ALERTS       ADMINISTRATIVE INTERVENTIONS
 - **Observed Site Change Index ($\text{OSC}_{100}$)**:
   $$\text{OSC}_{100} = 100 \times (w_O \cdot O + w_S \cdot S + w_B \cdot B + w_T \cdot T)$$
   $$\text{Discrepancy}_{\text{pp}} = \text{OSC}_{100} - P$$
-- **Dual Provider Architecture**:
-  - **Copernicus Provider**: Live CDSE STAC Discovery client with strict temporal query boundaries ($t_{\text{acquisition}} \le T_{\text{evaluation}}$).
-  - **Synthetic Demo Provider**: High-fidelity demo fixtures explicitly marked with `is_synthetic: true` and disclaimer banners.
+- **Dual Provider Architecture & Demo Framing**:
+  - **Synthetic Demo Provider**: High-fidelity, deterministic demo fixtures explicitly marked with `is_synthetic: true` to ensure reliable demonstration without live API rate limits.
+  - **Copernicus STAC Provider**: Fully architected client for Copernicus CDSE STAC Discovery queries with strict temporal query boundaries ($t_{\text{acquisition}} \le T_{\text{evaluation}}$).
+- **Satellite → Composite Risk Integration**: Evaluates satellite progress discrepancy (`satellite_discrepancy_pp`). Discrepancies > 15pp apply escalation multipliers (1.10x–1.20x) to composite risk.
 - **Spatial Suitability & `NOT_OBSERVABLE` Gate**: Prevents false alarms on compact building footprints below 10m Ground Sampling Distance.
 - **Interactive Evidence Studio**: Interactive Before/After layer switch (True Color RGB, False Color NIR, SAR Backscatter heatmap, Classified Change Mask) and temporal divergence tracking that directly feeds the Action Memorandum workflow.
 
