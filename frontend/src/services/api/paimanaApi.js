@@ -178,12 +178,12 @@ export const parakhApi = {
 
   // PDF Executive Report Downloads
   getPortfolioPDFUrl() {
-    const baseUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/v1';
+    const baseUrl = BASE_URL.replace(/\/$/, '');
     return `${baseUrl}/reports/portfolio/summary-pdf`;
   },
 
   getProjectPDFUrl(projectId) {
-    const baseUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/v1';
+    const baseUrl = BASE_URL.replace(/\/$/, '');
     return `${baseUrl}/reports/${projectId}/pdf`;
   },
 

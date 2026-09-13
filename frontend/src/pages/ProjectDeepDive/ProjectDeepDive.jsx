@@ -24,6 +24,7 @@ import {
   MapPin,
   AlertTriangle,
   ArrowUpRight,
+  Download,
 } from "lucide-react";
 
 export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
@@ -192,8 +193,17 @@ export default function ProjectDeepDive({ projectId, onBack, onNavigate }) {
           </div>
         </div>
 
-        {/* Action Button: Record Administrative Action Memo */}
-        <div className="flex items-center gap-2 shrink-0">
+        {/* Action Buttons: Download PDF & Record Administrative Action Memo */}
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <a
+            href={paimanaApi.getProjectPDFUrl(p.project_id)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-[#0D1E30] hover:bg-[#16324A] text-[#00E5FF] border border-[#16324A] text-xs font-bold rounded-lg transition-colors cursor-pointer shadow-xs"
+          >
+            <Download className="w-4 h-4 text-[#00E5FF]" />
+            <span>Download PDF Dossier</span>
+          </a>
           <button
             onClick={() => setIsMemoOpen(true)}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-[#F59E0B] hover:bg-[#D97706] text-[#07131F] text-xs font-bold rounded-lg transition-colors shadow-gold-glow cursor-pointer"
