@@ -316,6 +316,34 @@ def trigger_reanalysis(
 # REPORT GENERATION ENDPOINTS
 # ==========================================================================
 
+# ==========================================================================
+# REPORT GENERATION ENDPOINTS
+# ==========================================================================
+
+@router.get("/reports/portfolio/summary-pdf")
+def generate_portfolio_report(
+    db: Session = Depends(get_db)
+):
+    """
+    Generates a national portfolio summary PDF report with:
+    risk distribution, top critical projects, sector analytics,
+    and early warning summary.
+    """
+    from backend.app.services.report_service import report_service
+    pdf_bytes = report_service.generate_portfolio_pdf(db)
+    if not pdf_bytes:
+        raise HTTPException(status_code=500, detail="Failed to generate portfolio report")
+
+    from fastapi.responses import Response
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": "attachment; filename=PARAKH_Executive_Portfolio_Summary.pdf"
+        }
+    )
+
+
 @router.get("/reports/{project_id}/pdf")
 def generate_project_report(
     project_id: str,
@@ -337,30 +365,6 @@ def generate_project_report(
         media_type="application/pdf",
         headers={
             "Content-Disposition": f"attachment; filename=PARAKH_Report_{project_id}.pdf"
-        }
-    )
-
-
-@router.get("/reports/portfolio/summary-pdf")
-def generate_portfolio_report(
-    db: Session = Depends(get_db)
-):
-    """
-    Generates a national portfolio summary PDF report with:
-    risk distribution, top critical projects, sector analytics,
-    and early warning summary.
-    """
-    from backend.app.services.report_service import report_service
-    pdf_bytes = report_service.generate_portfolio_pdf(db)
-    if not pdf_bytes:
-        raise HTTPException(status_code=500, detail="Failed to generate portfolio report")
-
-    from fastapi.responses import Response
-    return Response(
-        content=pdf_bytes,
-        media_type="application/pdf",
-        headers={
-            "Content-Disposition": "attachment; filename=PARAKH_National_Portfolio_Report.pdf"
         }
     )
 

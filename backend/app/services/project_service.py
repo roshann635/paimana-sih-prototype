@@ -156,22 +156,27 @@ def get_project_by_id(db: Session, project_id: str) -> Optional[ProjectDetail]:
             (Project.project_id.ilike(raw_id)) | (Project.project_code.ilike(raw_id))
         ).first()
 
-    # 3. Handle PAI_ / PAI prefix (e.g., PAI_001, PAI 001 -> search code or fallback)
+    # 3. Handle PAI_ / PAI / P prefix (e.g., PAI_001, PAI 001, P618427)
+    if not proj:
+        clean_num = raw_id.replace("PAI", "").replace("P_NUM_", "").replace("P", "").replace("_", "").replace(" ", "").replace("-", "")
+        if clean_num:
+            proj = db.query(Project).filter(
+                (Project.project_code == clean_num) |
+                (Project.project_id.contains(clean_num))
+            ).first()
+
     if not proj and ("PAI" in raw_id.upper() or "001" in raw_id):
-        # Look for Golden Project P618427 or first project
-        proj = db.query(Project).filter(Project.project_id == "P618427").first()
+        proj = db.query(Project).filter(
+            (Project.project_id == "P_NUM_618427") | (Project.project_code == "618427")
+        ).first()
         if not proj:
             proj = db.query(Project).first()
             
     # 4. Partial substring match in code or name
     if not proj and len(raw_id) >= 3:
-        clean_term = raw_id.replace("PAI", "").replace("_", "").replace(" ", "").replace("-", "")
-        if clean_term:
-            proj = db.query(Project).filter(
-                (Project.project_code.contains(clean_term)) |
-                (Project.project_id.contains(clean_term)) |
-                (Project.project_name.ilike(f"%{clean_term}%"))
-            ).first()
+        proj = db.query(Project).filter(
+            (Project.project_name.ilike(f"%{raw_id}%"))
+        ).first()
 
     if not proj:
         return None
