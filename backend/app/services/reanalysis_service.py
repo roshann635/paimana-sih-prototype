@@ -152,6 +152,19 @@ class ReanalysisService:
         cost_forecast = self.cost_regressor.predict(X_all) if self.cost_regressor else np.zeros(len(X_all))
         delay_forecast = self.time_regressor.predict(X_all) if self.time_regressor else np.zeros(len(X_all))
 
+        # 3.5 Attach Satellite Discrepancies if available
+        try:
+            from backend.app.satellite.service import satellite_service
+            sat_map = {}
+            for pid in features_df["project_id"].unique():
+                res = satellite_service.get_project_satellite_verification(db, str(pid))
+                if res and res.discrepancy_pp is not None:
+                    sat_map[pid] = res.discrepancy_pp
+            features_df["satellite_discrepancy_pp"] = features_df["project_id"].map(sat_map).fillna(0.0)
+        except Exception as e:
+            logger.warning(f"Could not load satellite discrepancies during re-analysis: {e}")
+            features_df["satellite_discrepancy_pp"] = 0.0
+
         # 4. Composite Risk + IPI
         portfolio_df = RiskEngine.evaluate_portfolio(features_df, cost_probs, time_probs)
         portfolio_df["cost_risk_probability"] = cost_probs

@@ -194,7 +194,8 @@ class RiskEngine:
                 physical_progress_pct=row.get("physical_progress_pct", 50.0),
                 planned_progress_pct=row.get("planned_progress_pct", 50.0),
                 spi_declining=int(row.get("spi_declining", 0)),
-                cpi_declining=int(row.get("cpi_declining", 0))
+                cpi_declining=int(row.get("cpi_declining", 0)),
+                satellite_discrepancy_pp=float(row.get("satellite_discrepancy_pp", 0.0))
             )
             
             trend = "stable"
